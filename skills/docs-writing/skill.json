@@ -1,0 +1,46 @@
+{
+  "id": "guild.docs-writing",
+  "title": "Docs Writing",
+  "version": "0.1.0",
+  "description": "Produce clear, discoverable documentation (README, HOWTO, API docs)",
+  "triggers": [
+    "edit markdown",
+    "generate documentation",
+    "generate markdown",
+    "update README",
+    "update documentation",
+    "write doc",
+    "write docs",
+    "write README"
+  ],
+  "inputs": {
+    "title": "string",
+    "audience": "string (optional)",
+    "existing_markdown": "string (optional)",
+    "markdown_content": "string (optional)"
+  },
+  "guarantees": [
+    "No markdownlint violations in output",
+    "Contains a 'Getting started' section with 3 bullet commands where applicable",
+    "Code blocks are fenced and labeled (e.g., ```bash, ```ts)",
+    "Headings use consistent hierarchy and blank lines between sections"
+  ],
+  "non_goals": [
+    "Perform deep architecture redesign",
+    "Changing technical meaning",
+    "Rewriting prose unless required for lint compliance",
+    "Change API semantics or add behavior not requested"
+  ],
+  "examples": [
+    {
+      "title": "Add a README for a small JS library",
+      "audience": "developer",
+      "existing_markdown": "examples/input.md"
+    }
+  ],
+  "forbidden": [
+    "modify-production-config",
+    "delete-remote"
+  ],
+  "notes": "Prefer yarn for commands. Wrap lines at 100 chars by default. Keep prose succinct. Assume the audience is technical, either a mid-level or senior software engineer."
+}
