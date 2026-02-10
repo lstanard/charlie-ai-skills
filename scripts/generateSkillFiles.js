@@ -23,12 +23,16 @@ function findSkillJsonPaths(singlePath) {
   }
   const skillsDir = path.join(repoRoot, 'skills');
   if (!fs.existsSync(skillsDir)) return [];
-  const dirs = fs.readdirSync(skillsDir, { withFileTypes: true }).filter((d) => d.isDirectory());
   const paths = [];
-  for (const d of dirs) {
-    const p = path.join(skillsDir, d.name, 'skill.json');
-    if (fs.existsSync(p)) paths.push(p);
+  function walk(dir) {
+    const entries = fs.readdirSync(dir, { withFileTypes: true });
+    const here = path.join(dir, 'skill.json');
+    if (fs.existsSync(here)) paths.push(here);
+    for (const e of entries) {
+      if (e.isDirectory()) walk(path.join(dir, e.name));
+    }
   }
+  walk(skillsDir);
   return paths.sort();
 }
 

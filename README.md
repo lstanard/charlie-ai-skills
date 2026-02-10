@@ -7,6 +7,13 @@ Reusable AI agent skills you can use in **Cursor** (and optionally other tools).
 | Skill | Description |
 |-------|-------------|
 | [docs-writing](skills/docs-writing/) | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
+| [react-layering](skills/frontend-architecture/react-layering/) | Apply Presentation–Domain–Data layering; keep React as the view layer only. |
+| [react-view-extraction](skills/frontend-architecture/react-view-extraction/) | Extract hooks for state/effects, sub-components; prefer pure presentational components. |
+| [react-domain-models](skills/frontend-architecture/react-domain-models/) | Encapsulate mapping and business rules in domain objects; avoid logic leaks in the view. |
+| [react-data-layer](skills/frontend-architecture/react-data-layer/) | Extract network/data access into a dedicated client; no fetch in components. |
+| [react-polymorphism](skills/frontend-architecture/react-polymorphism/) | Use strategy/polymorphism for varying behavior; avoid shotgun surgery with conditionals. |
+
+The **frontend architecture** skills (react-layering through react-polymorphism) are based on [Modularizing React Applications with Established UI Patterns](https://martinfowler.com/articles/modularizing-react-apps.html) and share a [CLAUDE.md](skills/frontend-architecture/CLAUDE.md) with reference knowledge (evolution path, patterns, pitfalls). Use that doc when applying several of these skills together.
 
 ## How to use these skills
 
@@ -32,10 +39,16 @@ Reusable AI agent skills you can use in **Cursor** (and optionally other tools).
 ```
 charlie-ai-skills/
 ├── skills/
-│   └── <skill-name>/
-│       ├── skill.json      # Source of truth (edit this)
-│       ├── SKILL.md        # Generated from skill.json
-│       └── cursor.rule.md  # Generated Cursor rule
+│   ├── <skill-name>/
+│   │   ├── skill.json      # Source of truth (edit this)
+│   │   ├── SKILL.md        # Generated from skill.json
+│   │   └── cursor.rule.md  # Generated Cursor rule
+│   └── <group>/            # Optional: nested group (e.g. frontend-architecture/)
+│       ├── CLAUDE.md       # Optional: shared reference knowledge for the group
+│       └── <sub-skill>/
+│           ├── skill.json
+│           ├── SKILL.md
+│           └── cursor.rule.md
 ├── scripts/
 │   ├── generateSkillFiles.js  # skill.json → SKILL.md + cursor.rule.md
 │   └── validateSkill.js       # Validate skill.json
@@ -87,6 +100,6 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
 ### Scripts
 
-- `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill under `skills/*/skill.json`. Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
+- `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
 - `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
 - `npm run ci` — Validate and generate (for CI or pre-commit).

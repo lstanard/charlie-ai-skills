@@ -1,0 +1,27 @@
+{
+  "id": "charlie.frontend-architecture.react-view-extraction",
+  "title": "React view extraction (hooks and pure components)",
+  "version": "0.1.0",
+  "description": "Split view from non-view code: extract custom hooks for state and side effects; extract sub-components so each does one thing; prefer pure presentational components (props in, JSX out).",
+  "triggers": [
+    "extract component",
+    "refactor React component",
+    "split React component",
+    "custom hook",
+    "pure component",
+    "presentational component",
+    "too much logic in component"
+  ],
+  "inputs": {},
+  "guarantees": [
+    "State and side effects (e.g. fetch, subscribe) live in custom hooks or a dedicated layer, not inline in large components",
+    "Components that only render from props are preferred; keep them pure where possible (same props → same output)",
+    "Each component has a single clear responsibility; extract sub-components when a block represents a distinct concept",
+    "Naming follows React conventions (e.g. use-prefix for hooks); components receive minimal props needed to render"
+  ],
+  "non_goals": [
+    "Forcing every component to be pure when local UI state (e.g. open/closed) is natural",
+    "Extracting so aggressively that navigation and understanding require jumping across many tiny files"
+  ],
+  "notes": "Use Extract Function / Extract Component refactoring. Keep small, cohesive components together when the behavior is easier to understand in one place. Avoid components growing so large that they mix network, mapping, and rendering in one file. Reference: 'Modularizing React Applications with Established UI Patterns' (https://martinfowler.com/articles/modularizing-react-apps.html)."
+}
