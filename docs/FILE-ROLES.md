@@ -6,7 +6,7 @@ This repo uses a **skill.json → generated files** workflow. Each skill lives i
 
 **Do not edit generated files by hand** when you have a `skill.json`. Edit `skill.json` and run `npm run gen` to regenerate.
 
-- **id**: Unique identifier (e.g. `guild.docs-writing`).
+- **id**: Unique identifier (e.g. `charlie.docs-writing`).
 - **title**, **version**, **description**: Shown in SKILL.md and cursor rules.
 - **triggers**: When to apply this skill (e.g. “write README”, “generate documentation”).
 - **inputs**: Parameters the skill accepts (for docs only; not enforced at runtime).
@@ -26,7 +26,7 @@ Cursor-specific rule for this skill. Tells Cursor when to apply the skill (from 
 
 ## CLAUDE.md (optional)
 
-In plugin-based setups (e.g. [Guild’s guild-ai-skills](https://github.com/GuildEducationInc/guild-ai-skills)), **CLAUDE.md** lives at the **plugin** level (one per plugin, not per skill). It holds **reference knowledge** that skills refer to:
+In plugin-based setups, **CLAUDE.md** lives at the **plugin** level (one per plugin, not per skill). It holds **reference knowledge** that skills refer to:
 
 - Patterns, templates, decision trees
 - Constants (IDs, URLs, env vars)

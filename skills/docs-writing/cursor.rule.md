@@ -27,4 +27,4 @@ Avoid:
 - Change API semantics or add behavior not requested
 
 # metadata
-id: guild.docs-writing
+id: charlie.docs-writing
