@@ -6,6 +6,7 @@
   "scripts": {
     "gen": "node scripts/generateSkillFiles.js",
     "validate": "node scripts/validateSkill.js",
-    "ci": "npm run validate && npm run gen"
+    "ci": "npm run validate && npm run gen",
+    "install-skills": "node scripts/installSkills.js"
   }
 }
