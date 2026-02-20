@@ -1,6 +1,6 @@
-# Charlie AI Skills
+# AI Skills
 
-Reusable AI agent skills you can use in **Cursor** (and optionally other tools). Each skill is defined by a `skill.json`; the repo generates `SKILL.md` and Cursor rule files from it.
+Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **Claude**, and optionally other tools. Each skill is defined by a `skill.json`; the repo generates `SKILL.md` and Cursor rule files from it.
 
 ## Available skills
 
@@ -8,6 +8,7 @@ Reusable AI agent skills you can use in **Cursor** (and optionally other tools).
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
+| [error-handling](skills/error-handling/)                                     | Structured error handling: custom error classes, error codes, logging, user-facing vs internal errors, graceful degradation. |
 
 ### Testing skills
 
@@ -34,6 +35,10 @@ The **testing** skills share a [CLAUDE.md](skills/testing/CLAUDE.md) with univer
 | [react-polymorphism](skills/frontend-architecture/react-polymorphism/)       | Use strategy/polymorphism for varying behavior; avoid shotgun surgery with conditionals.                                     |
 
 The **frontend architecture** skills are based on [Modularizing React Applications with Established UI Patterns](https://martinfowler.com/articles/modularizing-react-apps.html) and share a [CLAUDE.md](skills/frontend-architecture/CLAUDE.md) with reference knowledge (evolution path, patterns, pitfalls). Use that doc when applying several of these skills together.
+
+---
+
+**💡 Looking for more skills?** See [Future Skill Recommendations](docs/FUTURE-SKILLS.md) for planned additions (API design, security fundamentals, AWS patterns, and more).
 
 ## How to use these skills
 
