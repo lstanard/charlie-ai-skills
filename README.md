@@ -37,22 +37,71 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
 
 ## How to use these skills
 
+### In Claude Code
+
+1. **Install globally (recommended for frequently-used skills)**
+   ```bash
+   # From this repo, install all skills globally (symlinked by default)
+   npm run install:claude
+
+   # Or install specific skill groups
+   npm run install-skills -- ~/.claude skills/testing --target=claude
+
+   # Copy instead of symlink (if you don't want automatic updates)
+   npm run install-skills -- ~/.claude --target=claude --copy
+   ```
+
+   Skills are **symlinked by default**, so changes to the repo automatically update your installed skills. Skills installed in `~/.claude/skills/` are available across all your projects.
+
+2. **Install per-project**
+   ```bash
+   # Install skills for a specific project (symlinked by default)
+   npm run install-skills -- /path/to/your-app --target=claude
+
+   # Copy instead of symlink
+   npm run install-skills -- /path/to/your-app --target=claude --copy
+   ```
+
+   Skills installed in `.claude/skills/` only apply to that project.
+
+3. **Use skills in conversation**
+   Claude Code automatically discovers skills. Reference them by name or let Claude invoke them when relevant:
+   ```
+   @react-component-testing write tests for LoginForm
+   @accessibility-testing check UserProfile for a11y issues
+   ```
+
 ### In Cursor
 
-1. **Project-level rules (recommended)**
-   Copy the rule file for a skill into your project so Cursor applies it in that repo:
-   - Use the install script (recommended): from this repo, run `npm run install-skills -- /path/to/your-app skills/testing` to copy all testing skills, or `npm run install-skills -- /path/to/your-app skills/frontend-architecture` for frontend architecture skills. Adds files like `react-component-testing.mdc`, `mock-data-strategy.mdc`, etc. Add `--link` to symlink instead of copy. Add `--include-claude` to include the shared CLAUDE.md reference.
-   - Or copy manually: `skills/<skill-name>/cursor.rule.md` → `.cursor/rules/<skill-name>.mdc`.
+1. **Install project-level rules (recommended)**
+   ```bash
+   # From this repo, install all skills (symlinked by default)
+   npm run install-skills -- /path/to/your-app
 
-2. **Reference the skill in chat**  
-   In Cursor, you can @-mention the skill file or paste the contents of `SKILL.md` when you want the model to follow that skill (e.g. “when writing docs, follow the guidance in skills/docs-writing/SKILL.md”).
+   # Or install specific skill groups
+   npm run install-skills -- /path/to/your-app skills/testing
 
-3. **Global / user rules**  
-   You can add the contents of `cursor.rule.md` to your user-level Cursor rules so the skill is available in every project.
+   # Copy instead of symlink
+   npm run install-skills -- /path/to/your-app --copy
+
+   # Include CLAUDE.md reference files
+   npm run install-skills -- /path/to/your-app skills/testing --include-claude
+   ```
+
+   This installs `cursor.rule.md` files as `.mdc` files to `.cursor/rules/`. Skills are **symlinked by default**, so changes automatically update.
+
+2. **Reference skills in chat**
+   In Cursor, @-mention the skill file or reference `SKILL.md`:
+   ```
+   when writing docs, follow the guidance in skills/docs-writing/SKILL.md
+   ```
+
+3. **Install globally**
+   Add `cursor.rule.md` contents to your user-level Cursor rules for availability in every project.
 
 ### In other AI tools
 
-- Use **SKILL.md** as the contract: it lists purpose, triggers, inputs, guarantees, and non-goals. Point your agent at that file when you want “docs writing” (or another skill) behavior.
+- Use **SKILL.md** as the contract: it lists purpose, triggers, inputs, guarantees, and non-goals. Point your agent at that file when you want specific skill behavior.
 
 ## Repository structure
 
@@ -127,5 +176,9 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
 - `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
 - `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
-- `npm run install-skills -- <destination> [source-path] [--link] [--include-claude]` — Copy Cursor rules into a project's `.cursor/rules/` with descriptive names (e.g. `react-data-layer.mdc`). Example: `npm run install-skills -- /path/to/my-app skills/frontend-architecture --include-claude`.
+- `npm run install-skills -- <destination> [source-path] [options]` — Install skills for Cursor or Claude Code (symlinked by default). See [How to use these skills](#how-to-use-these-skills) for examples.
+  - `--target=cursor|claude` — Install for Cursor (default) or Claude Code
+  - `--copy` — Copy instead of symlink (default: symlink)
+  - `--include-claude` — Also install CLAUDE.md reference files
+- `npm run install:claude` — Shortcut: install all skills globally for Claude Code (`~/.claude/skills/`, symlinked)
 - `npm run ci` — Validate and generate (for CI or pre-commit).

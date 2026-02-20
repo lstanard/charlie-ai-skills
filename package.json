@@ -7,6 +7,7 @@
     "gen": "node scripts/generateSkillFiles.js",
     "validate": "node scripts/validateSkill.js",
     "ci": "npm run validate && npm run gen",
-    "install-skills": "node scripts/installSkills.js"
+    "install-skills": "node scripts/installSkills.js",
+    "install:claude": "node scripts/installSkills.js ~/.claude --target=claude"
   }
 }

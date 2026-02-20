@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run gen:*)"
+      "Bash(npm run gen:*)",
+      "Bash(npm run install-skills:*)",
+      "Bash(npm run install:claude:*)"
     ]
   }
 }
