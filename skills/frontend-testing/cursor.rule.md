@@ -22,6 +22,11 @@ Apply this rule when the user asks to:
 - CI tests
 - accessibility testing
 - test strategy
+- mock data
+- mocks
+- factory
+- faker
+- GraphQL testing
 
 When generating or editing output:
 
@@ -33,8 +38,10 @@ When generating or editing output:
 - Run tests in the project's CI pipeline; fail the pipeline on test failure; document or configure the test step when the user asks
 - Use code coverage (e.g. Jest --coverage, Vitest coverage); set and enforce thresholds where it makes sense; avoid chasing 100% at the cost of maintainability
 - For Vite projects: same strategy using Vitest, @testing-library/react, and jsdom (or happy-dom); E2E still via Playwright if applicable
+- Use factory/builders (e.g. Fishery) for test object construction; use a fake-data library (e.g. faker / @faker-js/faker) for generating realistic values; keep mocks consistent and easy to override per test
+- For GraphQL: mock at the client layer (e.g. MockedProvider) or with MSW; match operations by name and variables; consider schema-aware mocks or generated mock data from the schema where it helps
 
-Default stack: Jest + React Testing Library for unit/component tests; Playwright for E2E when needed. Query priority: prefer getByRole, then getByLabelText, then getByText; avoid querying by test IDs or class names when an accessible query exists. For Vite, recommend Vitest + @testing-library/react with the same behavior-over-implementation and coverage approach. Incorporate tests into CI when a pipeline exists; suggest a minimal run-tests and optional coverage step when the user asks. For setup and config details, see CLAUDE.md in this skill directory.
+Default stack: Jest + React Testing Library for unit/component tests; Playwright for E2E when needed. Query priority: prefer getByRole, then getByLabelText, then getByText; avoid querying by test IDs or class names when an accessible query exists. For mocks: Fishery (or similar) for factories; faker / @faker-js/faker for fake data. For GraphQL: use MockedProvider (Apollo) or MSW; match by operation and variables; schema-aware or generated mocks when useful. For Vite, recommend Vitest + @testing-library/react with the same behavior-over-implementation and coverage approach. Incorporate tests into CI when a pipeline exists; suggest a minimal run-tests and optional coverage step when the user asks. For setup and config details, see CLAUDE.md in this skill directory.
 
 Avoid:
 

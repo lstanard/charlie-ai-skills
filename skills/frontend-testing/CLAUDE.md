@@ -11,7 +11,7 @@ Reference for the frontend-testing skill: testing pyramid, tool choice, setup, a
 ## Tool choice
 
 | Context                     | Runner | UI tests                                   | E2E        |
-|-----------------------------|--------|--------------------------------------------|------------|
+| --------------------------- | ------ | ------------------------------------------ | ---------- |
 | Non-Vite (e.g. CRA, custom) | Jest   | @testing-library/react, jsdom              | Playwright |
 | Vite                        | Vitest | @testing-library/react, jsdom or happy-dom | Playwright |
 
@@ -25,6 +25,19 @@ Same principles in both: behavior over implementation, accessible queries, cover
 4. **getByTestId** – Last resort when no accessible or semantic option.
 
 Avoid querying by class names or DOM structure. Prefer `userEvent` over `fireEvent` for interactions.
+
+## Mock data and factories
+
+- **Factories / builders**: Use Fishery (or similar, e.g. factory-bot-style libraries) to build test objects with sensible defaults and per-test overrides. Keeps fixtures DRY and tests readable.
+- **Fake data**: Use faker or @faker-js/faker for generating realistic strings, numbers, dates, etc. when you need variety or don’t care about exact values. Good for list items, form data, and API-shaped payloads.
+- **Placement**: Co-locate factories with tests or put them in a shared test/fixtures (or test/factories) folder. Use factories inside GraphQL/REST mocks so responses stay consistent.
+
+## GraphQL
+
+- **Where to mock**: Mock at the client layer (e.g. Apollo `MockedProvider` with `mocks` array) or via MSW (GraphQL handler). Both allow matching by operation name and variables.
+- **Matching**: Match requests by operation name and, when relevant, variables so the right mock runs for each query/mutation. Avoid overly broad mocks that hide missing cases.
+- **Schema-aware mocks**: For large or changing schemas, consider `@graphql-tools/mock` or codegen-based mock builders so responses conform to the schema. Helps catch type/schema drift.
+- **Factories + GraphQL**: Build mock response objects with your factory (e.g. Fishery) and optional faker for fields; pass them into MockedProvider or MSW handlers so UI tests get consistent, overridable data.
 
 ## Coverage
 
