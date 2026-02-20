@@ -26,17 +26,21 @@ Cursor-specific rule for this skill. Tells Cursor when to apply the skill (from 
 
 ## CLAUDE.md (optional)
 
-In plugin-based setups, **CLAUDE.md** lives at the **plugin** level (one per plugin, not per skill). It holds **reference knowledge** that skills refer to:
+**CLAUDE.md** can be shared across multiple related skills in a group. It holds **reference knowledge** that skills refer to:
 
 - Patterns, templates, decision trees
 - Constants (IDs, URLs, env vars)
 - Edge cases and pitfalls
-- Domain rules that don’t fit in step-by-step instructions
+- Domain rules that don't fit in step-by-step instructions
 
-**SKILL.md** = “do these steps when this skill is invoked.”  
-**CLAUDE.md** = “here is the background knowledge to use while doing them.”
+**SKILL.md** = "do these steps when this skill is invoked."
+**CLAUDE.md** = "here is the background knowledge to use while doing them."
 
-In this repo each skill is in its own folder. You only need **CLAUDE.md** if you add a skill that benefits from a separate reference doc (e.g. a long “how we do X” or a shared spec). For many skills, **SKILL.md** plus **notes** in `skill.json` is enough.
+In this repo, **CLAUDE.md** is used at the group level:
+- `skills/frontend-architecture/CLAUDE.md` – Shared by react-layering, react-view-extraction, react-domain-models, etc.
+- `skills/testing/CLAUDE.md` – Shared by react-component-testing, mock-data-strategy, graphql-testing, etc.
+
+You only need **CLAUDE.md** if you add a skill (or group of skills) that benefits from a separate reference doc. For many individual skills, **SKILL.md** plus **notes** in `skill.json` is enough.
 
 Summary:
 

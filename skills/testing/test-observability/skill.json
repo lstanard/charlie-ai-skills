@@ -1,0 +1,32 @@
+{
+  "id": "charlie.test-observability",
+  "title": "Test observability",
+  "version": "0.1.0",
+  "description": "Monitor test suite health: track flake rates, duration trends, and coverage metrics. Optimize CI pipelines and integrate with reporting tools (Codecov, test dashboards). SRE-focused skill for production-grade test infrastructure.",
+  "triggers": [
+    "test metrics",
+    "CI optimization",
+    "test monitoring",
+    "test dashboard",
+    "flake rate",
+    "test coverage reporting",
+    "test infrastructure"
+  ],
+  "inputs": {},
+  "guarantees": [
+    "Track test suite health metrics: test duration trends, flake rates, pass/fail rates over time; identify degrading tests early",
+    "Integrate code coverage reporting: use Codecov, Coveralls, or similar to track coverage trends; set and enforce thresholds where appropriate",
+    "Optimize CI pipelines: parallelize tests (--workers), cache dependencies, fail fast on first failure, run E2E only on PR/main (not every commit)",
+    "Upload test artifacts on failure: screenshots (Playwright), logs, traces, coverage reports; preserve evidence for debugging",
+    "Use test retries strategically: retry flaky E2E tests (retries: 2 in Playwright), but fix flaky unit tests instead of masking them with retries",
+    "Separate fast and slow tests: run unit tests on every commit, integration/E2E on PR or scheduled runs; keep feedback loops fast",
+    "Monitor test execution time: flag tests that become slow over time; investigate and optimize or split them",
+    "Consider synthetic monitoring: translate critical E2E tests to production monitors (e.g., Datadog Synthetic, New Relic)"
+  ],
+  "non_goals": [
+    "Replacing manual QA or exploratory testing",
+    "Achieving 100% coverage at the cost of maintainability (coverage is a signal, not a goal)",
+    "Running all tests on every commit (balance speed vs thoroughness)"
+  ],
+  "notes": "CI setup example (GitHub Actions): run unit tests with --coverage and --maxWorkers=2; upload coverage to Codecov; run Playwright with --workers=2 and upload artifacts (screenshots, traces) on failure. Use actions/cache to cache node_modules and Playwright browsers. For test dashboards, consider Buildkite Test Analytics, Jenkins Test Results, or custom Grafana dashboards. Track metrics: total test count, duration (p50, p95, p99), flake rate (% of runs with flaky tests), coverage (lines, branches). For production monitoring, convert critical E2E flows to synthetic checks that run against prod (e.g., login, checkout). See CLAUDE.md in the testing/ directory for CI best practices and test performance tips."
+}

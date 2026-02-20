@@ -1,0 +1,31 @@
+{
+  "id": "charlie.test-reliability",
+  "title": "Test reliability",
+  "version": "0.1.0",
+  "description": "Prevent flaky tests and keep test suites fast. Focus on proper async handling, test isolation, deterministic data, and performance optimization. Applies to all test types (unit, integration, E2E).",
+  "triggers": [
+    "flaky tests",
+    "test performance",
+    "slow tests",
+    "async testing",
+    "test isolation",
+    "test reliability"
+  ],
+  "inputs": {},
+  "guarantees": [
+    "Prevent flaky tests: use proper async waiting (findBy*, waitFor with assertions), avoid arbitrary timeouts (setTimeout), ensure test isolation (no shared mutable state)",
+    "Use deterministic test data: seed random generators (faker.seed(), Math.seedrandom()), avoid Date.now() or Math.random() without control",
+    "Ensure test isolation: clean up after each test (afterEach), reset mocks (jest.clearAllMocks() or vi.clearAllMocks()), avoid tests that depend on execution order",
+    "Mock slow operations: mock network calls, file I/O, and external services; use in-memory implementations where possible",
+    "Run tests in parallel: Jest/Vitest default to parallel execution; ensure tests are parallelizable (no shared state)",
+    "Keep tests fast: avoid unnecessary setup/teardown, use beforeAll for expensive one-time setup, use test.only/fit for debugging single tests",
+    "For async operations, prefer findBy* queries (auto-wait) over getBy* with manual waitFor; always include assertions in waitFor blocks",
+    "In CI, limit parallel workers (--maxWorkers=2) to avoid resource contention; cache dependencies and build artifacts"
+  ],
+  "non_goals": [
+    "Fixing inherently non-deterministic systems without mocking (e.g., real-time data streams)",
+    "Optimizing E2E tests to be as fast as unit tests (accept that E2E is slower)",
+    "Removing all async waits (proper waiting is necessary, arbitrary timeouts are not)"
+  ],
+  "notes": "Common flake causes: timing issues (use findBy* or waitFor, not setTimeout), non-deterministic data (seed faker: faker.seed(123)), shared state (use beforeEach to reset), race conditions (await async operations before asserting). Performance tips: run unit tests in parallel, mock network/IO, use test.only for debugging, limit CI workers. For React async: use findBy* queries (e.g., findByRole('button')) which wait up to 1000ms by default. For custom waits, use waitFor(() => expect(x).toBe(y), { timeout: 3000 }). Always assert inside waitFor; empty waitFor blocks are a common mistake. See CLAUDE.md in the testing/ directory for anti-patterns and test lifecycle best practices."
+}

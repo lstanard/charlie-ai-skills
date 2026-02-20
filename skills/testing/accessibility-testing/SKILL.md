@@ -1,0 +1,40 @@
+# Accessibility testing
+version: 0.1.0
+
+## Purpose
+Test accessibility to ensure your application works for all users, including those using assistive technologies. Use accessible queries, automated a11y checks (jest-axe, axe-core), keyboard navigation testing, and screen reader testing. Applies to React, E2E, and all frontend testing.
+
+## Triggers
+- accessibility testing
+- a11y testing
+- a11y
+- screen reader
+- keyboard navigation
+- WCAG
+- ADA compliance
+- jest-axe
+- axe-core
+- accessible queries
+
+## Inputs
+
+## Guarantees
+- Use accessible queries (getByRole, getByLabelText, getByAltText) over test IDs or class names; tests using accessible queries naturally verify that screen readers and keyboard navigation work
+- Add automated accessibility checks with jest-axe (Jest) or @axe-core/react; assert no WCAG violations: expect(await axe(container)).toHaveNoViolations()
+- Run axe checks on key components and states: open/closed modals, expanded/collapsed panels, error states, loading states
+- Test keyboard navigation: Tab, Enter, Escape, Arrow keys; use userEvent.keyboard or userEvent.tab to simulate keyboard interactions
+- Assert focus order, visible focus indicators, and ensure no keyboard traps (users can always escape)
+- Test ARIA live regions for dynamic content (alerts, loading announcements, error messages)
+- Verify proper heading hierarchy (h1 → h2 → h3) and semantic HTML structure
+- Test form labels, error announcements, and required field indicators
+- Ensure focus moves appropriately after modals close or routes change
+- For E2E tests, test keyboard-only navigation through critical flows (login, checkout, form submission)
+
+## Non-goals
+- Manual accessibility audits (use tools like WAVE, Lighthouse, or manual testing for comprehensive audits)
+- Replacing human screen reader testing (automated tools catch ~30-40% of issues)
+- Testing visual design aspects like color contrast in detail (use design tools or Lighthouse for that)
+- Accessibility remediation (this skill is for testing, not fixing)
+
+## Notes
+Accessibility is not optional—it's a legal requirement (ADA, Section 508, WCAG 2.1 AA) and makes your app better for everyone. Automated tools (jest-axe, @axe-core/react, axe DevTools) catch common issues: missing alt text, insufficient color contrast, invalid ARIA, missing form labels, keyboard traps. For React: use getByRole('button', { name: 'Submit' }) which ensures proper ARIA and accessible text. For E2E (Playwright): test full keyboard flows with page.keyboard.press('Tab'). For keyboard testing, assert focus: expect(element).toHaveFocus() (Jest DOM) or await expect(element).toBeFocused() (Playwright). Common ARIA patterns to test: dialogs (role=dialog, aria-modal, focus trap), menus (role=menu, arrow key navigation), tabs (role=tablist, aria-selected), accordions (aria-expanded). See CLAUDE.md in the testing/ directory for universal testing principles and anti-patterns.

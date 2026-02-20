@@ -8,22 +8,40 @@ Reusable AI agent skills you can use in **Cursor** (and optionally other tools).
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
-| [frontend-testing](skills/frontend-testing/)                                 | React testing strategy: Jest + RTL (behavior over implementation), Playwright for E2E; Vitest for Vite. a11y, coverage, CI.  |
+
+### Testing skills
+
+| Skill                                                                  | Description                                                                                                                            |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [react-component-testing](skills/testing/react-component-testing/)     | Test React components with React Testing Library: accessible queries, behavior over implementation, Jest/Vitest.                       |
+| [accessibility-testing](skills/testing/accessibility-testing/)         | Test a11y with jest-axe, keyboard navigation, screen readers, ARIA patterns. WCAG/ADA compliance. Works with React and E2E.           |
+| [mock-data-strategy](skills/testing/mock-data-strategy/)               | Use factories (Fishery) and faker for consistent, overridable test data. Keep test fixtures DRY and realistic.                        |
+| [graphql-testing](skills/testing/graphql-testing/)                     | Mock GraphQL with MockedProvider or MSW; match by operation and variables; schema-aware mocks for large schemas.                       |
+| [e2e-playwright](skills/testing/e2e-playwright/)                       | End-to-end testing with Playwright: Page Object Model, critical paths, CI parallelization, visual regression.                          |
+| [test-reliability](skills/testing/test-reliability/)                   | Prevent flaky tests: proper async handling, test isolation, deterministic data, performance optimization.                              |
+| [test-observability](skills/testing/test-observability/)               | Monitor test suite health: flake rates, duration trends, CI optimization, coverage reporting (Codecov). SRE-focused.                   |
+
+The **testing** skills share a [CLAUDE.md](skills/testing/CLAUDE.md) with universal testing principles: test pyramid, anti-patterns, file organization, and best practices. Use that doc when applying several of these skills together.
+
+### Frontend architecture skills
+
+| Skill                                                                        | Description                                                                                                                  |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [react-layering](skills/frontend-architecture/react-layering/)               | Apply Presentation–Domain–Data layering; keep React as the view layer only.                                                  |
 | [react-view-extraction](skills/frontend-architecture/react-view-extraction/) | Extract hooks for state/effects, sub-components; prefer pure presentational components.                                      |
 | [react-domain-models](skills/frontend-architecture/react-domain-models/)     | Encapsulate mapping and business rules in domain objects; avoid logic leaks in the view.                                     |
 | [react-data-layer](skills/frontend-architecture/react-data-layer/)           | Extract network/data access into a dedicated client; no fetch in components.                                                 |
 | [react-polymorphism](skills/frontend-architecture/react-polymorphism/)       | Use strategy/polymorphism for varying behavior; avoid shotgun surgery with conditionals.                                     |
 
-The **frontend architecture** skills (react-layering through react-polymorphism) are based on [Modularizing React Applications with Established UI Patterns](https://martinfowler.com/articles/modularizing-react-apps.html) and share a [CLAUDE.md](skills/frontend-architecture/CLAUDE.md) with reference knowledge (evolution path, patterns, pitfalls). Use that doc when applying several of these skills together.
+The **frontend architecture** skills are based on [Modularizing React Applications with Established UI Patterns](https://martinfowler.com/articles/modularizing-react-apps.html) and share a [CLAUDE.md](skills/frontend-architecture/CLAUDE.md) with reference knowledge (evolution path, patterns, pitfalls). Use that doc when applying several of these skills together.
 
 ## How to use these skills
 
 ### In Cursor
 
-1. **Project-level rules (recommended)**  
+1. **Project-level rules (recommended)**
    Copy the rule file for a skill into your project so Cursor applies it in that repo:
-   - Use the install script (recommended): from this repo, run `npm run install-skills -- /path/to/your-app skills/frontend-architecture` to copy all frontend-architecture skills as `react-data-layer.mdc`, `react-layering.mdc`, etc. Add `--link` to symlink instead of copy.
+   - Use the install script (recommended): from this repo, run `npm run install-skills -- /path/to/your-app skills/testing` to copy all testing skills, or `npm run install-skills -- /path/to/your-app skills/frontend-architecture` for frontend architecture skills. Adds files like `react-component-testing.mdc`, `mock-data-strategy.mdc`, etc. Add `--link` to symlink instead of copy. Add `--include-claude` to include the shared CLAUDE.md reference.
    - Or copy manually: `skills/<skill-name>/cursor.rule.md` → `.cursor/rules/<skill-name>.mdc`.
 
 2. **Reference the skill in chat**  
