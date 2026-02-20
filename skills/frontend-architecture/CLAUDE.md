@@ -51,3 +51,16 @@ src/
 - **react-domain-models** – Encapsulate mapping and rules in domain objects.
 - **react-data-layer** – Extract network/client; no fetch in components.
 - **react-polymorphism** – Strategy (or polymorphism) instead of scattered conditionals.
+
+## Examples
+
+See `examples/` directory for before/after code examples demonstrating these patterns in practice:
+- **03-domain-models/** – Payment methods example showing mapping logic and business rule extraction
+- More examples coming soon (layering, view extraction, data layer, polymorphism)
+
+Each example includes:
+- `before.tsx` – Code with the anti-pattern
+- `after.tsx` – Refactored code applying the pattern
+- `explanation.md` – Detailed walkthrough, when to use, testing approach
+
+Reference examples in conversation: "apply the pattern from examples/03-domain-models/"
