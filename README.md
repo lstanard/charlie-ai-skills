@@ -8,6 +8,7 @@ Reusable AI agent skills you can use in **Cursor** (and optionally other tools).
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
+| [frontend-testing](skills/frontend-testing/)                                 | React testing strategy: Jest + RTL (behavior over implementation), Playwright for E2E; Vitest for Vite. Logic, a11y, coverage, CI. |
 | [react-layering](skills/frontend-architecture/react-layering/)               | Apply Presentation–Domain–Data layering; keep React as the view layer only.                                                  |
 | [react-view-extraction](skills/frontend-architecture/react-view-extraction/) | Extract hooks for state/effects, sub-components; prefer pure presentational components.                                      |
 | [react-domain-models](skills/frontend-architecture/react-domain-models/)     | Encapsulate mapping and business rules in domain objects; avoid logic leaks in the view.                                     |
