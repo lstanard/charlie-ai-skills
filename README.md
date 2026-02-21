@@ -42,71 +42,84 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
 
 ## How to use these skills
 
+### Personal vs Project Skills
+
+Skills are **copied by default**. Use `--link` to symlink instead.
+
+**Project skills** - Copy and commit to git:
+
+```bash
+# From the skills repo, install to your project
+npm run install:cursor -- ~/Code/my-app
+npm run install:claude -- ~/Code/my-app
+
+# Then commit the skills in your project
+cd ~/Code/my-app
+git add .cursor/skills/  # or .claude/skills/
+git commit -m "Add AI coding skills"
+```
+
+This ensures team consistency and deterministic behavior. Update by re-running the install command and committing changes.
+
+**Personal skills** - Symlink for automatic updates:
+
+```bash
+# Install globally (available across all projects)
+npm run install:cursor -- ~/.cursor --link
+npm run install:claude -- ~/.claude --link
+```
+
+Symlinked skills stay up to date with this repo. Don't commit symlinks to project repositories.
+
+---
+
 ### In Claude Code
 
-1. **Install globally (recommended for frequently-used skills)**
-   ```bash
-   # From this repo, install all skills globally (symlinked by default)
-   npm run install:claude
+**Install globally** (available across all projects):
+```bash
+npm run install:claude -- ~/.claude --link
+```
 
-   # Or install specific skill groups
-   npm run install-skills -- ~/.claude skills/testing --target=claude
+**Install to a project** (team-shared, committed to git):
+```bash
+npm run install:claude -- ~/Code/my-app
+```
 
-   # Copy instead of symlink (if you don't want automatic updates)
-   npm run install-skills -- ~/.claude --target=claude --copy
-   ```
+**Options:**
+- `--link` - Symlink instead of copy (for personal/global installs)
+- `skills/testing` - Install specific skill group (second positional arg)
+- `--include-claude` - Also install CLAUDE.md reference files
 
-   Skills are **symlinked by default**, so changes to the repo automatically update your installed skills. Skills installed in `~/.claude/skills/` are available across all your projects.
-
-2. **Install per-project**
-   ```bash
-   # Install skills for a specific project (symlinked by default)
-   npm run install-skills -- /path/to/your-app --target=claude
-
-   # Copy instead of symlink
-   npm run install-skills -- /path/to/your-app --target=claude --copy
-   ```
-
-   Skills installed in `.claude/skills/` only apply to that project.
-
-3. **Use skills in conversation**
-   Claude Code automatically discovers skills. Reference them by name or let Claude invoke them when relevant:
-   ```
-   @react-component-testing write tests for LoginForm
-   @accessibility-testing check UserProfile for a11y issues
-   ```
+**Use in conversation:**
+Claude Code automatically discovers skills. Reference by name:
+```
+@react-component-testing write tests for LoginForm
+@accessibility-testing check UserProfile for a11y issues
+```
 
 ### In Cursor
 
-1. **Install project-level skills (recommended)**
-   ```bash
-   # From this repo, install all skills (symlinked by default)
-   npm run install-skills -- /path/to/your-app
+**Install globally** (available across all projects):
+```bash
+npm run install:cursor -- ~/.cursor --link
+```
 
-   # Or install specific skill groups
-   npm run install-skills -- /path/to/your-app skills/testing
+**Install to a project** (team-shared, committed to git):
+```bash
+npm run install:cursor -- ~/Code/my-app
+```
 
-   # Copy instead of symlink
-   npm run install-skills -- /path/to/your-app --copy
+**Options:**
+- `--link` - Symlink instead of copy (for personal/global installs)
+- `skills/testing` - Install specific skill group (second positional arg)
+- `--include-claude` - Also install CLAUDE.md reference files
 
-   # Include CLAUDE.md reference files
-   npm run install-skills -- /path/to/your-app skills/testing --include-claude
-   ```
-
-   Skills are installed to `.cursor/skills/` as full directories with SKILL.md files. Skills are **symlinked by default**, so changes to the repo automatically update your installed skills.
-
-2. **Install globally (optional)**
-   ```bash
-   # Install to ~/.cursor/skills/ for use across all projects
-   npm run install-skills -- ~/.cursor
-   ```
-
-3. **Use skills in conversation**
-   Cursor automatically discovers skills in `.cursor/skills/` and `~/.cursor/skills/`. Reference them by name or let Cursor invoke them when relevant:
-   ```
-   @react-component-testing write tests for LoginForm
-   @accessibility-testing check UserProfile for a11y issues
-   ```
+**Use in conversation:**
+Cursor automatically discovers skills. Reference by name:
+```
+@react-component-testing write tests for LoginForm
+@accessibility-testing check UserProfile for a11y issues
+```
 
 ### In other AI tools
 
@@ -185,9 +198,9 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
 - `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
 - `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
-- `npm run install-skills -- <destination> [source-path] [options]` — Install skills for Cursor or Claude Code (symlinked by default). See [How to use these skills](#how-to-use-these-skills) for examples.
-  - `--target=cursor|claude` — Install for Cursor (default) or Claude Code
-  - `--copy` — Copy instead of symlink (default: symlink)
+- `npm run install:cursor -- <destination> [source-path] [options]` — Install skills for Cursor (copied by default).
+  - `--link, -l` — Symlink instead of copy
   - `--include-claude` — Also install CLAUDE.md reference files
-- `npm run install:claude` — Shortcut: install all skills globally for Claude Code (`~/.claude/skills/`, symlinked)
+  - Second positional arg for source path (e.g., `skills/testing`)
+- `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code (copied by default). Same options as above.
 - `npm run ci` — Validate and generate (for CI or pre-commit).

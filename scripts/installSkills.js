@@ -6,19 +6,19 @@
  *   node scripts/installSkills.js <destination> [source-path] [options]
  *
  * Examples:
- *   # Install all skills for Cursor (symlinked by default)
+ *   # Install all skills for Cursor (copied by default)
  *   node scripts/installSkills.js /path/to/my-app
  *   node scripts/installSkills.js /path/to/my-app skills/testing
  *
- *   # Install all skills for Claude Code globally (symlinked by default)
+ *   # Install all skills for Claude Code globally (copied by default)
  *   node scripts/installSkills.js ~/.claude --target=claude
  *
- *   # Copy instead of symlink
- *   node scripts/installSkills.js ~/.claude --target=claude --copy
+ *   # Symlink instead of copy
+ *   node scripts/installSkills.js ~/.claude --target=claude --link
  *
  * Options:
  *   --target=cursor|claude    Install for Cursor (default) or Claude Code
- *   --copy, -c                Copy instead of symlink (default: symlink)
+ *   --link, -l                Symlink instead of copy (default: copy)
  *   --include-claude          Also install CLAUDE.md reference files
  */
 import fs from "fs";
@@ -72,6 +72,9 @@ function findClaudeMd(sourcePath) {
 }
 
 function copyRecursive(src, dest, link) {
+  // Files to skip when copying (not needed by Cursor/Claude)
+  const skipFiles = ['skill.json', 'cursor.rule.md'];
+
   if (link) {
     const target = path.relative(path.dirname(dest), src);
     if (fs.existsSync(dest)) {
@@ -87,6 +90,10 @@ function copyRecursive(src, dest, link) {
       fs.mkdirSync(dest, { recursive: true });
       const entries = fs.readdirSync(src, { withFileTypes: true });
       for (const entry of entries) {
+        // Skip unnecessary files
+        if (skipFiles.includes(entry.name)) {
+          continue;
+        }
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
         if (entry.isDirectory()) {
@@ -102,6 +109,7 @@ function copyRecursive(src, dest, link) {
 }
 
 function installForCursor(skills, destination, link, includeClaude, sourcePath) {
+  const copy = !link;
   const destResolved = path.resolve(destination);
   const skillsDir =
     destResolved.endsWith(".cursor/skills") || destResolved.endsWith("skills")
@@ -115,7 +123,7 @@ function installForCursor(skills, destination, link, includeClaude, sourcePath) 
   }
 
   console.log(
-    `${link ? "Linking" : "Copying"} ${skills.length} skill(s) to ${skillsDir} (Cursor)`,
+    `${copy ? "Copying" : "Linking"} ${skills.length} skill(s) to ${skillsDir} (Cursor)`,
   );
 
   for (const { dir, slug, skillMdPath } of skills) {
@@ -153,6 +161,7 @@ function installForCursor(skills, destination, link, includeClaude, sourcePath) 
 }
 
 function installForClaude(skills, destination, link, includeClaude, sourcePath) {
+  const copy = !link;
   const destResolved = path.resolve(destination);
   const skillsDir =
     destResolved.endsWith(".claude/skills") || destResolved.endsWith("skills")
@@ -166,7 +175,7 @@ function installForClaude(skills, destination, link, includeClaude, sourcePath) 
   }
 
   console.log(
-    `${link ? "Linking" : "Copying"} ${skills.length} skill(s) to ${skillsDir} (Claude Code)`,
+    `${copy ? "Copying" : "Linking"} ${skills.length} skill(s) to ${skillsDir} (Claude Code)`,
   );
 
   for (const { dir, slug, skillMdPath } of skills) {
@@ -205,8 +214,8 @@ function installForClaude(skills, destination, link, includeClaude, sourcePath) 
 
 function main() {
   const args = process.argv.slice(2);
-  const copy = args.includes("--copy") || args.includes("-c");
-  const link = !copy; // Symlink by default, unless --copy is specified
+  const link = args.includes("--link") || args.includes("-l");
+  const copy = !link; // Copy by default, unless --link is specified
   const includeClaude = args.includes("--include-claude");
 
   // Parse --target=cursor or --target=claude
@@ -219,7 +228,7 @@ function main() {
   }
 
   const positional = args.filter(
-    (a) => !a.startsWith("--") && a !== "-c"
+    (a) => !a.startsWith("--") && a !== "-l"
   );
   const destination = positional[0];
   const sourcePath = positional[1] || "skills";
@@ -235,18 +244,18 @@ function main() {
     console.error("");
     console.error("Options:");
     console.error("  --target=cursor|claude  Install for Cursor (default) or Claude Code");
-    console.error("  --copy, -c              Copy instead of symlink (default: symlink)");
+    console.error("  --link, -l              Symlink instead of copy (default: copy)");
     console.error("  --include-claude        Also install CLAUDE.md reference files");
     console.error("");
     console.error("Examples:");
-    console.error("  # Install testing skills for Cursor (symlinked)");
+    console.error("  # Install testing skills for Cursor (copied)");
     console.error("  node scripts/installSkills.js /path/to/app skills/testing");
     console.error("");
-    console.error("  # Install all skills for Claude Code globally (symlinked)");
+    console.error("  # Install all skills for Claude Code globally (copied)");
     console.error("  node scripts/installSkills.js ~/.claude --target=claude");
     console.error("");
-    console.error("  # Copy instead of symlink");
-    console.error("  node scripts/installSkills.js ~/.claude --target=claude --copy");
+    console.error("  # Symlink instead of copy");
+    console.error("  node scripts/installSkills.js ~/.claude --target=claude --link");
     process.exit(1);
   }
 
