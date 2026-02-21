@@ -1,3 +1,8 @@
+---
+name: graphql-testing
+description: Mock GraphQL queries and mutations at the client layer (MockedProvider for Apollo) or network layer (MSW). Match by operation name and variables; use schema-aware mocks for large schemas. Combine with factories for consistent test data.
+---
+
 # GraphQL testing
 version: 0.1.0
 

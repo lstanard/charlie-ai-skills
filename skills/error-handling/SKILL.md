@@ -1,3 +1,8 @@
+---
+name: error-handling
+description: Structured error handling for frontend and backend: custom error classes, error codes, context preservation, logging, user-facing vs internal errors, graceful degradation. Applies to JavaScript/TypeScript, React, Node.js, and serverless functions.
+---
+
 # Error handling
 version: 0.1.0
 

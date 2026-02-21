@@ -1,3 +1,8 @@
+---
+name: react-component-testing
+description: Test React components with React Testing Library: query by role, label, or accessible text; assert on user-visible behavior; avoid testing implementation details. Use Jest or Vitest. Includes accessibility testing with jest-axe.
+---
+
 # React component testing
 version: 0.1.0
 

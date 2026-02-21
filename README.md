@@ -78,7 +78,7 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
 
 ### In Cursor
 
-1. **Install project-level rules (recommended)**
+1. **Install project-level skills (recommended)**
    ```bash
    # From this repo, install all skills (symlinked by default)
    npm run install-skills -- /path/to/your-app
@@ -93,16 +93,20 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
    npm run install-skills -- /path/to/your-app skills/testing --include-claude
    ```
 
-   This installs `cursor.rule.md` files as `.mdc` files to `.cursor/rules/`. Skills are **symlinked by default**, so changes automatically update.
+   Skills are installed to `.cursor/skills/` as full directories with SKILL.md files. Skills are **symlinked by default**, so changes to the repo automatically update your installed skills.
 
-2. **Reference skills in chat**
-   In Cursor, @-mention the skill file or reference `SKILL.md`:
-   ```
-   when writing docs, follow the guidance in skills/docs-writing/SKILL.md
+2. **Install globally (optional)**
+   ```bash
+   # Install to ~/.cursor/skills/ for use across all projects
+   npm run install-skills -- ~/.cursor
    ```
 
-3. **Install globally**
-   Add `cursor.rule.md` contents to your user-level Cursor rules for availability in every project.
+3. **Use skills in conversation**
+   Cursor automatically discovers skills in `.cursor/skills/` and `~/.cursor/skills/`. Reference them by name or let Cursor invoke them when relevant:
+   ```
+   @react-component-testing write tests for LoginForm
+   @accessibility-testing check UserProfile for a11y issues
+   ```
 
 ### In other AI tools
 

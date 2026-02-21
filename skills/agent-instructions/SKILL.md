@@ -1,3 +1,8 @@
+---
+name: agent-tone
+description: Instructions for an AI agent to direct tone and tooling
+---
+
 # AI agent tone and tooling
 version: 0.1.0
 

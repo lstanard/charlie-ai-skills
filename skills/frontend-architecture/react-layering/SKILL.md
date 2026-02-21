@@ -1,3 +1,8 @@
+---
+name: react-layering
+description: Apply Presentation–Domain–Data layering to React apps: treat React as the view layer only; keep data fetching, reshaping, and business logic out of components.
+---
+
 # React layering (Presentation–Domain–Data)
 version: 0.1.0
 

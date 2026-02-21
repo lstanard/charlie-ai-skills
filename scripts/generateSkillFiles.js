@@ -38,6 +38,17 @@ function findSkillJsonPaths(singlePath) {
 
 function generateSkillMd(skill) {
   const lines = [];
+
+  // Extract skill name from id (e.g., "charlie.react-component-testing" → "react-component-testing")
+  const skillName = skill.id.includes('.') ? skill.id.split('.').pop() : skill.id;
+
+  // Add YAML frontmatter for Cursor compatibility
+  lines.push('---');
+  lines.push(`name: ${skillName}`);
+  lines.push(`description: ${skill.description}`);
+  lines.push('---');
+  lines.push('');
+
   lines.push(`# ${skill.title}`);
   lines.push(`version: ${skill.version}`);
   lines.push('');

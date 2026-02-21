@@ -3,7 +3,8 @@
     "allow": [
       "Bash(npm run gen:*)",
       "Bash(npm run install-skills:*)",
-      "Bash(npm run install:claude:*)"
+      "Bash(npm run install:claude:*)",
+      "Bash(ls:*)"
     ]
   }
 }

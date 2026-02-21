@@ -1,3 +1,8 @@
+---
+name: react-polymorphism
+description: When behavior varies by type or strategy (e.g. round-up rules, payment types), use polymorphism (strategy pattern, small class hierarchy, or type-based dispatch) instead of scattering conditionals across the codebase.
+---
+
 # React polymorphism (strategy over shotgun surgery)
 version: 0.1.0
 

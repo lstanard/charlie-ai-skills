@@ -1,3 +1,8 @@
+---
+name: general-coding-rules
+description: Universal style and structure rules that apply regardless of language or context. Use these whenever writing or refactoring code.
+---
+
 # General coding rules
 version: 0.1.0
 

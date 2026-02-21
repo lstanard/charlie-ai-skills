@@ -1,3 +1,8 @@
+---
+name: accessibility-testing
+description: Test accessibility to ensure your application works for all users, including those using assistive technologies. Use accessible queries, automated a11y checks (jest-axe, axe-core), keyboard navigation testing, and screen reader testing. Applies to React, E2E, and all frontend testing.
+---
+
 # Accessibility testing
 version: 0.1.0
 

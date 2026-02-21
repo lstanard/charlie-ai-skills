@@ -1,3 +1,8 @@
+---
+name: docs-writing
+description: Produce clear, discoverable documentation (README, HOWTO, API docs)
+---
+
 # Docs Writing
 version: 0.1.0
 

@@ -1,3 +1,8 @@
+---
+name: mock-data-strategy
+description: Use factories (e.g., Fishery) for test object construction and faker for realistic data. Keep test data DRY, consistent, and easy to override per test. Avoid copy-pasted fixtures that drift from reality.
+---
+
 # Mock data strategy
 version: 0.1.0
 

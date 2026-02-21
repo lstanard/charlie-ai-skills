@@ -103,36 +103,29 @@ function copyRecursive(src, dest, link) {
 
 function installForCursor(skills, destination, link, includeClaude, sourcePath) {
   const destResolved = path.resolve(destination);
-  const rulesDir =
-    destResolved.endsWith(".cursor/rules") || destResolved.endsWith("rules")
+  const skillsDir =
+    destResolved.endsWith(".cursor/skills") || destResolved.endsWith("skills")
       ? destResolved
-      : path.join(destResolved, ".cursor", "rules");
+      : destResolved.endsWith(".cursor")
+      ? path.join(destResolved, "skills")
+      : path.join(destResolved, ".cursor", "skills");
 
-  if (!fs.existsSync(path.dirname(rulesDir))) {
-    fs.mkdirSync(path.dirname(rulesDir), { recursive: true });
-  }
-  if (!fs.existsSync(rulesDir)) {
-    fs.mkdirSync(rulesDir, { recursive: true });
+  if (!fs.existsSync(skillsDir)) {
+    fs.mkdirSync(skillsDir, { recursive: true });
   }
 
   console.log(
-    `${link ? "Linking" : "Copying"} ${skills.length} skill(s) to ${rulesDir} (Cursor)`,
+    `${link ? "Linking" : "Copying"} ${skills.length} skill(s) to ${skillsDir} (Cursor)`,
   );
 
-  for (const { cursorRulePath, slug } of skills) {
-    if (!cursorRulePath) {
-      console.warn(`  ⚠️  ${slug}: missing cursor.rule.md, skipping`);
+  for (const { dir, slug, skillMdPath } of skills) {
+    if (!skillMdPath) {
+      console.warn(`  ⚠️  ${slug}: missing SKILL.md, skipping`);
       continue;
     }
-    const destPath = path.join(rulesDir, `${slug}.mdc`);
-    if (link) {
-      const target = path.relative(path.dirname(destPath), cursorRulePath);
-      if (fs.existsSync(destPath)) fs.unlinkSync(destPath);
-      fs.symlinkSync(target, destPath);
-    } else {
-      fs.copyFileSync(cursorRulePath, destPath);
-    }
-    console.log(`  ✓ ${slug}.mdc`);
+    const destPath = path.join(skillsDir, slug);
+    copyRecursive(dir, destPath, link);
+    console.log(`  ✓ ${slug}/ (full skill directory)`);
   }
 
   if (includeClaude) {
@@ -142,7 +135,11 @@ function installForCursor(skills, destination, link, includeClaude, sourcePath) 
     const claudePath = findClaudeMd(sourceResolved);
     if (claudePath) {
       const groupName = path.basename(sourceResolved);
-      const claudeDest = path.join(rulesDir, `${groupName}-claude.mdc`);
+      const claudeSkillDir = path.join(skillsDir, `${groupName}-reference`);
+      if (!fs.existsSync(claudeSkillDir)) {
+        fs.mkdirSync(claudeSkillDir, { recursive: true });
+      }
+      const claudeDest = path.join(claudeSkillDir, "SKILL.md");
       if (link) {
         const target = path.relative(path.dirname(claudeDest), claudePath);
         if (fs.existsSync(claudeDest)) fs.unlinkSync(claudeDest);
@@ -150,7 +147,7 @@ function installForCursor(skills, destination, link, includeClaude, sourcePath) 
       } else {
         fs.copyFileSync(claudePath, claudeDest);
       }
-      console.log(`  ✓ ${groupName}-claude.mdc (CLAUDE.md)`);
+      console.log(`  ✓ ${groupName}-reference/SKILL.md (CLAUDE.md as reference)`);
     }
   }
 }
