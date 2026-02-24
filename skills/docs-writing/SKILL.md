@@ -36,6 +36,9 @@ Produce clear, discoverable documentation (README, HOWTO, API docs)
 - Changing technical meaning
 - Rewriting prose unless required for lint compliance
 - Change API semantics or add behavior not requested
+- Comprehensively documenting individual features in a README
 
 ## Notes
-Prefer yarn for commands. Wrap lines at 100 chars by default. Keep prose succinct. Assume the audience is technical, either a mid-level or senior software engineer.
+Keep prose succinct. Assume the audience is technical, either a mid-level or senior software engineer.
+
+**README guidelines:** READMEs are orientation documents — cover how to run, deploy, test, and contribute; architectural context is welcome. Err toward brevity over detail. Omit code samples unless explicitly requested or the README is scoped to documenting a specific feature. Use Mermaid diagrams to illustrate system behavior when a diagram communicates more clearly than prose.
