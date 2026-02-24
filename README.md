@@ -7,8 +7,10 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | Skill                                                                        | Description                                                                                                                  |
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
+| [typescript-conventions](skills/typescript-conventions/)                     | TypeScript-specific style and structure rules: barrel exports, strict typing, type safety patterns.                          |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
 | [error-handling](skills/error-handling/)                                     | Structured error handling: custom error classes, error codes, logging, user-facing vs internal errors, graceful degradation. |
+| [skill-maintenance](skills/skill-maintenance/)                               | Keep the skills repo consistent: update README.md and run codegen whenever a skill is added or changed.                     |
 
 ### Testing skills
 
