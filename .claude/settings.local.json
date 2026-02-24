@@ -6,7 +6,8 @@
       "Bash(npm run install:claude:*)",
       "Bash(ls:*)",
       "Bash(node scripts/installSkills.js:*)",
-      "Bash(npm run install:cursor:*)"
+      "Bash(npm run install:cursor:*)",
+      "Bash(npm run validate:*)"
     ]
   }
 }
