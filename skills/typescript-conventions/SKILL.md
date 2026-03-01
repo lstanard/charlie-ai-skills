@@ -35,6 +35,21 @@ TypeScript-specific style and structure rules: barrel exports, strict typing, ty
 - Avoid `enum`; prefer a `const` object with `as const` and a derived union type (e.g. `type Status = typeof STATUS[keyof typeof STATUS]`) — this compiles away cleanly and is compatible with string literals.
 - Use the `satisfies` operator (TS 4.9+) to validate that a value matches a type without widening it; prefer `satisfies` over `as` when the goal is type-checking rather than casting.
 
+## Definition of done
+Before considering any TypeScript task complete, run the project's type-checker and fix every reported error:
+
+```bash
+# prefer the project's own script if one exists:
+npm run type-check   # or: yarn type-check / pnpm type-check
+# fallback when no script is configured:
+npx tsc --noEmit
+```
+
+- **Zero errors is the only acceptable exit state.** Tests passing or the app running is not sufficient — the type-checker must also be clean.
+- Do not suppress errors with `// @ts-ignore` or by widening types with `as` to make errors disappear; fix the underlying type mismatch instead.
+- `// @ts-expect-error` is acceptable only when the error is genuinely intentional (e.g. testing an invalid call), and must be accompanied by a comment explaining why.
+- Common errors that tests miss but the type-checker catches: "Type is missing the following properties from type...", "Expected N arguments, but got M", "Property X does not exist on type Y". These are real bugs — fix them.
+
 ## Non-goals
 - tsconfig settings — those are project-level concerns
 - Formatting and style (use Prettier and ESLint/typescript-eslint for that)

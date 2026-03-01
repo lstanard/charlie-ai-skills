@@ -26,6 +26,13 @@ When generating or editing output:
 - Avoid `enum`; prefer a `const` object with `as const` and a derived union type (e.g. `type Status = typeof STATUS[keyof typeof STATUS]`) — this compiles away cleanly and is compatible with string literals.
 - Use the `satisfies` operator (TS 4.9+) to validate that a value matches a type without widening it; prefer `satisfies` over `as` when the goal is type-checking rather than casting.
 
+Before finishing any TypeScript task, run the type-checker and fix every error — zero errors is the only acceptable exit state:
+```bash
+npm run type-check   # prefer the project's own script
+npx tsc --noEmit     # fallback if no script exists
+```
+Do not suppress errors with `// @ts-ignore` or `as` casts to make them disappear. Fix the underlying type mismatch. Tests passing is not sufficient — the type-checker must also be clean. Common errors that tests miss: "Type is missing the following properties from type...", "Expected N arguments, but got M".
+
 Avoid:
 - tsconfig settings — those are project-level concerns
 - Formatting and style (use Prettier and ESLint/typescript-eslint for that)
