@@ -6,6 +6,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 
 | Skill                                                                        | Description                                                                                                                  |
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| [agent-instructions](skills/agent-instructions/)                              | Tone and tooling instructions for an AI agent: concise, matter-of-fact, no sycophancy.                                      |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
 | [typescript-conventions](skills/typescript-conventions/)                     | TypeScript-specific style and structure rules: barrel exports, strict typing, type safety patterns.                          |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
