@@ -1,0 +1,44 @@
+---
+name: frontend-performance
+description: Measure before optimizing. Improve Core Web Vitals in Vite-based SPAs through bundle analysis, code splitting, asset optimization, and targeted React rendering fixes.
+---
+
+# Frontend performance (SPA / Vite)
+version: 0.1.0
+
+## Purpose
+Measure before optimizing. Improve Core Web Vitals in Vite-based SPAs through bundle analysis, code splitting, asset optimization, and targeted React rendering fixes.
+
+## Triggers
+- frontend performance
+- performance optimization
+- Core Web Vitals
+- LCP
+- CLS
+- INP
+- bundle size
+- code splitting
+- lazy load
+- slow app
+- performance audit
+
+## Inputs
+
+## Guarantees
+- Performance work starts with measurement, not assumption. Profile with Chrome DevTools Performance panel and Lighthouse before making any changes. Use the `web-vitals` library to capture real user LCP, CLS, and INP. Targets: LCP < 2.5s, CLS < 0.1, INP < 200ms.
+- Bundle composition is audited with rollup-plugin-visualizer before and after significant changes. Large libraries are imported by named export only (`import { debounce } from 'lodash-es'`, never `import _ from 'lodash'`). No library is imported wholesale if a partial import or smaller alternative exists.
+- All routes are lazy-loaded with React.lazy + Suspense. Heavy components not on the initial render path (charts, rich text editors, date pickers, modals) are also lazy-loaded. Dynamic import() is used for non-critical third-party integrations.
+- All images have explicit width and height attributes to prevent layout shift (CLS). Below-the-fold images use loading="lazy". The LCP image uses loading="eager" and fetchpriority="high". Images are served in WebP or AVIF format.
+- Fonts use font-display: swap or font-display: optional. External font origins have a <link rel="preconnect"> in the document head. Self-hosted fonts are preferred over third-party CDN fonts.
+- React memoization (memo, useMemo, useCallback) is applied only where the React DevTools Profiler shows a measurable problem — not speculatively. Inline object, array, and function creation in JSX that causes unnecessary child re-renders is eliminated. Array index is never used as a key prop for dynamic lists.
+- Lists of 100 or more items use virtualization (TanStack Virtual). Unbounded or server-paginated lists are never rendered fully to the DOM.
+- Event handlers complete in under 50ms. Work that cannot meet this is deferred with setTimeout or scheduler.postTask. Heavy computation (parsing, sorting large datasets, cryptography) is offloaded to a Web Worker.
+
+## Non-goals
+- SSR, hydration, or streaming optimization — this skill targets client-rendered SPAs
+- Service workers and offline caching strategies
+- Server-side or CDN configuration (compression, cache headers, edge caching) — those are infrastructure concerns
+- Speculative optimization of code that has not been profiled — do not apply these patterns preemptively
+
+## Notes
+The highest-impact wins in SPAs are almost always bundle size, code splitting, and image/font loading — not React rendering. Start with a Lighthouse audit and a bundle visualizer report before touching component code. React DevTools Profiler is the right tool for rendering problems; avoid memo/useMemo/useCallback without it. For Vite projects, add rollup-plugin-visualizer to vite.config.ts as a dev-only plugin.
