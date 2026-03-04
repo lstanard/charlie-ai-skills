@@ -25,13 +25,9 @@ When generating or editing output:
 - Model variants with discriminated unions (a shared literal field like `kind` or `type`) rather than optional properties; this makes exhaustiveness checking possible and removes the need for runtime presence checks.
 - Avoid `enum`; prefer a `const` object with `as const` and a derived union type (e.g. `type Status = typeof STATUS[keyof typeof STATUS]`) — this compiles away cleanly and is compatible with string literals.
 - Use the `satisfies` operator (TS 4.9+) to validate that a value matches a type without widening it; prefer `satisfies` over `as` when the goal is type-checking rather than casting.
-
-Before finishing any TypeScript task, run the type-checker and fix every error — zero errors is the only acceptable exit state:
-```bash
-npm run type-check   # prefer the project's own script
-npx tsc --noEmit     # fallback if no script exists
-```
-Do not suppress errors with `// @ts-ignore` or `as` casts to make them disappear. Fix the underlying type mismatch. Tests passing is not sufficient — the type-checker must also be clean. Common errors that tests miss: "Type is missing the following properties from type...", "Expected N arguments, but got M".
+- Run the project's type-check script (or `npx tsc --noEmit`) before declaring the task complete. Zero errors is the only acceptable exit state.
+- Do not suppress errors with `// @ts-ignore` or by widening types with `as` to make errors disappear; fix the underlying type mismatch instead.
+- `// @ts-expect-error` is acceptable only when the error is genuinely intentional (e.g. testing an invalid call), and must be accompanied by a comment explaining why.
 
 Avoid:
 - tsconfig settings — those are project-level concerns
