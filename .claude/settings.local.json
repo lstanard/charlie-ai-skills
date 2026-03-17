@@ -9,7 +9,11 @@
       "Bash(npm run install:cursor:*)",
       "Bash(npm run validate:*)",
       "Bash(git checkout:*)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(python:*)",
+      "Bash(pyenv versions:*)",
+      "Bash(lsof:*)",
+      "Bash(open:*)"
     ]
   }
 }

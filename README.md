@@ -31,8 +31,9 @@ The **testing** skills share a [CLAUDE.md](skills/testing/CLAUDE.md) with univer
 
 | Skill                                                                        | Description                                                                                                                  |
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [css-architecture](skills/frontend-architecture/css-architecture/)            | CSS Modules + two-layer design token system (primitive + semantic); camelCase naming; no BEM; avoid CSS-in-JS.               |
-| [frontend-performance](skills/frontend-architecture/frontend-performance/)    | Measure first. Core Web Vitals, bundle analysis, code splitting, asset optimization, and React rendering fixes for Vite SPAs. |
+| [css-architecture](skills/frontend-architecture/css-architecture/)                       | CSS Modules + two-layer design token system (primitive + semantic); camelCase naming; no BEM; avoid CSS-in-JS.               |
+| [frontend-performance](skills/frontend-architecture/frontend-performance/)               | Measure first. Core Web Vitals, bundle analysis, code splitting, asset optimization, and React rendering fixes for Vite SPAs. |
+| [routing-and-navigation](skills/frontend-architecture/routing-and-navigation/)           | URLs are UX. Link vs button semantics, URL-based filter/pagination state, external link safety, and programmatic navigation rules. |
 | [react-layering](skills/frontend-architecture/react-layering/)               | Apply Presentation–Domain–Data layering; keep React as the view layer only.                                                  |
 | [react-view-extraction](skills/frontend-architecture/react-view-extraction/) | Extract hooks for state/effects, sub-components; prefer pure presentational components.                                      |
 | [react-domain-models](skills/frontend-architecture/react-domain-models/)     | Encapsulate mapping and business rules in domain objects; avoid logic leaks in the view.                                     |
