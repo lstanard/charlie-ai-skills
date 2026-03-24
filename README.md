@@ -12,6 +12,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
 | [error-handling](skills/error-handling/)                                     | Structured error handling: custom error classes, error codes, logging, user-facing vs internal errors, graceful degradation. |
 | [skill-maintenance](skills/skill-maintenance/)                               | Keep the skills repo consistent: update README.md and run codegen whenever a skill is added or changed.                     |
+| [frontend-performance-audit](skills/frontend-performance-audit/)             | Run Lighthouse against a production build after completing any frontend feature, iterate on fixes until thresholds pass, and commit a score summary to git. |
 
 ### Testing skills
 
