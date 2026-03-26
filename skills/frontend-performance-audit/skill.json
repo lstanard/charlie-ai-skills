@@ -15,13 +15,13 @@
   ],
   "inputs": {},
   "guarantees": [
-    "Reads lighthouse.config.json from the project root if present; falls back to defaults: url=http://localhost:3000, buildCommand=npm run build, startCommand=npm run start, port=3000, categories=[performance, accessibility, best-practices], thresholds={performance: 100, accessibility: 100, best-practices: 90}.",
+    "Reads lighthouse.config.json from the project root if present; falls back to defaults: urls=[\"http://localhost:3000\"], buildCommand=npm run build, startCommand=npm run start, port=3000, categories=[performance, accessibility, best-practices], thresholds={performance: 100, accessibility: 100, best-practices: 90}.",
     "Builds for production before auditing. Stops immediately and reports the error if the build fails — does not proceed to audit.",
     "Starts a production server in the background and polls the configured port for readiness (max 60 seconds). Always stops the server after Lighthouse finishes, whether passing or failing.",
-    "Installs Lighthouse CLI globally if not already installed, then runs it with --headless Chrome against the configured URL and categories. Stores timestamped JSON and HTML reports under lighthouse-reports/.",
-    "Parses category scores from the Lighthouse JSON output and compares each to its configured threshold.",
-    "If all thresholds pass: writes lighthouse-reports/scores.json and commits it with message 'perf: lighthouse scores - perf:<score> a11y:<score>'. Reports passing scores and stops.",
-    "If any threshold fails: identifies failing audits (score !== null && score < 1), applies targeted fixes, rebuilds, and reruns. Repeats up to 3 iterations.",
+    "Installs Lighthouse CLI globally if not already installed, then runs it with --headless Chrome against each URL in the urls array. Stores timestamped JSON and HTML reports under lighthouse-reports/.",
+    "Parses category scores from each URL's Lighthouse JSON output. Top-level scores in scores.json are the worst-case per category across all URLs. passed: true only if every URL meets every threshold.",
+    "If all thresholds pass: writes lighthouse-reports/scores.json and commits it with message 'perf: lighthouse scores - perf:<score> a11y:<score> (N pages)'. Reports passing scores and stops.",
+    "If any threshold fails: identifies failing audits (score !== null && score < 1) across all URLs, applies targeted fixes, rebuilds, and reruns all URLs. Repeats up to 3 iterations.",
     "After 3 failed iterations: writes lighthouse-reports/scores.json with passed: false and failingAudits populated. Presents current scores vs thresholds, remaining failing audit titles, and recommended next steps. Does not make further fix attempts.",
     "lighthouse-reports/scores.json is always committed (pass or fail) so git history serves as a performance tracking log."
   ],

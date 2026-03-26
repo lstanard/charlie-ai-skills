@@ -12,7 +12,7 @@ Per-project config lives in `lighthouse.config.json` at the project root. If abs
 
 | Field | Default | Description |
 |---|---|---|
-| `url` | `http://localhost:3000` | URL to audit |
+| `urls` | `["http://localhost:3000"]` | URLs to audit — Lighthouse runs against each in sequence |
 | `buildCommand` | `npm run build` | Production build command |
 | `startCommand` | `npm run start` | Server start command |
 | `port` | `3000` | Port to poll for readiness |
@@ -26,6 +26,8 @@ Per-project config lives in `lighthouse.config.json` at the project root. If abs
 ### 1. Read configuration
 
 Check for `lighthouse.config.json` at the project root. Load it; fall back to defaults for any missing fields.
+
+Resolve the URL list: if `urls` is present use it; otherwise default to `["http://localhost:3000"]`. All subsequent steps operate on this list.
 
 ### 2. Ensure Lighthouse CLI
 
@@ -65,13 +67,16 @@ curl -sf http://localhost:<port>/ > /dev/null || { echo "Server failed to start.
 
 ### 5. Run Lighthouse
 
+For each URL in the `urls` list:
+
 ```bash
 mkdir -p lighthouse-reports
 TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+SLUG=$(echo "<url>" | sed 's|https\?://||; s|[^a-zA-Z0-9._-]|-|g')
 lighthouse <url> \
   --output=json \
   --output=html \
-  --output-path=lighthouse-reports/report-${TIMESTAMP} \
+  --output-path=lighthouse-reports/report-${TIMESTAMP}-${SLUG} \
   --only-categories=<categories-comma-separated> \
   --chrome-flags="--headless --no-sandbox" \
   --quiet
@@ -79,9 +84,9 @@ lighthouse <url> \
 
 `<categories-comma-separated>` is the `categories` array values joined with commas (e.g. `performance,accessibility`).
 
-This produces:
-- `lighthouse-reports/report-<timestamp>.report.json`
-- `lighthouse-reports/report-<timestamp>.report.html`
+This produces per-URL reports:
+- `lighthouse-reports/report-<timestamp>-<slug>.report.json`
+- `lighthouse-reports/report-<timestamp>-<slug>.report.html`
 
 ### 6. Stop the server
 
@@ -93,42 +98,43 @@ kill $(cat /tmp/lighthouse-server.pid) 2>/dev/null && rm -f /tmp/lighthouse-serv
 
 ### 7. Verify Lighthouse output
 
-Before parsing, confirm the report file exists:
+Before parsing, confirm each report file exists:
 
 ```bash
-ls lighthouse-reports/report-${TIMESTAMP}.report.json
+ls lighthouse-reports/report-${TIMESTAMP}-<slug>.report.json
 ```
 
-If the file does not exist, Lighthouse failed. Report the error from its output and stop.
+If any file does not exist, Lighthouse failed for that URL. Report the error and stop.
 
 ### 8. Parse scores and handle results
 
-Read `lighthouse-reports/report-${TIMESTAMP}.report.json`. For each category in `thresholds`, check `categories.<id>.score * 100` against the threshold.
+For each URL, read its `report-<timestamp>-<slug>.report.json`. For each category in `thresholds`, check `categories.<id>.score * 100` against the threshold.
 
-**If all thresholds pass:**
+Compute the **worst-case score per category** across all URLs — this is what goes in the top-level `scores` field of `scores.json`.
+
+**If all thresholds pass for all URLs:**
 
 Write `lighthouse-reports/scores.json` (see format below), then commit:
 
 ```bash
 git add lighthouse-reports/scores.json
-git commit -m "perf: lighthouse scores - perf:<score> a11y:<score>"
+git commit -m "perf: lighthouse scores - perf:<score> a11y:<score> (<N> pages)"
 ```
 
-Note: If fix attempts were applied during iteration, commit or stash them separately before committing `scores.json`.
+For a single URL, the commit message can omit the page count. Note: if fix attempts were applied during iteration, commit or stash them separately before committing `scores.json`.
 
 Report the passing scores to the user and stop.
 
-**If any threshold fails:**
+**If any threshold fails on any URL:**
 
-1. Identify failing audits from the JSON: collect audit IDs from `categories.performance.auditRefs` and `categories.accessibility.auditRefs`, then check each audit's `score`
-2. Focus on audits where `score !== null && score < 1`
-3. Surface the specific audit `title` and `description` to guide fixes
-4. Make targeted fixes (see Common Fixes below)
-5. Return to Step 3 (rebuild and re-run)
+1. For each failing URL, collect audit IDs from `categories.<id>.auditRefs` and filter to those where `score !== null && score < 1`
+2. Surface the failing audit `title` and `description`, grouped by URL, to guide fixes
+3. Make targeted fixes (see Common Fixes below)
+4. Return to Step 3 (rebuild and re-run all URLs)
 
 Maximum 3 iterations. After 3 failures, write `lighthouse-reports/scores.json` with `passed: false` and `failingAudits` populated (so git history always has a record), then stop and present the human with:
-- Current scores vs thresholds
-- Remaining failing audits with titles
+- Current scores vs thresholds, per URL
+- Remaining failing audit titles
 - Recommended next steps
 
 ---
@@ -138,9 +144,9 @@ Maximum 3 iterations. After 3 failures, write `lighthouse-reports/scores.json` w
 ```json
 {
   "timestamp": "2026-03-24T16:30:00Z",
-  "url": "http://localhost:3000",
+  "urls": ["http://localhost:3000", "http://localhost:3000/dashboard"],
   "scores": {
-    "performance": 100,
+    "performance": 95,
     "accessibility": 100,
     "best-practices": 92
   },
@@ -149,19 +155,37 @@ Maximum 3 iterations. After 3 failures, write `lighthouse-reports/scores.json` w
     "accessibility": 100,
     "best-practices": 90
   },
-  "passed": true,
-  "failingAudits": []
+  "passed": false,
+  "failingAudits": [],
+  "perUrl": {
+    "http://localhost:3000": {
+      "performance": 100,
+      "accessibility": 100,
+      "best-practices": 95
+    },
+    "http://localhost:3000/dashboard": {
+      "performance": 95,
+      "accessibility": 100,
+      "best-practices": 92
+    }
+  }
 }
 ```
 
-`failingAudits` is always present: an empty array when `passed: true`, populated when `passed: false`:
+- `scores` contains the **worst-case** score per category across all URLs
+- `perUrl` maps each URL to its individual scores
+- `passed` is `true` only if every URL meets every threshold
+- `failingAudits` is always present: an empty array when `passed: true`, populated when `passed: false`
+
+Failing audit entry shape:
 
 ```json
 {
-  "category": "accessibility",
-  "id": "color-contrast",
-  "title": "Background and foreground colors do not have a sufficient contrast ratio.",
-  "score": 0
+  "url": "http://localhost:3000/dashboard",
+  "category": "performance",
+  "id": "unused-javascript",
+  "title": "Remove unused JavaScript",
+  "score": 0.5
 }
 ```
 
