@@ -1,0 +1,59 @@
+{
+  "skill_name": "frontend-performance-audit",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I just finished adding the user profile section to the app. Can you run the lighthouse audit before I push?",
+      "expected_output": "Skill reads defaults (no lighthouse.config.json present), runs npm run build, starts the server, runs Lighthouse against http://localhost:3000, parses scores, writes lighthouse-reports/scores.json, and commits it to git.",
+      "files": [],
+      "expectations": [
+        "npm run build was executed before starting the server",
+        "The server was started and the skill polled for readiness before running Lighthouse",
+        "Lighthouse was run with --headless Chrome against http://localhost:3000",
+        "lighthouse-reports/scores.json was written with the correct format (timestamp, url, scores, thresholds, passed, failingAudits fields)",
+        "scores.json was committed to git with a message containing the scores",
+        "The server was stopped after Lighthouse finished"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Please run the performance audit — we have a lighthouse.config.json already set up for our project.",
+      "expected_output": "Skill reads lighthouse.config.json, uses the overridden url (http://localhost:4001), startCommand (node server.js 4001), port (4001), and thresholds (performance 90, accessibility 90, best-practices 85) rather than defaults.",
+      "files": [],
+      "expectations": [
+        "lighthouse.config.json was read from the project root",
+        "The server was started on port 4001 (not the default 3000)",
+        "Lighthouse was run against http://localhost:4001 (not the default http://localhost:3000)",
+        "The thresholds used were 90/90/85 from the config file, not the defaults of 100/100/90",
+        "lighthouse-reports/scores.json was written and committed to git"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Run the lighthouse performance audit on our app.",
+      "expected_output": "The build command (npm run build) fails. The skill reports the build error and stops immediately without starting a server, running Lighthouse, or writing scores.json.",
+      "files": [],
+      "expectations": [
+        "npm run build was attempted",
+        "The skill stopped and reported the build failure without proceeding to Lighthouse",
+        "No server was started",
+        "No lighthouse-reports/scores.json was created",
+        "The error output from the failing build command was surfaced to the user"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I just finished building out the landing page for the product — can you run the lighthouse audit before I push?",
+      "expected_output": "First Lighthouse run fails accessibility threshold (100) due to missing lang attribute, missing alt attributes on images, and missing labels on inputs. Skill identifies failing audits, applies targeted fixes to public/index.html, rebuilds, reruns Lighthouse. Second run passes. scores.json is committed with passed: true.",
+      "files": [],
+      "expectations": [
+        "First Lighthouse run identified specific failing accessibility audits (html-has-lang, image-alt, or label)",
+        "The skill applied targeted fixes to the HTML file based on the failing audits",
+        "A second Lighthouse run was performed after fixing",
+        "lighthouse-reports/scores.json was written with passed: true after fixes",
+        "scores.json was committed to git",
+        "The skill did not apply fixes that were not indicated by failing audits (no speculative optimization)"
+      ]
+    }
+  ]
+}

@@ -202,6 +202,7 @@ Key paths in the Lighthouse JSON report:
 | `html-has-lang` | Add `lang="en"` to `<html>` element |
 | `meta-viewport` | Remove `user-scalable=no` from viewport meta tag |
 | `heading-order` | Ensure headings follow sequential order (h1 → h2 → h3, no skipping) |
+| `target-size` | Add CSS `min-height: 48px` to interactive elements; for icon-only links use `display: inline-flex; align-items: center; justify-content: center; min-width: 48px; min-height: 48px; padding: 12px` |
 
 ---
 

@@ -1,13 +1,13 @@
 ---
 name: frontend-performance-audit
-description: Use when frontend feature work is complete and before marking work done — runs Lighthouse against a production build, iterates on fixes until score thresholds are met, and commits a score summary to git.
+description: Invoke when asked to run a Lighthouse audit, check performance or accessibility scores, do a performance audit, or run final checks before pushing frontend work. Use proactively when frontend feature work is complete — don't wait for explicit 'lighthouse' mentions. Runs a production build, audits with headless Chrome, applies targeted fixes to failing audits, and commits scores.json to git.
 ---
 
 # Frontend Performance Audit
 version: 0.1.0
 
 ## Purpose
-Use when frontend feature work is complete and before marking work done — runs Lighthouse against a production build, iterates on fixes until score thresholds are met, and commits a score summary to git.
+Invoke when asked to run a Lighthouse audit, check performance or accessibility scores, do a performance audit, or run final checks before pushing frontend work. Use proactively when frontend feature work is complete — don't wait for explicit 'lighthouse' mentions. Runs a production build, audits with headless Chrome, applies targeted fixes to failing audits, and commits scores.json to git.
 
 ## Triggers
 - frontend feature complete
