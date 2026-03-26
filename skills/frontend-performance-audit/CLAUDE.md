@@ -16,8 +16,8 @@ Per-project config lives in `lighthouse.config.json` at the project root. If abs
 | `buildCommand` | `npm run build` | Production build command |
 | `startCommand` | `npm run start` | Server start command |
 | `port` | `3000` | Port to poll for readiness |
-| `categories` | `["performance", "accessibility"]` | Lighthouse categories to audit |
-| `thresholds` | `{ "performance": 100, "accessibility": 100 }` | Minimum passing score (0–100) |
+| `categories` | `["performance", "accessibility", "best-practices"]` | Lighthouse categories to audit |
+| `thresholds` | `{ "performance": 100, "accessibility": 100, "best-practices": 90 }` | Minimum passing score (0–100) |
 
 ---
 
@@ -141,11 +141,13 @@ Maximum 3 iterations. After 3 failures, write `lighthouse-reports/scores.json` w
   "url": "http://localhost:3000",
   "scores": {
     "performance": 100,
-    "accessibility": 100
+    "accessibility": 100,
+    "best-practices": 92
   },
   "thresholds": {
     "performance": 100,
-    "accessibility": 100
+    "accessibility": 100,
+    "best-practices": 90
   },
   "passed": true,
   "failingAudits": []

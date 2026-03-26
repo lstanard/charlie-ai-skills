@@ -15,7 +15,7 @@
   ],
   "inputs": {},
   "guarantees": [
-    "Reads lighthouse.config.json from the project root if present; falls back to defaults: url=http://localhost:3000, buildCommand=npm run build, startCommand=npm run start, port=3000, categories=[performance, accessibility], thresholds={performance: 100, accessibility: 100}.",
+    "Reads lighthouse.config.json from the project root if present; falls back to defaults: url=http://localhost:3000, buildCommand=npm run build, startCommand=npm run start, port=3000, categories=[performance, accessibility, best-practices], thresholds={performance: 100, accessibility: 100, best-practices: 90}.",
     "Builds for production before auditing. Stops immediately and reports the error if the build fails — does not proceed to audit.",
     "Starts a production server in the background and polls the configured port for readiness (max 60 seconds). Always stops the server after Lighthouse finishes, whether passing or failing.",
     "Installs Lighthouse CLI globally if not already installed, then runs it with --headless Chrome against the configured URL and categories. Stores timestamped JSON and HTML reports under lighthouse-reports/.",
