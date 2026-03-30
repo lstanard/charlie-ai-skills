@@ -1,5 +1,5 @@
 {
-  "scope": "project",
+  "scope": "global",
   "id": "charlie.docs-writing",
   "title": "Docs Writing",
   "version": "0.1.0",
