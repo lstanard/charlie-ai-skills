@@ -64,7 +64,7 @@ Skills with no tags are installed whenever `--scope=project` is used. Skills wit
 
 **Install global skills** (once, applies to all projects):
 ```bash
-npm run install:claude -- ~/.claude --scope=global --link
+npm run install:claude -- ~/.claude --scope=global
 ```
 
 **Install project skills** (committed to git, scoped to stack):
@@ -81,13 +81,12 @@ npm run install:claude -- ~/Code/my-app --scope=project
 
 **Re-sync a single skill after updating it:**
 ```bash
-npm run install:claude -- ~/.claude skills/agent-instructions --link
+npm run install:claude -- ~/.claude skills/agent-instructions
 ```
 
 **Options:**
 - `--scope=global|project` — filter by scope
 - `--tags=tag1,tag2` — filter by tag (any match); untagged skills always pass
-- `--link` — symlink instead of copy (recommended for global installs)
 - `--include-claude` — also install CLAUDE.md reference files
 
 **Use in conversation:**
@@ -101,7 +100,7 @@ Claude Code automatically discovers skills. Reference by name:
 
 **Install global skills** (once, applies to all projects):
 ```bash
-npm run install:cursor -- ~/.cursor --scope=global --link
+npm run install:cursor -- ~/.cursor --scope=global
 ```
 
 **Install project skills** (committed to git, scoped to stack):
@@ -118,13 +117,12 @@ npm run install:cursor -- ~/Code/my-app --scope=project
 
 **Re-sync a single skill after updating it:**
 ```bash
-npm run install:cursor -- ~/.cursor skills/agent-instructions --link
+npm run install:cursor -- ~/.cursor skills/agent-instructions
 ```
 
 **Options:**
 - `--scope=global|project` — filter by scope
 - `--tags=tag1,tag2` — filter by tag (any match); untagged skills always pass
-- `--link` — symlink instead of copy (recommended for global installs)
 - `--include-claude` — also install CLAUDE.md reference files
 
 **Use in conversation:**
@@ -213,11 +211,10 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
 - `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
 - `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
-- `npm run install:cursor -- <destination> [source-path] [options]` — Install skills for Cursor (copied by default).
+- `npm run install:cursor -- <destination> [source-path] [options]` — Install skills for Cursor.
   - `--scope=global|project` — Only install skills with matching scope
   - `--tags=tag1,tag2` — Only install skills with at least one matching tag (untagged skills always pass)
-  - `--link, -l` — Symlink instead of copy
   - `--include-claude` — Also install CLAUDE.md reference files
   - Second positional arg to target a specific skill or group (e.g., `skills/agent-instructions`)
-- `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code (copied by default). Same options as above.
+- `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code. Same options as above.
 - `npm run ci` — Validate and generate (for CI or pre-commit).
