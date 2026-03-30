@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["testing"],
   "id": "charlie.test-observability",
   "title": "Test observability",
   "version": "0.1.0",

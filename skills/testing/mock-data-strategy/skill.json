@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["testing"],
   "id": "charlie.mock-data-strategy",
   "title": "Mock data strategy",
   "version": "0.1.0",

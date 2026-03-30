@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["typescript"],
   "id": "charlie.typescript-conventions",
   "title": "TypeScript conventions",
   "version": "0.1.0",

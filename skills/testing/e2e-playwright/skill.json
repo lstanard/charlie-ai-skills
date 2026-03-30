@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["testing"],
   "id": "charlie.e2e-playwright",
   "title": "E2E testing with Playwright",
   "version": "0.1.0",

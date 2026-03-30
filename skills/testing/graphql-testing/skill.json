@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["testing", "graphql"],
   "id": "charlie.graphql-testing",
   "title": "GraphQL testing",
   "version": "0.1.0",

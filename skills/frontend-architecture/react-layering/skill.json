@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "react"],
   "id": "charlie.frontend-architecture.react-layering",
   "title": "React layering (Presentation–Domain–Data)",
   "version": "0.1.0",

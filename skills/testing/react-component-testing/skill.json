@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "react", "testing"],
   "id": "charlie.react-component-testing",
   "title": "React component testing",
   "version": "0.1.0",

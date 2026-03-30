@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "testing"],
   "id": "charlie.accessibility-testing",
   "title": "Accessibility testing",
   "version": "0.1.0",

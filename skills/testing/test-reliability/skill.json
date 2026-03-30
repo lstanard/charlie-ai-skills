@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["testing"],
   "id": "charlie.test-reliability",
   "title": "Test reliability",
   "version": "0.1.0",

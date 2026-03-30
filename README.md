@@ -49,53 +49,46 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
 
 ## How to use these skills
 
-### Personal vs Project Skills
+### Scope and tags
 
-Skills are **copied by default**. Use `--link` to symlink instead.
+Each skill has a `scope` and optional `tags` in its `skill.json`:
 
-**Project skills** - Copy and commit to git:
+- **`scope: "global"`** — install once to `~/.claude` or `~/.cursor`; these apply across all projects (e.g. agent tone, coding rules)
+- **`scope: "project"`** — install per project; use `--tags` to narrow to what's relevant
 
-```bash
-# From the skills repo, install to your project
-npm run install:cursor -- ~/Code/my-app
-npm run install:claude -- ~/Code/my-app
+Available tags: `frontend`, `react`, `typescript`, `javascript`, `testing`, `graphql`
 
-# Then commit the skills in your project
-cd ~/Code/my-app
-git add .cursor/skills/  # or .claude/skills/
-git commit -m "Add AI coding skills"
-```
-
-This ensures team consistency and deterministic behavior. Update by re-running the install command and committing changes.
-
-**Personal skills** - Symlink for automatic updates:
-
-```bash
-# Install globally (available across all projects)
-npm run install:cursor -- ~/.cursor --link
-npm run install:claude -- ~/.claude --link
-```
-
-Symlinked skills stay up to date with this repo. Don't commit symlinks to project repositories.
-
----
+Skills with no tags are installed whenever `--scope=project` is used. Skills with tags are only installed when at least one of their tags is requested.
 
 ### In Claude Code
 
-**Install globally** (available across all projects):
+**Install global skills** (once, applies to all projects):
 ```bash
-npm run install:claude -- ~/.claude --link
+npm run install:claude -- ~/.claude --scope=global --link
 ```
 
-**Install to a project** (team-shared, committed to git):
+**Install project skills** (committed to git, scoped to stack):
 ```bash
-npm run install:claude -- ~/Code/my-app
+# Frontend React project
+npm run install:claude -- ~/Code/my-app --scope=project --tags=frontend,react
+
+# TypeScript project (no frontend)
+npm run install:claude -- ~/Code/my-app --scope=project --tags=typescript
+
+# All project skills (no tag filter)
+npm run install:claude -- ~/Code/my-app --scope=project
+```
+
+**Re-sync a single skill after updating it:**
+```bash
+npm run install:claude -- ~/.claude skills/agent-instructions --link
 ```
 
 **Options:**
-- `--link` - Symlink instead of copy (for personal/global installs)
-- `skills/testing` - Install specific skill group (second positional arg)
-- `--include-claude` - Also install CLAUDE.md reference files
+- `--scope=global|project` — filter by scope
+- `--tags=tag1,tag2` — filter by tag (any match); untagged skills always pass
+- `--link` — symlink instead of copy (recommended for global installs)
+- `--include-claude` — also install CLAUDE.md reference files
 
 **Use in conversation:**
 Claude Code automatically discovers skills. Reference by name:
@@ -106,20 +99,33 @@ Claude Code automatically discovers skills. Reference by name:
 
 ### In Cursor
 
-**Install globally** (available across all projects):
+**Install global skills** (once, applies to all projects):
 ```bash
-npm run install:cursor -- ~/.cursor --link
+npm run install:cursor -- ~/.cursor --scope=global --link
 ```
 
-**Install to a project** (team-shared, committed to git):
+**Install project skills** (committed to git, scoped to stack):
 ```bash
-npm run install:cursor -- ~/Code/my-app
+# Frontend React project
+npm run install:cursor -- ~/Code/my-app --scope=project --tags=frontend,react
+
+# TypeScript project (no frontend)
+npm run install:cursor -- ~/Code/my-app --scope=project --tags=typescript
+
+# All project skills (no tag filter)
+npm run install:cursor -- ~/Code/my-app --scope=project
+```
+
+**Re-sync a single skill after updating it:**
+```bash
+npm run install:cursor -- ~/.cursor skills/agent-instructions --link
 ```
 
 **Options:**
-- `--link` - Symlink instead of copy (for personal/global installs)
-- `skills/testing` - Install specific skill group (second positional arg)
-- `--include-claude` - Also install CLAUDE.md reference files
+- `--scope=global|project` — filter by scope
+- `--tags=tag1,tag2` — filter by tag (any match); untagged skills always pass
+- `--link` — symlink instead of copy (recommended for global installs)
+- `--include-claude` — also install CLAUDE.md reference files
 
 **Use in conversation:**
 Cursor automatically discovers skills. Reference by name:
@@ -175,6 +181,8 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
    ```json
    {
+     "scope": "project",
+     "tags": ["frontend", "react"],
      "id": "charlie.my-skill",
      "title": "My Skill",
      "version": "0.1.0",
@@ -206,8 +214,10 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 - `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
 - `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
 - `npm run install:cursor -- <destination> [source-path] [options]` — Install skills for Cursor (copied by default).
+  - `--scope=global|project` — Only install skills with matching scope
+  - `--tags=tag1,tag2` — Only install skills with at least one matching tag (untagged skills always pass)
   - `--link, -l` — Symlink instead of copy
   - `--include-claude` — Also install CLAUDE.md reference files
-  - Second positional arg for source path (e.g., `skills/testing`)
+  - Second positional arg to target a specific skill or group (e.g., `skills/agent-instructions`)
 - `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code (copied by default). Same options as above.
 - `npm run ci` — Validate and generate (for CI or pre-commit).

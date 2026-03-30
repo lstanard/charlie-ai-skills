@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend"],
   "id": "charlie.frontend-architecture.frontend-performance",
   "title": "Frontend performance (SPA / Vite)",
   "version": "0.1.0",

@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend"],
   "id": "charlie.frontend-performance-audit",
   "title": "Frontend Performance Audit",
   "version": "0.1.0",

@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["javascript", "typescript"],
   "id": "charlie.error-handling",
   "title": "Error handling",
   "version": "0.1.0",

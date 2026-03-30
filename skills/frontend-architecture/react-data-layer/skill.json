@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "react"],
   "id": "charlie.frontend-architecture.react-data-layer",
   "title": "React data layer (network client)",
   "version": "0.1.0",

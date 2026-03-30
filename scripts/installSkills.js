@@ -46,12 +46,15 @@ function findSkills(sourcePath) {
     // A directory is a skill if it has skill.json
     if (fs.existsSync(skillJsonPath)) {
       const slug = path.basename(dir);
+      const skillJson = JSON.parse(fs.readFileSync(skillJsonPath, "utf8"));
       skills.push({
         dir,
         slug,
         skillJsonPath,
         cursorRulePath: fs.existsSync(cursorRulePath) ? cursorRulePath : null,
-        skillMdPath: fs.existsSync(skillMdPath) ? skillMdPath : null
+        skillMdPath: fs.existsSync(skillMdPath) ? skillMdPath : null,
+        scope: skillJson.scope ?? null,
+        tags: skillJson.tags ?? [],
       });
       return;
     }
@@ -61,6 +64,31 @@ function findSkills(sourcePath) {
   }
   walk(resolved);
   return skills;
+}
+
+function filterSkills(skills, scopeFilter, tagsFilter) {
+  return skills.filter(({ slug, scope, tags }) => {
+    if (scopeFilter) {
+      if (scope === null) {
+        // no scope defined = include everywhere
+      } else {
+        const scopes = Array.isArray(scope) ? scope : [scope];
+        if (!scopes.includes(scopeFilter)) {
+          console.log(`  ⏭  ${slug}: skipped (scope: ${scopes.join(",")})`);
+          return false;
+        }
+      }
+    }
+
+    if (tagsFilter.length > 0 && tags.length > 0) {
+      if (!tagsFilter.some(t => tags.includes(t))) {
+        console.log(`  ⏭  ${slug}: skipped (tags: ${tags.join(",")})`);
+        return false;
+      }
+    }
+
+    return true;
+  });
 }
 
 function findClaudeMd(sourcePath) {
@@ -112,7 +140,7 @@ function installForCursor(skills, destination, link, includeClaude, sourcePath) 
   const copy = !link;
   const destResolved = path.resolve(destination);
   const skillsDir =
-    destResolved.endsWith(".cursor/skills") || destResolved.endsWith("skills")
+    destResolved.endsWith(".cursor/skills")
       ? destResolved
       : destResolved.endsWith(".cursor")
       ? path.join(destResolved, "skills")
@@ -164,7 +192,7 @@ function installForClaude(skills, destination, link, includeClaude, sourcePath) 
   const copy = !link;
   const destResolved = path.resolve(destination);
   const skillsDir =
-    destResolved.endsWith(".claude/skills") || destResolved.endsWith("skills")
+    destResolved.endsWith(".claude/skills")
       ? destResolved
       : destResolved.endsWith(".claude")
       ? path.join(destResolved, "skills")
@@ -215,15 +243,27 @@ function installForClaude(skills, destination, link, includeClaude, sourcePath) 
 function main() {
   const args = process.argv.slice(2);
   const link = args.includes("--link") || args.includes("-l");
-  const copy = !link; // Copy by default, unless --link is specified
   const includeClaude = args.includes("--include-claude");
 
-  // Parse --target=cursor or --target=claude
+  // Parse --target=cursor|claude
   const targetArg = args.find((a) => a.startsWith("--target="));
   const target = targetArg ? targetArg.split("=")[1] : "cursor";
 
+  // Parse --scope=global|project
+  const scopeArg = args.find((a) => a.startsWith("--scope="));
+  const scopeFilter = scopeArg ? scopeArg.split("=")[1] : null;
+
+  // Parse --tags=frontend,react (comma-separated, any match)
+  const tagsArg = args.find((a) => a.startsWith("--tags="));
+  const tagsFilter = tagsArg ? tagsArg.split("=")[1].split(",").map(t => t.trim()) : [];
+
   if (!["cursor", "claude"].includes(target)) {
     console.error("Error: --target must be 'cursor' or 'claude'");
+    process.exit(1);
+  }
+
+  if (scopeFilter && !["global", "project"].includes(scopeFilter)) {
+    console.error("Error: --scope must be 'global' or 'project'");
     process.exit(1);
   }
 
@@ -243,25 +283,34 @@ function main() {
     );
     console.error("");
     console.error("Options:");
-    console.error("  --target=cursor|claude  Install for Cursor (default) or Claude Code");
-    console.error("  --link, -l              Symlink instead of copy (default: copy)");
-    console.error("  --include-claude        Also install CLAUDE.md reference files");
+    console.error("  --target=cursor|claude    Install for Cursor (default) or Claude Code");
+    console.error("  --scope=global|project    Only install skills with matching scope");
+    console.error("  --tags=tag1,tag2          Only install skills with at least one matching tag");
+    console.error("                            (skills with no tags are always included)");
+    console.error("  --link, -l                Symlink instead of copy (default: copy)");
+    console.error("  --include-claude          Also install CLAUDE.md reference files");
     console.error("");
     console.error("Examples:");
-    console.error("  # Install testing skills for Cursor (copied)");
-    console.error("  node scripts/installSkills.js /path/to/app skills/testing");
+    console.error("  # Install global skills for Claude Code");
+    console.error("  node scripts/installSkills.js ~/.claude --target=claude --scope=global");
     console.error("");
-    console.error("  # Install all skills for Claude Code globally (copied)");
-    console.error("  node scripts/installSkills.js ~/.claude --target=claude");
+    console.error("  # Install frontend project skills for Cursor");
+    console.error("  node scripts/installSkills.js /path/to/app --scope=project --tags=frontend,react");
     console.error("");
-    console.error("  # Symlink instead of copy");
-    console.error("  node scripts/installSkills.js ~/.claude --target=claude --link");
+    console.error("  # Re-sync a single skill");
+    console.error("  node scripts/installSkills.js ~/.claude skills/agent-instructions --target=claude");
     process.exit(1);
   }
 
-  const skills = findSkills(sourcePath);
+  let skills = findSkills(sourcePath);
   if (skills.length === 0) {
     console.error("No skills found under", sourcePath);
+    process.exit(1);
+  }
+
+  skills = filterSkills(skills, scopeFilter, tagsFilter);
+  if (skills.length === 0) {
+    console.error("No skills matched the given --scope/--tags filters");
     process.exit(1);
   }
 

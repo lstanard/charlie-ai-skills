@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "react"],
   "id": "charlie.frontend-architecture.routing-and-navigation",
   "title": "Routing and Navigation",
   "version": "0.1.0",

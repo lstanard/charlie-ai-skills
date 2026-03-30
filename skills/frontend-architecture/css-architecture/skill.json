@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend"],
   "id": "charlie.frontend-architecture.css-architecture",
   "title": "CSS architecture (Modules + Design Tokens)",
   "version": "0.2.0",

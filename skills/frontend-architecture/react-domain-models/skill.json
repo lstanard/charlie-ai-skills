@@ -1,4 +1,6 @@
 {
+  "scope": "project",
+  "tags": ["frontend", "react"],
   "id": "charlie.frontend-architecture.react-domain-models",
   "title": "React domain models (encapsulate logic)",
   "version": "0.1.0",

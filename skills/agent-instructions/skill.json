@@ -1,4 +1,5 @@
 {
+  "scope": "global",
   "id": "charlie.agent-tone",
   "title": "AI agent tone and tooling",
   "version": "0.1.0",
