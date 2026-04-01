@@ -1,0 +1,28 @@
+{
+  "scope": "global",
+  "id": "charlie.jsdoc",
+  "title": "JSDoc",
+  "version": "0.1.0",
+  "description": "Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. Use this skill whenever writing, updating, or refactoring any JavaScript or TypeScript, even for quick fixes or small additions. If you're touching a function, it must have a JSDoc comment.",
+  "triggers": [
+    "write JS/TS function",
+    "add method",
+    "refactor TypeScript",
+    "implement feature in JS",
+    "update function",
+    "add class"
+  ],
+  "inputs": {},
+  "guarantees": [
+    "Every function, method, class, and named arrow function declaration has a JSDoc comment.",
+    "In TypeScript, JSDoc contains only a description — no @param or @returns tags.",
+    "In JavaScript, JSDoc includes @param and @returns tags with types.",
+    "Descriptions explain what the code does and why, not how it's implemented.",
+    "Existing JSDoc is updated when the code it documents is changed.",
+    "Test files are excluded unless the test logic itself is genuinely complex."
+  ],
+  "non_goals": [
+    "Inline callbacks or anonymous functions passed as arguments",
+    "Restating type information already present in TypeScript signatures"
+  ]
+}
