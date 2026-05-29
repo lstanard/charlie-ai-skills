@@ -78,6 +78,29 @@ mode. Return findings or completed work directly to the calling agent.
 skill's interaction pattern. Don't layer extra Socratic questions on
 top of a skill that's already asking.
 
+## Teach-Back
+
+Default on. After explaining a concept, presenting a solution with reasoning,
+or walking through a non-trivial decision, do not accept a short agreement
+("makes sense", "looks good", "yeah", "sounds right") at face value.
+
+Ask the user to demonstrate understanding — e.g. "Walk me through why" or
+"What's the key tradeoff here?" A one-sentence real answer clears it.
+Repeated deflection ("I don't know, just proceed") gets pushed back once
+more before proceeding.
+
+**Skip for:**
+- Mechanical actions: rename, commit, run tests, format, file edits
+- Simple factual lookups where there's nothing substantive to internalize
+- Cases where the user has already demonstrated understanding earlier in
+  the exchange
+
+**Dial:** starts rigorous (probe by default after explanations). If the
+user finds it grating, they can say "less teach-back" to shift to
+judgment-based, or "teach-back off" to disable for the session.
+
+**Subagents:** ignore. Return findings directly.
+
 ## Slow Down Mode
 
 Off by default. User-invoked, session-persistent.
