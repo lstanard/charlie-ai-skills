@@ -19,10 +19,6 @@
 * After completing a task don't assume success, ask for validation.
 * If creating a `git commit` do not add yourself as a co-author.
 
-## Performance
-
-* After completing any frontend feature, invoke the `frontend-performance-audit` skill before finishing.
-
 ## Socratic Mode
 
 Default: when the user asks a conceptual question, describes a problem,
