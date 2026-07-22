@@ -4,7 +4,6 @@
       "Read",
       "Glob",
       "Grep",
-
       "Bash(ls:*)",
       "Bash(find:*)",
       "Bash(cat:*)",
@@ -15,7 +14,6 @@
       "Bash(stat:*)",
       "Bash(du:*)",
       "Bash(df:*)",
-
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(sed:*)",
@@ -25,7 +23,6 @@
       "Bash(cut:*)",
       "Bash(tr:*)",
       "Bash(jq:*)",
-
       "Bash(cd:*)",
       "Bash(pwd:*)",
       "Bash(echo:*)",
@@ -35,7 +32,6 @@
       "Bash(type:*)",
       "Bash(env:*)",
       "Bash(printenv:*)",
-
       "Bash(git log:*)",
       "Bash(git status:*)",
       "Bash(git diff:*)",
@@ -46,14 +42,22 @@
       "Bash(git tag:*)",
       "Bash(git config --get:*)",
       "Bash(git config --list:*)",
-
       "Bash(node --version:*)",
       "Bash(npm --version:*)",
       "Bash(npx --version:*)",
       "Bash(npm list:*)",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-user.sh)",
+      "Bash(~/.local/bin/sdlc-gh-search-issues.sh:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-review-threads.sh:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-pr-comments.sh:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-pr-reviews.sh:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-pr-commits.sh:*)",
+      "Bash(~/.local/bin/sdlc-gh-get-commit-diff.sh:*)",
+      "Bash(gh pr view:*)"
     ]
   },
+  "model": "claude-fable-5[1m]",
   "hooks": {
     "Notification": [
       {
@@ -107,7 +111,9 @@
     "code-review@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "claude-md-management@claude-plugins-official": true,
-    "figma@claude-plugins-official": false
+    "figma@claude-plugins-official": false,
+    "codex@openai-codex": true,
+    "design-for-ai@rtd": true
   },
   "extraKnownMarketplaces": {
     "claude-plugins-official": {
@@ -121,12 +127,27 @@
         "source": "github",
         "repo": "thedotmack/claude-mem"
       }
+    },
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    },
+    "rtd": {
+      "source": {
+        "source": "github",
+        "repo": "ryanthedev/rtd-claude-inn"
+      }
     }
   },
   "alwaysThinkingEnabled": true,
   "companyAnnouncements": [
     "Hit ‘em with the ol’ Razzle Dazzle"
   ],
+  "tui": "fullscreen",
+  "autoCompactEnabled": false,
+  "skipAutoPermissionPrompt": true,
   "mcpServers": {
     "playwright": {
       "command": "npx",
