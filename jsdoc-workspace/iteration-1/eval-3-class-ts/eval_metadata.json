@@ -1,0 +1,27 @@
+{
+  "eval_id": 3,
+  "eval_name": "request-queue-class-ts",
+  "prompt": "Create a RequestQueue class in TypeScript that processes async tasks one at a time with a configurable concurrency limit.",
+  "assertions": [
+    {
+      "id": "class_has_jsdoc",
+      "description": "The class declaration itself has a JSDoc comment"
+    },
+    {
+      "id": "methods_have_jsdoc",
+      "description": "Each public method has its own JSDoc comment"
+    },
+    {
+      "id": "no_param_tags",
+      "description": "No @param tags anywhere in the file — TypeScript types are in the signature"
+    },
+    {
+      "id": "no_returns_tags",
+      "description": "No @returns tags anywhere in the file"
+    },
+    {
+      "id": "class_description_explains_purpose",
+      "description": "Class JSDoc explains what it manages/does, not just its name restated"
+    }
+  ]
+}

@@ -1,0 +1,323 @@
+{
+  "metadata": {
+    "skill_name": "jsdoc",
+    "skill_path": "<path/to/skill>",
+    "executor_model": "<model-name>",
+    "analyzer_model": "<model-name>",
+    "timestamp": "2026-04-01T19:41:19Z",
+    "evals_run": [
+      1,
+      2,
+      3
+    ],
+    "runs_per_configuration": 3
+  },
+  "runs": [
+    {
+      "eval_id": 1,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 33.4,
+        "tokens": 14325,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+          "passed": true,
+          "evidence": "Lines 1-6: multi-line /** */ block immediately before the export function declaration"
+        },
+        {
+          "text": "No @param tags \u2014 TypeScript types are in the signature",
+          "passed": true,
+          "evidence": "No @param anywhere in the file"
+        },
+        {
+          "text": "No @returns tag \u2014 TypeScript return type is in the signature",
+          "passed": true,
+          "evidence": "No @returns anywhere in the file"
+        },
+        {
+          "text": "Description references the delay/wait behavior, not just restates 'debounce'",
+          "passed": true,
+          "evidence": "'Delays invoking the callback until after the specified number of milliseconds have elapsed since the last time the debounced function was called'"
+        },
+        {
+          "text": "Description is non-empty and substantive (more than 3 words)",
+          "passed": true,
+          "evidence": "Two-sentence description explaining purpose and a concrete use-case"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 29.6,
+        "tokens": 14259,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+          "passed": true,
+          "evidence": "Lines 3-9: /** */ block immediately before function parseConfig"
+        },
+        {
+          "text": "JSDoc includes @param tag with a type (required in JS since no type signatures)",
+          "passed": true,
+          "evidence": "Line 8: '@param {string} filePath'"
+        },
+        {
+          "text": "JSDoc includes @returns tag with a type",
+          "passed": true,
+          "evidence": "Line 9: '@returns {object}'"
+        },
+        {
+          "text": "Description mentions YAML or both YAML and JSON \u2014 not just JSON as before",
+          "passed": true,
+          "evidence": "'Reads and parses a config file, supporting both JSON and YAML formats'"
+        },
+        {
+          "text": "Description is non-empty and substantive",
+          "passed": true,
+          "evidence": "Two-sentence description covering both format support and extension-based detection logic"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "with_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 1.0,
+        "passed": 5,
+        "failed": 0,
+        "total": 5,
+        "time_seconds": 37.6,
+        "tokens": 14826,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The class declaration itself has a JSDoc comment",
+          "passed": true,
+          "evidence": "Line 9: '/** Queues async tasks and processes them with a configurable maximum concurrency. */'"
+        },
+        {
+          "text": "Each public method has its own JSDoc comment",
+          "passed": true,
+          "evidence": "constructor (lines 16-19), add (lines 29-32), pending getter (line 40), active getter (line 44), and private drain (line 50) all have JSDoc"
+        },
+        {
+          "text": "No @param tags anywhere in the file \u2014 TypeScript types are in the signature",
+          "passed": true,
+          "evidence": "No @param tags found in the file"
+        },
+        {
+          "text": "No @returns tags anywhere in the file",
+          "passed": true,
+          "evidence": "No @returns tags found in the file"
+        },
+        {
+          "text": "Class JSDoc explains what it manages/does, not just its name restated",
+          "passed": true,
+          "evidence": "'Queues async tasks and processes them with a configurable maximum concurrency' \u2014 explains behavior, not just name"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 1,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.6,
+        "passed": 3,
+        "failed": 2,
+        "total": 5,
+        "time_seconds": 27.7,
+        "tokens": 12970,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+          "passed": true,
+          "evidence": "Lines 1-15: multi-line /** */ block before the function. Baseline wrote JSDoc unprompted."
+        },
+        {
+          "text": "No @param tags \u2014 TypeScript types are in the signature",
+          "passed": false,
+          "evidence": "Lines 6-7: '@param callback' and '@param wait' tags present despite TypeScript types in signature"
+        },
+        {
+          "text": "No @returns tag \u2014 TypeScript return type is in the signature",
+          "passed": false,
+          "evidence": "Line 8: '@returns A debounced function with a cancel method' present despite TS return type in signature"
+        },
+        {
+          "text": "Description references the delay/wait behavior, not just restates 'debounce'",
+          "passed": true,
+          "evidence": "'Returns a debounced version of the provided callback that delays invoking it until after wait milliseconds have elapsed since the last call'"
+        },
+        {
+          "text": "Description is non-empty and substantive (more than 3 words)",
+          "passed": true,
+          "evidence": "Full descriptive sentence plus @example block"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 2,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.0,
+        "passed": 0,
+        "failed": 5,
+        "total": 5,
+        "time_seconds": 27.1,
+        "tokens": 12861,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+          "passed": false,
+          "evidence": "No JSDoc comment. Function at line 6 has no preceding /** */ block."
+        },
+        {
+          "text": "JSDoc includes @param tag with a type (required in JS since no type signatures)",
+          "passed": false,
+          "evidence": "No JSDoc at all"
+        },
+        {
+          "text": "JSDoc includes @returns tag with a type",
+          "passed": false,
+          "evidence": "No JSDoc at all"
+        },
+        {
+          "text": "Description mentions YAML or both YAML and JSON \u2014 not just JSON as before",
+          "passed": false,
+          "evidence": "No JSDoc description"
+        },
+        {
+          "text": "Description is non-empty and substantive",
+          "passed": false,
+          "evidence": "No JSDoc description"
+        }
+      ],
+      "notes": []
+    },
+    {
+      "eval_id": 3,
+      "configuration": "without_skill",
+      "run_number": 1,
+      "result": {
+        "pass_rate": 0.4,
+        "passed": 2,
+        "failed": 3,
+        "total": 5,
+        "time_seconds": 28.2,
+        "tokens": 13131,
+        "tool_calls": 0,
+        "errors": 0
+      },
+      "expectations": [
+        {
+          "text": "The class declaration itself has a JSDoc comment",
+          "passed": false,
+          "evidence": "Class declaration at line 13 has no preceding JSDoc comment"
+        },
+        {
+          "text": "Each public method has its own JSDoc comment",
+          "passed": false,
+          "evidence": "No methods (add, size getter, activeCount, pendingCount, tick) have JSDoc comments"
+        },
+        {
+          "text": "No @param tags anywhere in the file \u2014 TypeScript types are in the signature",
+          "passed": true,
+          "evidence": "Trivially true \u2014 no JSDoc at all, so no @param tags"
+        },
+        {
+          "text": "No @returns tags anywhere in the file",
+          "passed": true,
+          "evidence": "Trivially true \u2014 no JSDoc at all, so no @returns tags"
+        },
+        {
+          "text": "Class JSDoc explains what it manages/does, not just its name restated",
+          "passed": false,
+          "evidence": "No class JSDoc comment"
+        }
+      ],
+      "notes": []
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate": {
+        "mean": 1.0,
+        "stddev": 0.0,
+        "min": 1.0,
+        "max": 1.0
+      },
+      "time_seconds": {
+        "mean": 33.5333,
+        "stddev": 4.0017,
+        "min": 29.6,
+        "max": 37.6
+      },
+      "tokens": {
+        "mean": 14470.0,
+        "stddev": 310.0661,
+        "min": 14259,
+        "max": 14826
+      }
+    },
+    "without_skill": {
+      "pass_rate": {
+        "mean": 0.3333,
+        "stddev": 0.3055,
+        "min": 0.0,
+        "max": 0.6
+      },
+      "time_seconds": {
+        "mean": 27.6667,
+        "stddev": 0.5508,
+        "min": 27.1,
+        "max": 28.2
+      },
+      "tokens": {
+        "mean": 12987.3333,
+        "stddev": 135.832,
+        "min": 12861,
+        "max": 13131
+      }
+    },
+    "delta": {
+      "pass_rate": "+0.67",
+      "time_seconds": "+5.9",
+      "tokens": "+1483"
+    }
+  },
+  "notes": []
+}

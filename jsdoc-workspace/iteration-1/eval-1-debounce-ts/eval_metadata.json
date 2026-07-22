@@ -1,0 +1,27 @@
+{
+  "eval_id": 1,
+  "eval_name": "debounce-ts",
+  "prompt": "Add a `debounce` utility function to src/utils/timing.ts that delays invoking a callback until after a given number of milliseconds have elapsed since the last call.",
+  "assertions": [
+    {
+      "id": "has_jsdoc",
+      "description": "Function has a JSDoc comment (/** ... */) immediately before it"
+    },
+    {
+      "id": "no_param_tags",
+      "description": "No @param tags — TypeScript types are in the signature"
+    },
+    {
+      "id": "no_returns_tag",
+      "description": "No @returns tag — TypeScript return type is in the signature"
+    },
+    {
+      "id": "description_mentions_delay",
+      "description": "Description references the delay/wait behavior, not just restates 'debounce'"
+    },
+    {
+      "id": "not_empty_description",
+      "description": "Description is non-empty and substantive (more than 3 words)"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-js-parseconfig",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+      "passed": false,
+      "evidence": "No JSDoc comment. Function at line 6 has no preceding /** */ block."
+    },
+    {
+      "text": "JSDoc includes @param tag with a type (required in JS since no type signatures)",
+      "passed": false,
+      "evidence": "No JSDoc at all"
+    },
+    {
+      "text": "JSDoc includes @returns tag with a type",
+      "passed": false,
+      "evidence": "No JSDoc at all"
+    },
+    {
+      "text": "Description mentions YAML or both YAML and JSON — not just JSON as before",
+      "passed": false,
+      "evidence": "No JSDoc description"
+    },
+    {
+      "text": "Description is non-empty and substantive",
+      "passed": false,
+      "evidence": "No JSDoc description"
+    }
+  ],
+  "summary": {"passed": 0, "failed": 5, "total": 5, "pass_rate": 0.0}
+}

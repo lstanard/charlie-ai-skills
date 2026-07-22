@@ -1,0 +1,27 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-js-parsconfig",
+  "prompt": "Update the parseConfig function to also handle YAML files in addition to JSON.",
+  "assertions": [
+    {
+      "id": "has_jsdoc",
+      "description": "Function has a JSDoc comment (/** ... */) immediately before it"
+    },
+    {
+      "id": "has_param_tag",
+      "description": "JSDoc includes @param tag with a type (required in JS since no type signatures)"
+    },
+    {
+      "id": "has_returns_tag",
+      "description": "JSDoc includes @returns tag with a type"
+    },
+    {
+      "id": "description_reflects_yaml",
+      "description": "Description mentions YAML or both YAML and JSON — not just JSON as before"
+    },
+    {
+      "id": "not_empty_description",
+      "description": "Description is non-empty and substantive"
+    }
+  ]
+}

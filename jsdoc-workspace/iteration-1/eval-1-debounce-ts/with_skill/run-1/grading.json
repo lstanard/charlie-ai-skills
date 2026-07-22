@@ -1,0 +1,33 @@
+{
+  "eval_id": 1,
+  "eval_name": "debounce-ts",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+      "passed": true,
+      "evidence": "Lines 1-6: multi-line /** */ block immediately before the export function declaration"
+    },
+    {
+      "text": "No @param tags — TypeScript types are in the signature",
+      "passed": true,
+      "evidence": "No @param anywhere in the file"
+    },
+    {
+      "text": "No @returns tag — TypeScript return type is in the signature",
+      "passed": true,
+      "evidence": "No @returns anywhere in the file"
+    },
+    {
+      "text": "Description references the delay/wait behavior, not just restates 'debounce'",
+      "passed": true,
+      "evidence": "'Delays invoking the callback until after the specified number of milliseconds have elapsed since the last time the debounced function was called'"
+    },
+    {
+      "text": "Description is non-empty and substantive (more than 3 words)",
+      "passed": true,
+      "evidence": "Two-sentence description explaining purpose and a concrete use-case"
+    }
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

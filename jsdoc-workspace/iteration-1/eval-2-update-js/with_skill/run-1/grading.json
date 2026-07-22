@@ -1,0 +1,33 @@
+{
+  "eval_id": 2,
+  "eval_name": "update-js-parseconfig",
+  "configuration": "with_skill",
+  "expectations": [
+    {
+      "text": "Function has a JSDoc comment (/** ... */) immediately before it",
+      "passed": true,
+      "evidence": "Lines 3-9: /** */ block immediately before function parseConfig"
+    },
+    {
+      "text": "JSDoc includes @param tag with a type (required in JS since no type signatures)",
+      "passed": true,
+      "evidence": "Line 8: '@param {string} filePath'"
+    },
+    {
+      "text": "JSDoc includes @returns tag with a type",
+      "passed": true,
+      "evidence": "Line 9: '@returns {object}'"
+    },
+    {
+      "text": "Description mentions YAML or both YAML and JSON — not just JSON as before",
+      "passed": true,
+      "evidence": "'Reads and parses a config file, supporting both JSON and YAML formats'"
+    },
+    {
+      "text": "Description is non-empty and substantive",
+      "passed": true,
+      "evidence": "Two-sentence description covering both format support and extension-based detection logic"
+    }
+  ],
+  "summary": {"passed": 5, "failed": 0, "total": 5, "pass_rate": 1.0}
+}

@@ -1,0 +1,33 @@
+{
+  "eval_id": 3,
+  "eval_name": "request-queue-class-ts",
+  "configuration": "without_skill",
+  "expectations": [
+    {
+      "text": "The class declaration itself has a JSDoc comment",
+      "passed": false,
+      "evidence": "Class declaration at line 13 has no preceding JSDoc comment"
+    },
+    {
+      "text": "Each public method has its own JSDoc comment",
+      "passed": false,
+      "evidence": "No methods (add, size getter, activeCount, pendingCount, tick) have JSDoc comments"
+    },
+    {
+      "text": "No @param tags anywhere in the file — TypeScript types are in the signature",
+      "passed": true,
+      "evidence": "Trivially true — no JSDoc at all, so no @param tags"
+    },
+    {
+      "text": "No @returns tags anywhere in the file",
+      "passed": true,
+      "evidence": "Trivially true — no JSDoc at all, so no @returns tags"
+    },
+    {
+      "text": "Class JSDoc explains what it manages/does, not just its name restated",
+      "passed": false,
+      "evidence": "No class JSDoc comment"
+    }
+  ],
+  "summary": {"passed": 2, "failed": 3, "total": 5, "pass_rate": 0.4}
+}
