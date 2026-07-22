@@ -23,6 +23,10 @@ Applies to all prose output: session responses, summaries, PR comments, Jira tic
     * In-session status ("what changed"): bold-labeled bullets are fine.
     * Outward-facing writing (PR comments, Jira, docs): prose carries the reasoning; bullet lists only for genuinely parallel items.
 * Test: if a sentence needs a re-read to parse, it was too dense. Unpack it — don't shorten it.
+* No em dashes. Readers flag them as an AI-writing tell and discount the material. Use a period, comma, colon, or parentheses instead.
+* Outward-facing docs open with brief situation framing: what problem this addresses and why, in a few sentences, before any proposal or detail. Calibrate to the audience — teammates share domain knowledge (core systems and team terminology need no introduction), but not ticket-level context. Never inflate framing into paragraphs of background.
+* Define at first use. Coined category labels, non-obvious acronyms, and shorthand system aliases get a few words of identification the first time they appear. Ticket/issue keys get a short parenthetical saying what they are. Skip this for terms the audience uses daily.
+* No symbol shorthand in prose. Write arrows, ⇔, and similar notation as words ("clearing the cell in Airtable clears the value in PSER", not "Absent → NULL"). Symbols are fine inside tables and code blocks.
 
 ## Ways of Working
 
