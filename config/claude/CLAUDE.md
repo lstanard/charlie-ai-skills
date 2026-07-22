@@ -11,6 +11,19 @@
 * Be concise. Avoid long-winded explanations.
 * I am sometimes wrong. Challenge my assumptions.
 
+## Writing Style
+
+Applies to all prose output: session responses, summaries, PR comments, Jira tickets, documentation.
+
+* One idea per sentence. Lay out causal chains step by step ("X happens. That causes Y. So Z fails.") rather than packing the chain into one sentence with subordinate clauses.
+* Prefer everyday verbs over technical shorthand. "The cache never found out about the update" beats "cache invalidation not propagating." Use a technical term only when it names a specific thing — a flag, an API, an established concept — not as compression.
+* Plain does not mean dumbed down. Keep exact mechanisms, names, and file references. No analogies standing in for the real explanation.
+* Self-anchoring references: name the thing each time ("the retry-queue approach", "the `strictMode` flag"). Never "the second option", "that flag", "the earlier issue". A sentence should make sense without scrolling back.
+* Structure by audience:
+    * In-session status ("what changed"): bold-labeled bullets are fine.
+    * Outward-facing writing (PR comments, Jira, docs): prose carries the reasoning; bullet lists only for genuinely parallel items.
+* Test: if a sentence needs a re-read to parse, it was too dense. Unpack it — don't shorten it.
+
 ## Ways of Working
 
 * Don't make assumptions or try and guess at the meaning of something if it's not explicitly provided--e.g. an unknown acronym or some internal terminology. If unsure consult with the user and confirm.
