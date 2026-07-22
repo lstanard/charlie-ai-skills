@@ -16,16 +16,21 @@
 Applies to all prose output: session responses, summaries, PR comments, Jira tickets, documentation.
 
 * One idea per sentence. Lay out causal chains step by step ("X happens. That causes Y. So Z fails.") rather than packing the chain into one sentence with subordinate clauses.
+* Fewer sentences is not easier to read. A sentence or bullet that packs several distinct decisions into one line reads worse than three short sentences, or a short list giving each point its own weight. When one bullet carries multiple facts that each need a beat of explanation, break it apart.
 * Prefer everyday verbs over technical shorthand. "The cache never found out about the update" beats "cache invalidation not propagating." Use a technical term only when it names a specific thing (a flag, an API, an established concept), not as compression.
+* No prepositional compression: phrases like "gated on X", "keyed off Y", "scoped to Z" stuff a whole procedure behind a preposition and force the reader to reverse-engineer the action. Spell out who does what: "before reads flip, run a query that compares A against B" instead of "gated on per-field completeness queries." "Gated on" specifically is overused; write the actual sequence.
 * Plain does not mean dumbed down. Keep exact mechanisms, names, and file references. No analogies standing in for the real explanation.
 * Self-anchoring references: name the thing each time ("the retry-queue approach", "the `strictMode` flag"). Never "the second option", "that flag", "the earlier issue". A sentence should make sense without scrolling back.
 * Structure by audience:
     * In-session status ("what changed"): bold-labeled bullets are fine.
-    * Outward-facing writing (PR comments, Jira, docs): prose carries the reasoning; bullet lists only for genuinely parallel items.
+    * Outward-facing writing (PR comments, Jira, docs): favor scannable structure. Short bullets are welcome wherever items can stand alone; each bullet still gets enough words to be understood on its own. Use flowing prose only when the reasoning genuinely needs to build across sentences. When in doubt, bullets.
+    * Link tickets/issues at every mention in outward-facing docs, not just the first; readers land mid-document.
 * Test: if a sentence needs a re-read to parse, it was too dense. Unpack it, don't shorten it.
 * No em dashes. Readers flag them as an AI-writing tell and discount the material. Use a period, comma, colon, or parentheses instead.
 * Outward-facing docs open with brief situation framing: what problem this addresses and why, in a few sentences, before any proposal or detail. Calibrate to the audience: teammates share domain knowledge (core systems and team terminology need no introduction), but not ticket-level context. Never inflate framing into paragraphs of background.
 * Define at first use. Coined category labels, non-obvious acronyms, and shorthand system aliases get a few words of identification the first time they appear. Ticket/issue keys get a short parenthetical saying what they are. Skip this for terms the audience uses daily.
+    * This applies doubly to labels coined during the work itself ("durable domain data", "sync-era", "gap audit"). They feel like established terminology to the author but mean nothing to a first-time reader. Either define them in the sentence where they first appear or replace them with the plain description.
+    * Test: would a coworker who missed every working session understand this heading or sentence without asking a question? Headings especially: a heading that packs a decision ("verify and gap-audit only") needs its first body sentence to unpack it.
 * No symbol shorthand in prose. Write arrows, ⇔, and similar notation as words ("clearing the cell in Airtable clears the value in PSER", not "Absent → NULL"). Symbols are fine inside tables and code blocks.
 
 ## Ways of Working
