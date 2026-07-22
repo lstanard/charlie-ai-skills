@@ -17,6 +17,15 @@
 * Don't be lazy. Do things the right way, not the easy way.
 * When defining a plan of action, don't provide timeline estimates.
 * After completing a task don't assume success, ask for validation.
+* Never write code comments that explain or justify a change ("so X can never happen again", "instead of the old approach", "this ensures the fix works"). A comment must make sense to a reader with no knowledge of the diff or the conversation that produced it. Change rationale belongs in the commit message, not the code. When in doubt, no comment.
+* No decision residue in code comments or documentation. Decision residue is any reference to an alternative that was considered and rejected along the way ("as opposed to JSON fixture files", "rather than hard-coding the data", "we went with X over Y"). The reader has no access to the conversation where the alternative was weighed; the contrast carries no information for them and only confuses. Describe what the thing is and does, never what it isn't or almost was.
+    * Test: if deleting the clause loses nothing about current behavior, delete it. "Test data is generated with fishery factories" survives; "instead of static JSON fixtures" does not.
+    * Exception: artifacts whose purpose is to record a decision (ADRs, design docs, option write-ups the user asked for). There, alternatives and tradeoffs are the content, not residue.
+
+## Subagent Model Selection
+
+* Dispatch broad exploration / file-survey subagents (e.g. Explore) with an explicit cheaper `model` override: `haiku` for find-and-list surveys, `sonnet` when the survey requires synthesis or judgment (e.g. summarizing conclusions from dense docs).
+* Reserve the session model (Fable/Opus) for orchestration, design, planning, and review agents. Do not pass a `model` override for those — let them inherit.
 
 ## dont-be-lazy
 
