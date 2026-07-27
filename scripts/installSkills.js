@@ -13,7 +13,7 @@
  *   node scripts/installSkills.js /path/to/app --scope=project --tags=frontend,react
  *
  *   # Re-sync a single skill
- *   node scripts/installSkills.js ~/.claude skills/agent-instructions --target=claude
+ *   node scripts/installSkills.js ~/.claude skills/general-coding-rules --target=claude
  *
  * Options:
  *   --target=cursor|claude    Install for Cursor (default) or Claude Code
@@ -231,7 +231,7 @@ function main() {
       "Usage: node scripts/installSkills.js <destination> [source-path] [options]",
     );
     console.error("  destination:  Project root or skills directory path");
-    console.error("  source-path:  e.g. skills/agent-instructions (default: skills)");
+    console.error("  source-path:  e.g. skills/general-coding-rules (default: skills)");
     console.error("");
     console.error("Options:");
     console.error("  --target=cursor|claude    Install for Cursor (default) or Claude Code");
@@ -248,7 +248,7 @@ function main() {
     console.error("  node scripts/installSkills.js /path/to/app --scope=project --tags=frontend,react");
     console.error("");
     console.error("  # Re-sync a single skill");
-    console.error("  node scripts/installSkills.js ~/.claude skills/agent-instructions --target=claude");
+    console.error("  node scripts/installSkills.js ~/.claude skills/general-coding-rules --target=claude");
     process.exit(1);
   }
 

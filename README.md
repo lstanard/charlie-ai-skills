@@ -6,7 +6,6 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 
 | Skill                                                                        | Description                                                                                                                  |
 | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| [agent-instructions](skills/agent-instructions/)                              | Tone and tooling instructions for an AI agent: concise, matter-of-fact, no sycophancy.                                      |
 | [general-coding-rules](skills/general-coding-rules/)                         | Universal rules that apply to all code regardless of language or context.                                                    |
 | [typescript-conventions](skills/typescript-conventions/)                     | TypeScript-specific style and structure rules: barrel exports, strict typing, type safety patterns.                          |
 | [docs-writing](skills/docs-writing/)                                         | Produce clear, discoverable documentation (README, HOWTO, API docs) with consistent structure and markdownlint-clean output. |
@@ -82,7 +81,7 @@ npm run install:claude -- ~/Code/my-app --scope=project
 
 **Re-sync a single skill after updating it:**
 ```bash
-npm run install:claude -- ~/.claude skills/agent-instructions
+npm run install:claude -- ~/.claude skills/general-coding-rules
 ```
 
 **Options:**
@@ -118,7 +117,7 @@ npm run install:cursor -- ~/Code/my-app --scope=project
 
 **Re-sync a single skill after updating it:**
 ```bash
-npm run install:cursor -- ~/.cursor skills/agent-instructions
+npm run install:cursor -- ~/.cursor skills/general-coding-rules
 ```
 
 **Options:**
@@ -216,6 +215,6 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
   - `--scope=global|project` — Only install skills with matching scope
   - `--tags=tag1,tag2` — Only install skills with at least one matching tag (untagged skills always pass)
   - `--include-claude` — Also install CLAUDE.md reference files
-  - Second positional arg to target a specific skill or group (e.g., `skills/agent-instructions`)
+  - Second positional arg to target a specific skill or group (e.g., `skills/general-coding-rules`)
 - `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code. Same options as above.
 - `npm run ci` — Validate and generate (for CI or pre-commit).
