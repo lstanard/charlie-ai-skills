@@ -13,6 +13,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [skill-maintenance](skills/skill-maintenance/)                               | Keep the skills repo consistent: update README.md and run codegen whenever a skill is added or changed.                     |
 | [frontend-performance-audit](skills/frontend-performance-audit/)             | Run Lighthouse against a production build after completing any frontend feature, iterate on fixes until thresholds pass, and commit a score summary to git. |
 | [jsdoc](skills/jsdoc/)                                                       | Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. |
+| [quiz-me](skills/quiz-me/)                                                   | Run an interactive comprehension quiz on code just produced or discussed, scored across mechanics, design rationale, operations, and big picture. |
 
 ### Testing skills
 
