@@ -49,17 +49,27 @@ DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
 git show-ref --verify --quiet "refs/remotes/origin/$DEFAULT_BRANCH" || DEFAULT_BRANCH=master
 ```
 
-Find the merge-base and diff against it:
+Find the merge-base and diff against the current working tree (not just HEAD), so committed, staged, unstaged, and untracked changes all count:
 
 ```bash
 MERGE_BASE=$(git merge-base "origin/$DEFAULT_BRANCH" HEAD)
-git diff --numstat "$MERGE_BASE"...HEAD
+git diff --numstat --no-renames "$MERGE_BASE"
 ```
 
-Sum added lines and count files, excluding the patterns above:
+`--no-renames` matters here: by default `git diff --numstat` detects renames and reports a compacted path like `{old => new}/package-lock.json` split across multiple whitespace-delimited fields, which breaks the path-matching exclusion script below (the real filename lands in the wrong field, so a renamed lockfile would slip through unexcluded). With `--no-renames`, a pure rename instead shows as a delete of the old path plus an add of the new path — N lines removed and N lines added, each as its own plain line. That inflates the added-lines count for renames, but that's an intentional bias for this skill: a large file move or rename is real reviewer burden, and it's itself a signal the prep-PR-first split strategy is worth proposing.
+
+`git diff --numstat "$MERGE_BASE"` (single ref, no `...HEAD`) only sees committed and working-tree changes against HEAD's ancestry — it does not see untracked files, since those aren't tracked by git at all. Count those separately:
 
 ```bash
-git diff --numstat "$MERGE_BASE"...HEAD | awk '
+git status --porcelain --untracked-files=all | awk '$1 == "??" {print $2}'
+```
+
+For each path this prints, apply the same exclusion patterns as below; for any that survive, add `wc -l < <path>` to the added-lines total and increment the file count by one.
+
+Sum added lines and count files from the tracked diff, excluding the patterns above:
+
+```bash
+git diff --numstat --no-renames "$MERGE_BASE" | awk '
   $3 ~ /(^|\/)(package-lock\.json|yarn\.lock|pnpm-lock\.yaml|Gemfile\.lock|poetry\.lock|Cargo\.lock|go\.sum)$/ { next }
   $3 ~ /\.snap$/ || $3 ~ /(^|\/)__snapshots__\// { next }
   $3 ~ /(^|\/)(dist|build|\.next|generated)\// { next }
@@ -69,13 +79,23 @@ git diff --numstat "$MERGE_BASE"...HEAD | awk '
 '
 ```
 
+Then add in the untracked-file counts from the `git status --porcelain` pass above (after applying the same exclusions) to get the final totals.
+
 ### 3. Existing-PR procedure (on demand)
 
 Prefer the GitHub CLI:
 
 ```bash
-gh pr diff <number> --stat
+gh pr view <number> --json files --jq '.files[] | [.additions, .deletions, .path] | @tsv'
 ```
+
+This emits `added\tdeleted\tpath` per file, one line per file (no rename splitting to worry about, since each entry is already a single path) — the same shape as `git diff --numstat`, so it pipes directly into the same awk exclusion/summation block from Step 2. Note: `gh pr view --json files` caps out around 100 files. For a PR large enough to hit that cap — which is exactly the case this skill cares about — use the paginated REST API instead:
+
+```bash
+gh api --paginate repos/{owner}/{repo}/pulls/<number>/files
+```
+
+and extract `additions`, `deletions`, and `filename` from the JSON response.
 
 If `gh` is unavailable, use the GitHub MCP `pull_request_read` tool to fetch the file list and per-file added/deleted counts instead. Apply the same exclusion patterns and thresholds as Step 2 — filter the returned file list against the exclusion patterns before summing.
 

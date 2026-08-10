@@ -15,10 +15,10 @@ Apply this rule when the user asks to:
 - before opening a pr
 
 When generating or editing output:
-- Resolves the default branch via `git symbolic-ref refs/remotes/origin/HEAD`, falling back to `main` then `master`, and diffs `merge-base(default, HEAD)...HEAD` with `git diff --numstat` to measure the local working diff.
+- Resolves the default branch via `git symbolic-ref refs/remotes/origin/HEAD`, falling back to `main` then `master`, and diffs `merge-base(default, HEAD)` with `git diff --numstat --no-renames` against the current working tree (covering committed, staged, unstaged, and untracked changes) to measure the local working diff.
 - Excludes lockfiles (package-lock.json, yarn.lock, pnpm-lock.yaml, Gemfile.lock, poetry.lock, Cargo.lock, go.sum), snapshot files (*.snap, __snapshots__/), generated/build output (dist/, build/, .next/, generated/), and minified files (*.min.js, *.min.css) from both the added-lines count and the changed-files count.
 - Flags when added lines exceed 1000, OR non-excluded changed files exceed 25 — either condition alone is enough to trigger a flag.
-- For an already-open PR, measures via `gh pr diff <number> --stat`, or the GitHub MCP `pull_request_read` tool if `gh` is unavailable, applying the same thresholds and exclusions as the local diff.
+- For an already-open PR, measures via `gh pr view <number> --json files --jq '.files[] | [.additions, .deletions, .path] | @tsv'` (falling back to `gh api --paginate repos/{owner}/{repo}/pulls/<number>/files` for PRs large enough to hit the ~100-file cap on `--json files`), or the GitHub MCP `pull_request_read` tool if `gh` is unavailable, applying the same thresholds and exclusions as the local diff.
 - At plan-writing time, before any diff exists, assesses each phase/task in the plan for likely scope (number of distinct files/directories it is expected to touch, number of architectural layers it spans) and flags any phase that looks likely to exceed the thresholds once written.
 - During an active multi-step implementation, checks the accumulated diff after finishing a task or phase, before starting the next one.
 - When flagging, proposes a split using whichever named pattern fits the diff's shape: layered split (schema/migration to backend to frontend to tests), feature-seam split (by independent sub-feature or module), prep-PR-first (extract mechanical prep ahead of the behavioral change), or stacked PRs (sequentially dependent, merged base-first) — see CLAUDE.md for the selection guidance.
