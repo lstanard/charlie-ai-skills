@@ -14,6 +14,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [frontend-performance-audit](skills/frontend-performance-audit/)             | Run Lighthouse against a production build after completing any frontend feature, iterate on fixes until thresholds pass, and commit a score summary to git. |
 | [jsdoc](skills/jsdoc/)                                                       | Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. |
 | [quiz-me](skills/quiz-me/)                                                   | Run an interactive comprehension quiz on code just produced or discussed, scored across mechanics, design rationale, operations, and big picture. |
+| [pr-size-guard](skills/pr-size-guard/)                                       | Flag changes likely to become an oversized PR (plan-time, mid-coding, or on demand) and propose a concrete split before they grow further. |
 
 ### Testing skills
 
