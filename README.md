@@ -15,6 +15,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [jsdoc](skills/jsdoc/)                                                       | Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. |
 | [quiz-me](skills/quiz-me/)                                                   | Run an interactive comprehension quiz on code just produced or discussed, scored across mechanics, design rationale, operations, and big picture. |
 | [pr-size-guard](skills/pr-size-guard/)                                       | Flag changes likely to become an oversized PR (plan-time, mid-coding, or on demand) and propose a concrete split before they grow further. |
+| [explain-simply](skills/explain-simply/)                                     | Reframe the most recent explanation in plain, concrete language when the user signals it didn't land (e.g. "I'm a stupid baby", "dumb it down", "ELI5"). |
 
 ### Testing skills
 
