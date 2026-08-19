@@ -74,3 +74,27 @@ Classify the work using the `brainstorming` skill's spike/bounded/architectural 
 **Bounded:**
 1. Use native Claude Code plan mode to draft a plan. No plan document is produced — the subagent-driven-development/executing-plans choice above does not apply here.
 2. Once the plan feels roughly right, invoke the `grill-me` skill before writing any code. Proceed to Phase 5 only once `grill-me`'s interrogation concludes.
+
+## Phase 5: Implement
+
+TDD throughout, regardless of path (`superpowers:test-driven-development`): write a failing test, confirm it fails, write the minimal implementation, confirm it passes, refactor if needed, commit at each meaningful checkpoint.
+
+## Phase 6: Acceptance-criteria gate
+
+1. Reuse the AC and DoD list captured in Phase 1.
+2. Compare the accumulated diff (working branch vs. the default branch) against each AC/DoD item individually — met, partially met, or not met.
+3. **This is a hard gate.** If any item is not fully met, stop here: report exactly which item(s) are unmet and why, and wait for the user to address them. Do not proceed to Phase 7 until every item is met.
+4. Once every item is met, proceed.
+
+## Phase 7: Code review
+
+1. Run the built-in `code-review` workflow at `max` effort against the current diff (branch vs. default branch).
+2. Do not pass `--comment` — nothing gets posted to GitHub.
+3. Findings that survive the workflow's own verification pass are fixed automatically (equivalent to `--fix`) — no per-finding user triage.
+4. Re-run the affected tests after fixes are applied to confirm nothing broke.
+
+## Phase 8: Size guard
+
+1. `pr-size-guard` should already have fired proactively at plan-time and at mid-coding checkpoints per its own trigger conditions — this step is the final, explicit check before committing.
+2. It is advisory only, per its own contract: report the measured lines/files and threshold(s) exceeded, propose a split if over threshold, and ask the user whether to split now or continue as-is. Never block on this.
+3. If the user chooses to split, that restructuring happens outside this pipeline — pause `sdlc` and resume once the user has a single right-sized change ready to continue with.
