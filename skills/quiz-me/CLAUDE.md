@@ -4,6 +4,8 @@
 
 Only when the user explicitly asks — phrases like "quiz me", "quiz me on this", "test my understanding". Never offer or start this unprompted after finishing a PR or task; that's the job of the always-on Teach-Back behavior, not this skill.
 
+**Exception:** the `sdlc` skill invokes this deliberately at its Phase 9, right before commit. That invocation is not the agent volunteering a quiz unprompted — it's a pipeline step the user already opted into by running `/sdlc`. Treat it the same as an explicit ask: run the full quiz per the procedure below.
+
 ---
 
 ## Execution steps

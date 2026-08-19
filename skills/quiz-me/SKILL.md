@@ -1,13 +1,13 @@
 ---
 name: quiz-me
-description: Run an interactive comprehension quiz on code the agent just produced or discussed (a PR, a diff, a feature) so the user can verify they understand it, not just that it works. Trigger this whenever the user says something like 'quiz me', 'quiz me on this', or 'test my understanding' — never run it proactively after finishing work. Asks a fixed number of questions one at a time across three difficulty tiers and four categories (mechanics, design rationale, operations, big picture), scores each answer, and ends with a per-category report.
+description: Run an interactive comprehension quiz on code the agent just produced or discussed (a PR, a diff, a feature) so the user can verify they understand it, not just that it works. Trigger this whenever the user says something like 'quiz me', 'quiz me on this', or 'test my understanding' — never run it proactively after finishing work. An exception exists for the sdlc skill's Phase 9, which deliberately invokes it right before commit as part of a pipeline the user explicitly asked for. Asks a fixed number of questions one at a time across three difficulty tiers and four categories (mechanics, design rationale, operations, big picture), scores each answer, and ends with a per-category report.
 ---
 
 # Quiz Me
 version: 0.1.0
 
 ## Purpose
-Run an interactive comprehension quiz on code the agent just produced or discussed (a PR, a diff, a feature) so the user can verify they understand it, not just that it works. Trigger this whenever the user says something like 'quiz me', 'quiz me on this', or 'test my understanding' — never run it proactively after finishing work. Asks a fixed number of questions one at a time across three difficulty tiers and four categories (mechanics, design rationale, operations, big picture), scores each answer, and ends with a per-category report.
+Run an interactive comprehension quiz on code the agent just produced or discussed (a PR, a diff, a feature) so the user can verify they understand it, not just that it works. Trigger this whenever the user says something like 'quiz me', 'quiz me on this', or 'test my understanding' — never run it proactively after finishing work. An exception exists for the sdlc skill's Phase 9, which deliberately invokes it right before commit as part of a pipeline the user explicitly asked for. Asks a fixed number of questions one at a time across three difficulty tiers and four categories (mechanics, design rationale, operations, big picture), scores each answer, and ends with a per-category report.
 
 ## Triggers
 - quiz me
@@ -32,7 +32,7 @@ Run an interactive comprehension quiz on code the agent just produced or discuss
 ## Non-goals
 - Does not gate PR merges, task completion, or any other action on the quiz score — informational only.
 - Does not persist quiz results to disk or git.
-- Does not trigger proactively after finishing work — only runs when explicitly asked.
+- Does not trigger proactively after finishing work on its own initiative — only runs when explicitly asked, or when deliberately invoked by the sdlc skill's Phase 9 (right before commit), which is a pipeline-level user request rather than the agent volunteering it.
 - Does not adapt question count or difficulty to the size or complexity of the target work.
 
 ## Notes

@@ -23,7 +23,7 @@ See CLAUDE.md for the grading rubric, question-distribution guidance, and final 
 Avoid:
 - Does not gate PR merges, task completion, or any other action on the quiz score — informational only.
 - Does not persist quiz results to disk or git.
-- Does not trigger proactively after finishing work — only runs when explicitly asked.
+- Does not trigger proactively after finishing work on its own initiative — only runs when explicitly asked, or when deliberately invoked by the sdlc skill's Phase 9 (right before commit), which is a pipeline-level user request rather than the agent volunteering it.
 - Does not adapt question count or difficulty to the size or complexity of the target work.
 
 # metadata
