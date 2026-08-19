@@ -13,7 +13,7 @@ A second, smaller gap surfaced during design: the bounded/plan-mode path has no 
 Two new skills, both following this repo's `skill.json` → `SKILL.md`/`cursor.rule.md` convention:
 
 - `skills/sdlc/` — `scope: project`, no tags. `CLAUDE.md` for the Jira/GitHub tool mechanics (Atlassian MCP calls, `gh` invocations, config file resolution) — same pattern as `pr-size-guard`.
-- `skills/grill-me/` — `scope: global`, no tags. Small enough it likely doesn't need a `CLAUDE.md`; the decision-tree procedure fits in `SKILL.md`.
+- `skills/grill-me/` — `scope: global`, no tags. Ships with a `CLAUDE.md` after all — `SKILL.md` is fully generated from `skill.json`'s fields and can't hold the multi-step decision-tree procedure and worked example; `CLAUDE.md` carries those.
 
 Both added to `README.md`'s skills table per `skill-maintenance`.
 
