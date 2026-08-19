@@ -31,7 +31,7 @@ Example — source skill's style (do NOT do this):
 > "Should retries use exponential backoff? I'd recommend backoff with a 30s cap — want me to go with that?"
 
 This skill's style (do this instead):
-> "Should retries use a fixed delay or exponential backoff?"
+> "Should retries use exponential backoff?"
 
 ### 4. Keep walking until the tree is exhausted
 
@@ -60,3 +60,4 @@ Each answer either resolves a leaf outright or opens a new child question — th
 - Does not propose answers, alternatives, or defaults — only asks.
 - Does not persist anything to disk.
 - Does not have a fixed question count — it ends when the tree is exhausted, not on a schedule.
+- Does not itself gate or block implementation — it's a quality/hardening pass on the plan, not an approval mechanism.
