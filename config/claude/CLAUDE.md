@@ -45,6 +45,8 @@ Applies to all prose output: session responses, summaries, PR comments, Jira tic
 * No decision residue in code comments or documentation. Decision residue is any reference to an alternative that was considered and rejected along the way ("as opposed to JSON fixture files", "rather than hard-coding the data", "we went with X over Y"). The reader has no access to the conversation where the alternative was weighed; the contrast carries no information for them and only confuses. Describe what the thing is and does, never what it isn't or almost was.
     * Test: if deleting the clause loses nothing about current behavior, delete it. "Test data is generated with fishery factories" survives; "instead of static JSON fixtures" does not.
     * Exception: artifacts whose purpose is to record a decision (ADRs, design docs, option write-ups the user asked for). There, alternatives and tradeoffs are the content, not residue.
+    * Red-flag phrases worth grepping for before every commit: "instead of", "rather than", "as opposed to", "not a new", "no knowledge of", "doesn't know", "isn't a". Finding one isn't automatically a violation - run it through the deletion test above - but treat it as a mechanical trigger to check, the same way the em-dash rule works.
+    * This applies to code written directly into a plan document that a subagent later transcribes verbatim, not only to code written straight into a file - the plan is often the actual point of origin for a residue comment.
 
 ## Subagent Model Selection
 
