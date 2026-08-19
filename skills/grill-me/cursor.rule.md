@@ -23,7 +23,7 @@ When generating or editing output:
 See CLAUDE.md for the decision-tree walking procedure and a worked example. Adapted from https://github.com/mattpocock/skills/blob/main/skills/productivity/grill-me.md — see that skill's 'What it does' section for the original (which does lead with a recommended answer; this version deliberately does not).
 
 Avoid:
-- Does not fire on the architectural path (brainstorming spec + writing-plans) — brainstorming's own one-question-at-a-time clarifying loop already covers that path.
+- Does not fire on the architectural path (brainstorming spec + writing-plans) — that path's spec already went through brainstorming's approach-exploration and spec-review stages, which surface the kind of decisions grill-me would ask about; the bounded path's short in-chat design does not get that same scrutiny.
 - Does not write ADRs, a glossary, a spec, or any other durable artifact.
 - Does not propose solutions, alternatives, or recommended answers — a deliberate deviation from the source skill.
 - Does not itself gate or block implementation — it's a quality/hardening pass on the plan, not an approval mechanism.
