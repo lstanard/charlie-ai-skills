@@ -98,3 +98,71 @@ TDD throughout, regardless of path (`superpowers:test-driven-development`): writ
 1. `pr-size-guard` should already have fired proactively at plan-time and at mid-coding checkpoints per its own trigger conditions — this step is the final, explicit check before committing.
 2. It is advisory only, per its own contract: report the measured lines/files and threshold(s) exceeded, propose a split if over threshold, and ask the user whether to split now or continue as-is. Never block on this.
 3. If the user chooses to split, that restructuring happens outside this pipeline — pause `sdlc` and resume once the user has a single right-sized change ready to continue with.
+
+## Phase 9: Quiz
+
+Invoke `quiz-me` on the work just completed, right before commit. This is a deliberate proactive invocation by `sdlc` — see that skill's own carve-out note for why this doesn't contradict its "never proactive" default. The quiz result is informational only; it does not gate Phase 10.
+
+## Phase 10: Commit / Push / Open PR
+
+Three separate prompts — never bundle them, since the user may want to stop after any one of them.
+
+1. **Commit?** If yes: stage the specific files that changed (not `git add -A`), write a Conventional Commits message (`<type>[optional scope]: <description>`), commit. If no: stop here for this run.
+2. **Push?** If yes: `git push -u origin <branch-name>` (first push) or `git push` (subsequent pushes on this branch). If no: stop here.
+3. **Open a PR?** If yes, continue below. If no: stop here.
+
+**Creating the PR:**
+
+a. Reuse the ticket data from Phase 1 (title, description, AC, DoD) to inform the PR description.
+b. Check for a PR template, in priority order: repo-local (`.github/pull_request_template.md`, then `.github/PULL_REQUEST_TEMPLATE/` directory), then the config's `prTemplateUrl` (Config Resolution), then the required-sections template in (c) if neither exists.
+c. **Required sections** (fill in even when using a template, adding any missing section):
+   - **What changed** — a clear summary of what was built
+   - **Jira ticket** — link to `https://<cloudId>/browse/<JIRA-KEY>`
+   - **Where to start reviewing** — point the reviewer at the most important files/entry points
+   - **Risks and assumptions** — decisions, trade-offs, or areas of uncertainty
+   - **Definition of Done** — explicit confirmation that each DoD criterion is met
+   - **Technical debt** — deferred work with `TODO` references, or "None"
+   - **Attribution footer** — `---` then `_Posted with AI_` on its own line
+d. Write the body to a temp file and reference it — never inline generated text directly in a shell command (backticks/quotes/`$()` in the content would be interpreted by the shell):
+   ```bash
+   cat <<'EOF' > /tmp/pr-body.md
+   <completed PR body>
+   EOF
+   gh pr create \
+     --title "<type>: <JIRA-KEY> <ticket-title>" \
+     --body-file /tmp/pr-body.md
+   ```
+e. **No Jira status transition.** **No Jira comment** unless the user separately and explicitly asks for one as its own action outside this pipeline.
+f. Confirm creation with `gh pr view` and share the PR URL.
+
+## Phase 11: CI loop
+
+1. Resolve `ciWorkflow` per Config Resolution.
+2. Find the latest run for this branch:
+   ```bash
+   gh run list --workflow="<ci-workflow-name>" --branch "<branch-name>" --limit 1 --json databaseId,status,conclusion
+   ```
+3. **Guard:** if the list is empty or `databaseId` is null, do not call `gh run watch` — report "No CI run found for branch `<branch-name>` — it may not have triggered yet" and stop.
+4. `gh run watch <run-id>` until it completes.
+5. **On success:** report the result and proceed to Phase 12.
+6. **On failure:**
+   a. Fetch the failure detail: `gh run view <run-id> --log-failed`
+   b. Classify each failing job:
+      - **Fixable** — a failing test assertion, a lint/type error, a reproducible code bug: diagnose it, fix the code, re-run the affected tests locally to confirm, commit, push, then repeat from step 2 to watch the new run.
+      - **Not fixable from this session** — infra/runner flakiness, missing secrets or permissions, an unavailable external service, a quota/rate limit: stop the loop here, report exactly which job/step failed and why it's outside what this session can resolve, and wait for the user.
+   c. This loop is fully autonomous for fixable failures — no confirmation prompt before each fix-and-repush cycle — but never silently retries a non-fixable failure; it surfaces those immediately.
+   d. Repeat until the run is green or the loop stops on a non-fixable failure.
+
+## Phase 12: Stop
+
+Once CI is green: report the PR URL and stop. Do not run `check-review`. Do not wait for human review or approval. Do not merge. Do not transition the Jira ticket. The user merges the PR and transitions the ticket themselves once it's approved.
+
+## Non-goals
+
+- No dependency on the `sdlc-jira-github` plugin.
+- Never transitions Jira ticket status, at any phase.
+- Never posts a Jira comment unless the user explicitly asks for one, as an action separate from this pipeline.
+- Never posts a GitHub PR comment or review.
+- Never merges a PR, and never waits for human review/approval before stopping.
+- Does not run `check-review`.
+- Does not implement `grill-me`'s interrogation logic itself — delegates to that standalone skill.
