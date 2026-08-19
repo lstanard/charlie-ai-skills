@@ -56,7 +56,7 @@ For each surviving tracked file, view its diff for orientation:
 git diff --no-renames "$MERGE_BASE" -- <path>
 ```
 
-If that diff shows the file fully removed (every line is a removal, nothing added), the file no longer exists in the working tree — do not attempt to Read it. Review it from the diff hunk alone; the hunk already contains the full old content as removed lines.
+If that diff's header includes a `deleted file mode` line, the file no longer exists in the working tree — do not attempt to Read it. Review it from the diff hunk alone; the hunk already contains the full old content as removed lines.
 
 Otherwise, read the complete current file content with the Read tool — not just the hunk. A changed function's correctness often depends on a helper defined elsewhere in the same file, which a hunk alone won't show.
 
