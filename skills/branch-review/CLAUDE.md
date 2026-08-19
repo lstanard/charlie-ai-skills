@@ -56,9 +56,13 @@ For each surviving tracked file, view its diff for orientation:
 git diff --no-renames "$MERGE_BASE" -- <path>
 ```
 
-Then read the complete current file content with the Read tool — not just the hunk. A changed function's correctness often depends on a helper defined elsewhere in the same file, which a hunk alone won't show.
+If that diff shows the file fully removed (every line is a removal, nothing added), the file no longer exists in the working tree — do not attempt to Read it. Review it from the diff hunk alone; the hunk already contains the full old content as removed lines.
+
+Otherwise, read the complete current file content with the Read tool — not just the hunk. A changed function's correctness often depends on a helper defined elsewhere in the same file, which a hunk alone won't show.
 
 For each surviving untracked file, read the complete file with the Read tool and treat the whole thing as newly added.
+
+Because Step 1 uses `--no-renames`, a pure rename shows up as two separate entries: a full delete of the old path and a full add of the new path with the same (or near-identical) content. Recognize this pattern and treat it as one rename, not two changes — don't report a large-deletion finding for the old path and a separate new-file/no-tests finding for the new path.
 
 ## Step 3: Review across four categories
 
