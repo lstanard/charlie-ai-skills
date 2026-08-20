@@ -18,7 +18,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [explain-simply](skills/explain-simply/)                                     | Reframe the most recent explanation in plain, concrete language when the user signals it didn't land (e.g. "I'm a stupid baby", "dumb it down", "ELI5"). |
 | [branch-review](skills/branch-review/)                                       | Review the currently checked-out branch against the default branch and report findings locally — never posts anywhere, never edits code. |
 | [grill-me](skills/grill-me/)                                                 | Interrogate a plan as a decision tree, one question at a time, with no recommended answer — hardens a plan-mode plan before implementation starts. |
-| [sdlc](skills/sdlc/)                                                         | Run the full lifecycle from a Jira ticket to a green CI run — plan, TDD, AC gate, max-effort code review, size guard, teach-back quiz, then commit/push/PR on request. No Jira status changes, no PR comments, no merge. |
+| [sdlc](skills/sdlc/)                                                         | Run the full lifecycle from a Jira ticket to a green CI run — plan, TDD, AC gate, scope-informed code review depth confirmed with the user, size guard, teach-back quiz, then commit/push/PR on request. No Jira status changes, no PR comments, no merge. |
 
 ### Testing skills
 

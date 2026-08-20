@@ -90,10 +90,12 @@ TDD throughout, regardless of path (`superpowers:test-driven-development`): writ
 
 ## Phase 7: Code review
 
-1. Run the built-in `code-review` workflow at `max` effort with `--fix`, against the current diff (branch vs. default branch).
-2. Do not pass `--comment` — nothing gets posted to GitHub.
-3. Findings that survive the workflow's own verification pass are fixed automatically by `--fix` — no per-finding user triage.
-4. Re-run the affected tests after fixes are applied to confirm nothing broke.
+1. Assess the diff's scope (branch vs. default branch): its size (lines and files changed) and its nature (whether it touches auth, security-sensitive code, data migrations, external-facing APIs, or new business logic, versus mechanical changes like renames, formatting, config, or test-only edits).
+2. Based on that assessment, propose a review depth — in-depth or quick — with a one-line reason, and ask the user to confirm or override. Wait for the answer before proceeding.
+3. Run the built-in `code-review` workflow against the current diff with `--fix`, at `max` effort for in-depth or `low` effort for quick.
+4. Do not pass `--comment` — nothing gets posted to GitHub.
+5. Findings that survive the workflow's own verification pass are fixed automatically by `--fix` — no per-finding user triage.
+6. Re-run the affected tests after fixes are applied to confirm nothing broke.
 
 ## Phase 8: Size guard
 

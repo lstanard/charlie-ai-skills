@@ -17,7 +17,7 @@ When generating or editing output:
 - Phase 4 (plan): architectural work goes through brainstorming -> design doc -> writing-plans, then asks the user whether to execute via subagent-driven-development or executing-plans; bounded work uses native plan mode, then invokes the grill-me skill before implementation starts.
 - Phase 5 (implement): TDD throughout, regardless of path.
 - Phase 6 (acceptance-criteria gate): compares the diff against the ticket's AC/DoD; this is a hard gate — any gap stops the pipeline until the user addresses it.
-- Phase 7 (code review): runs the built-in code-review workflow at max effort, auto-applies fixes for findings that survive verification, and never passes --comment.
+- Phase 7 (code review): assesses diff size and nature, proposes in-depth or quick review depth with a reason, and asks the user to confirm or override before running the built-in code-review workflow (max effort for in-depth, low effort for quick); auto-applies fixes for findings that survive verification and never passes --comment.
 - Phase 8 (size guard): pr-size-guard fires proactively during implementation per its own trigger conditions, and again here as a final check; advisory only, reports and proposes a split, never blocks.
 - Phase 9 (quiz): invokes quiz-me as a teach-back comprehension check right before commit — a deliberate proactive invocation at this specific gate.
 - Phase 10 (commit/push/open PR): three separate prompts, never bundled; PR body covers what changed, Jira link, where to review, risks/assumptions, explicit DoD-met confirmation, tech debt, and an attribution footer; PR title is '<type>: <JIRA-KEY> <ticket-title>'; no Jira status transition or comment.
