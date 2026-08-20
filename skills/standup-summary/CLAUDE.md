@@ -78,10 +78,12 @@ elif [ "$dow" -eq 7 ]; then
 else
   window_start=$(date -v-1d +%Y-%m-%d)
 fi
-gh api --method GET search/issues -f q="is:pr involves:@me updated:$window_start..$window_start" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
+gh api --method GET search/issues -f q="is:pr author:@me updated:$window_start..$window_start" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
 Run the date computation and the `gh api` call in the same tool invocation — Bash tool calls don't share shell state, so a `window_start` set in an earlier call is empty here.
+
+Use `author:@me`, not `involves:@me`. GitHub's `involves` qualifier is a shorthand for author, assignee, mentions, *and* commenter — approving or commenting on someone else's PR counts as "commenter," so `involves:@me` surfaces PRs you reviewed as if they were PRs you worked on. `author:@me` restricts this to PRs you actually opened.
 
 Use a single `updated:$window_start..$window_start` range qualifier, not two separate `updated:>=`/`updated:<` qualifiers. GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them, so two `updated:` clauses match the union of both instead of the intersection and the date filter silently matches everything. A same-day `..` range already covers the whole day, so no second variable is needed on the GitHub side.
 
@@ -147,15 +149,17 @@ Only fall back to relying on the GitHub CI-failure signal alone if both clauses 
 
 Three labeled sections, one or two sentences each, synthesized rather than listed item-by-item. If a section surfaces more than a couple of items, pick the highest-value ones instead of enumerating everything.
 
-```
-**Yesterday:** Merged the pagination fix for the reports API (PR #482) and moved PROJ-521 (bulk export bug) to Done after review feedback.
+Write for a reader who doesn't have Jira open — a manager or teammate skimming the update should understand what was done without looking anything up. Lead with the plain-language description of the work (what it is, in a sentence a non-technical reader could follow); a ticket or PR number is a trailing reference, not the subject of the sentence. Never open a bullet with a bare ticket ID.
 
-**Today:** Continuing PROJ-530 (rate limiter refactor) and following up on the open PR for the webhook retry logic (#491).
+```
+**Yesterday:** Merged the pagination fix for the reports API (PR #482) and fixed a bug where bulk exports could get stuck in progress (PROJ-521).
+
+**Today:** Continuing the rate limiter refactor (PROJ-530) and following up on the open PR for the webhook retry logic (#491).
 
 **Blockers:** None noted.
 ```
 
-When blockers are found, name the specific ticket/PR and the concrete reason (failing CI, flagged, or `Blocked` status) rather than a generic "there are blockers" statement.
+When blockers are found, describe the concrete reason (failing CI, flagged, or `Blocked` status) in plain language first, with the specific ticket/PR referenced alongside it — not a generic "there are blockers" statement.
 
 Printed in chat only — no posting to Slack or anywhere else, no file written beyond the config file above.
 

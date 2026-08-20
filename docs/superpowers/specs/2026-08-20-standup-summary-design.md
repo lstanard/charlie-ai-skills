@@ -66,7 +66,7 @@ window_end=$(date +%Y-%m-%d)  # exclusive upper bound, Jira only
 ## Data sources
 
 **GitHub** (`gh api --method GET search/issues -f q="..."` — `--method GET` is required to force the `-f` parameters into the query string; without it, `gh api` defaults to a POST body once any `-f` parameter is present, and the search endpoint 404s):
-- Yesterday: `is:pr involves:@me updated:$window_start..$window_start` (+ `org:<github.org>` if configured and non-empty) — a single same-day `..` range qualifier, since GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them (two separate `updated:>=`/`updated:<` qualifiers match the union, not the intersection, and the date filter silently matches everything). The same-day range already covers the whole day, so no second variable is needed on the GitHub side.
+- Yesterday: `is:pr author:@me updated:$window_start..$window_start` (+ `org:<github.org>` if configured and non-empty) — `author:@me`, not `involves:@me`: `involves` also matches PRs merely commented on or approved, which misrepresents review activity as authored work. A single same-day `..` range qualifier, since GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them (two separate `updated:>=`/`updated:<` qualifiers match the union, not the intersection, and the date filter silently matches everything). The same-day range already covers the whole day, so no second variable is needed on the GitHub side.
 - Today: `is:pr author:@me is:open` (+ `org:<github.org>` if configured and non-empty) — PRs they authored that are still open.
 - Blockers: `is:pr author:@me is:open status:failure` (+ `org:<github.org>` if configured and non-empty) — their open PRs with failing CI.
 
@@ -80,15 +80,17 @@ window_end=$(date +%Y-%m-%d)  # exclusive upper bound, Jira only
 
 Three labeled sections, one or two sentences each, synthesized rather than listed item-by-item. If a section surfaces more than a couple of items, pick the highest-value ones instead of enumerating everything — this mirrors the user's own framing: not exhaustive, just the high points.
 
-```
-**Yesterday:** Merged the pagination fix for the reports API (PR #482) and moved PROJ-521 (bulk export bug) to Done after review feedback.
+Written for a reader without Jira access — a manager or teammate skimming the update should follow what was done without looking anything up. Each bullet leads with the plain-language description of the work; a ticket or PR number is a trailing reference, never the subject a bullet opens with.
 
-**Today:** Continuing PROJ-530 (rate limiter refactor) and following up on the open PR for the webhook retry logic (#491).
+```
+**Yesterday:** Merged the pagination fix for the reports API (PR #482) and fixed a bug where bulk exports could get stuck in progress (PROJ-521).
+
+**Today:** Continuing the rate limiter refactor (PROJ-530) and following up on the open PR for the webhook retry logic (#491).
 
 **Blockers:** None noted.
 ```
 
-When blockers are found, name the specific ticket/PR and the concrete reason (failing CI, flagged, or `Blocked` status) rather than a generic "there are blockers" statement.
+When blockers are found, describe the concrete reason (failing CI, flagged, or `Blocked` status) in plain language first, with the specific ticket/PR referenced alongside it — not a generic "there are blockers" statement.
 
 Printed in chat only — no posting to Slack or anywhere else, no file written beyond the config file above.
 
