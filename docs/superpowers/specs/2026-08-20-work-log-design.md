@@ -43,7 +43,7 @@ Backfill reuses `standup-summary`'s config file at `~/.claude/standup.json` for 
 `~/.claude/worklog.jsonl` — append-only, one JSON object per line, oldest first:
 
 ```json
-{"date": "2026-08-20", "description": "Fixed a bug on the Learning Partner page where the drawer wouldn't open on click", "project": "program-service", "links": ["PROJ-1234"]}
+{"date": "2026-08-20", "description": "Fixed a bug where the settings page's save button didn't respond to clicks", "project": "reports-service", "links": ["PROJ-1234"]}
 ```
 
 Fields:
@@ -60,7 +60,7 @@ Fields:
 
 ### Explicit
 
-The user states or implies what was completed ("log that I shipped SDK 4.7.0 so program-service can start pulling merchandising data from it"). The agent:
+The user states or implies what was completed ("log that I shipped a client library upgrade so the reports pipeline can pull data from the new API"). The agent:
 1. Distills this into a one-or-two-sentence `description` in the same plain-language style as the example above — not a verbatim copy of whatever phrasing the user used, if that phrasing was more granular or more terse than the target style.
 2. Extracts any ticket key or PR link the user mentioned, or asks if none were mentioned and one seems likely to exist (a PR the user just discussed in this conversation, for instance) — but doesn't block on the user answering; an entry with an empty `links` array is valid.
 3. Runs project auto-detection.
@@ -78,7 +78,7 @@ On-demand only ("backfill my work log", "catch up my work log for the last two w
 
 **Queries**, using the resolved date range and the `jira.cloudId`/`github.org` from `~/.claude/standup.json`:
 
-- GitHub: `gh api --method GET search/issues -f q="is:pr author:@me is:merged merged:<range_start>..<range_end>"` (+ `org:<github.org>` if configured and non-empty) — `author:@me`, not `involves:@me`, for the same reason `standup-summary`'s `CLAUDE.md` documents: `involves` also matches PRs merely commented on or approved, which would misattribute reviewed work as authored work (the exact LM-25756 case that surfaced in `standup-summary`'s first real use).
+- GitHub: `gh api --method GET search/issues -f q="is:pr author:@me is:merged merged:<range_start>..<range_end>"` (+ `org:<github.org>` if configured and non-empty) — `author:@me`, not `involves:@me`, for the same reason `standup-summary`'s `CLAUDE.md` documents: `involves` also matches PRs merely commented on or approved, which would misattribute reviewed work as authored work (the exact misattribution bug that surfaced in `standup-summary`'s first real use).
 - Jira JQL: `assignee = currentUser() AND statusCategory = Done AND resolved >= "<range_start>" AND resolved < "<range_end>" ORDER BY resolved ASC`.
 
 **Dedup:** before drafting anything, read `~/.claude/worklog.jsonl` and collect every ticket key and PR URL/number already present across all `links` arrays. Drop any GitHub or Jira result whose identifier already appears there.
@@ -98,7 +98,7 @@ On-demand only ("backfill my work log", "catch up my work log for the last two w
 Example synthesized output for a monthly review:
 
 ```
-**program-service:** Shipped SDK version 4.7.0, unblocking the merchandising-data migration, and fixed a bug where the Learning Partner page's drawer wouldn't open on click (PROJ-1234).
+**reports-service:** Shipped a client library upgrade to unblock a downstream data migration, and fixed a bug where the settings page's save button didn't respond to clicks (PROJ-1234).
 
 **infra-tooling:** Migrated the CI pipeline off the deprecated runner image (PROJ-1301, #212).
 ```
