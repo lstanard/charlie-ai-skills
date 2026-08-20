@@ -2,7 +2,7 @@
 
 ## When to invoke
 
-Invoked as `/sdlc [JIRA-KEY]`. If `JIRA-KEY` is omitted, derive it from the current branch name using the `JIRA-KEY-slug` convention (e.g. branch `POU-4497-my-feature` -> key `POU-4497`). If neither an argument nor a matching branch name is available, ask the user for the ticket key before proceeding.
+Invoked as `/sdlc [JIRA-KEY]`. If `JIRA-KEY` is omitted, derive it from the current branch name using the `JIRA-KEY-slug` convention (e.g. branch `PROJ-4497-my-feature` -> key `PROJ-4497`). If neither an argument nor a matching branch name is available, ask the user for the ticket key before proceeding.
 
 Before calling any Atlassian MCP tool with object-type parameters (e.g. `getJiraIssue`'s `issueIdOrKey`), load it via `ToolSearch` first (e.g. `select:mcp__atlassian__getJiraIssue`) — without this, calls fail with cryptic type errors.
 
@@ -21,7 +21,7 @@ Fields used from `integrations.jira`: `cloudId`. Fields used from `integrations.
 
 | Field | Fallback |
 |---|---|
-| `cloudId` | No automatic discovery is possible — ask the user directly (e.g. "What's the Jira cloud ID for this project? e.g. guild-education.atlassian.net"). |
+| `cloudId` | No automatic discovery is possible — ask the user directly (e.g. "What's the Jira cloud ID for this project? e.g. your-team.atlassian.net"). |
 | `defaultBranch` | `gh repo view --json defaultBranchRef --jq '.defaultBranchRef.name'` |
 | `ciWorkflow` | `gh workflow list` — identify the primary CI workflow from the listed names; if more than one plausibly fits, ask the user which to watch. |
 | `prTemplateUrl` | Fall back to the required-sections template in Phase 10 if no repo-local template exists either. |
@@ -60,7 +60,7 @@ Fields used from `integrations.jira`: `cloudId`. Fields used from `integrations.
    git pull origin <default-branch>
    ```
 3. Derive a slug from the ticket title: lowercase, hyphen-separated, 3–5 words, no special characters (e.g. "Implement bulk delete endpoint for admin API" -> `bulk-delete-endpoint`).
-4. Branch name: `<JIRA-KEY>-<slug>` (e.g. `POU-4497-bulk-delete-endpoint`).
+4. Branch name: `<JIRA-KEY>-<slug>` (e.g. `PROJ-4497-bulk-delete-endpoint`).
 5. Present the proposed name to the user and confirm before creating it.
 6. `git checkout -b <branch-name>`
 

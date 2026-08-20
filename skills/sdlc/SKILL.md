@@ -18,7 +18,7 @@ Owns the full lifecycle from a Jira ticket to a green CI run on an open PR. Invo
 - run the full lifecycle for this ticket
 
 ## Inputs
-- jira_key: string (optional) — the Jira ticket key (e.g. POU-1234). If omitted, derived from the current branch name using the JIRA-KEY-slug convention; if neither is available, the user is asked for it.
+- jira_key: string (optional) — the Jira ticket key (e.g. PROJ-1234). If omitted, derived from the current branch name using the JIRA-KEY-slug convention; if neither is available, the user is asked for it.
 
 ## Guarantees
 - Phase 1 (fetch ticket): read-only mcp__atlassian__getJiraIssue call; presents title, description, acceptance criteria, Definition of Done, dependencies, status, assignee; flags missing/vague AC or DoD without filling gaps; no writes.
