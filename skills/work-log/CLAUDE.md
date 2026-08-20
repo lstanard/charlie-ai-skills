@@ -14,7 +14,7 @@
 `~/.claude/worklog.jsonl` — append-only, one JSON object per line, oldest first:
 
 ```json
-{"date": "2026-08-20", "description": "Fixed a bug on the Learning Partner page where the drawer wouldn't open on click", "project": "program-service", "links": ["PROJ-1234"]}
+{"date": "2026-08-20", "description": "Fixed a bug where the settings page's save button didn't respond to clicks", "project": "reports-service", "links": ["PROJ-1234"]}
 ```
 
 Fields:
@@ -73,7 +73,7 @@ On-demand only. If the user doesn't state a range, ask for one — there's no se
 gh api --method GET search/issues -f q="is:pr author:@me is:merged merged:<range_start>..<range_end>" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
-Append ` org:<github.org>` if configured and non-empty. Use `author:@me`, not `involves:@me` — `involves` also matches PRs merely commented on or approved, which would misattribute reviewed work as authored (the same LM-25756-style bug `standup-summary` hit).
+Append ` org:<github.org>` if configured and non-empty. Use `author:@me`, not `involves:@me` — `involves` also matches PRs merely commented on or approved, which would misattribute reviewed work as authored (the same misattribution bug `standup-summary` hit).
 
 **Jira JQL** (via `searchJiraIssuesUsingJql`, loaded via `ToolSearch` first: `select:mcp__atlassian__searchJiraIssuesUsingJql`):
 
@@ -98,7 +98,7 @@ assignee = currentUser() AND statusCategory = Done AND resolved >= "<range_start
 Example synthesized output:
 
 ```
-**program-service:** Shipped SDK version 4.7.0, unblocking the merchandising-data migration, and fixed a bug where the Learning Partner page's drawer wouldn't open on click (PROJ-1234).
+**reports-service:** Shipped a client library upgrade to unblock a downstream data migration, and fixed a bug where the settings page's save button didn't respond to clicks (PROJ-1234).
 
 **infra-tooling:** Migrated the CI pipeline off the deprecated runner image (PROJ-1301, #212).
 ```
