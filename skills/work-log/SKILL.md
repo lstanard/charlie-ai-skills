@@ -15,6 +15,9 @@ Keeps a personal, high-level log of completed work — one or two sentences per 
 - show my work log
 - work log summary
 - what did i work on this
+- what did i work on last month
+- catch up my work log
+- log:
 - backfill my work log
 - /work-log
 

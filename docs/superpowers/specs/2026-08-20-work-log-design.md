@@ -79,13 +79,15 @@ On-demand only ("backfill my work log", "catch up my work log for the last two w
 **Queries**, using the resolved date range and the `jira.cloudId`/`github.org` from `~/.claude/standup.json`:
 
 - GitHub: `gh api --method GET search/issues -f q="is:pr author:@me is:merged merged:<range_start>..<range_end>"` (+ `org:<github.org>` if configured and non-empty) — `author:@me`, not `involves:@me`, for the same reason `standup-summary`'s `CLAUDE.md` documents: `involves` also matches PRs merely commented on or approved, which would misattribute reviewed work as authored work (the exact misattribution bug that surfaced in `standup-summary`'s first real use).
-- Jira JQL: `assignee = currentUser() AND statusCategory = Done AND resolved >= "<range_start>" AND resolved < "<range_end>" ORDER BY resolved ASC`.
+- Jira JQL: `assignee = currentUser() AND statusCategory = Done AND resolved >= "<range_start>" AND resolved <= "<range_end>" ORDER BY resolved ASC`. The upper bound is inclusive (`<=`), matching GitHub's `merged:<range_start>..<range_end>`, which is inclusive of both ends — an exclusive upper bound would silently drop tickets resolved on the last day of the range. Known limitation: some workflows transition an issue to a Done-category status without ever setting a resolution date. Such tickets won't appear in this query, since it's keyed on `resolved`. No fallback is implemented for this case.
 
-**Dedup:** before drafting anything, read `~/.claude/worklog.jsonl` and collect every ticket key and PR URL/number already present across all `links` arrays. Drop any GitHub or Jira result whose identifier already appears there.
+**Dedup:** the canonical stored form for a GitHub PR reference is the full PR URL (`.html_url` from the `gh api` result), never a bare number like `#212`. Before drafting anything, read `~/.claude/worklog.jsonl` and collect every ticket key and PR URL already present across all `links` arrays. For an existing entry that stored a bare `#N` or `N` instead, normalize it against a candidate's full URL by matching the PR number plus the repo the candidate result came from. Drop any GitHub or Jira result whose identifier already appears there (after normalization).
+
+This method can't dedup entries with `links: []` — a valid, common shape for manually-logged work with no ticket or PR — since there's nothing in them to match against. The batch-confirmation step must tell the user that link-less entries aren't covered by automatic dedup, so they can watch for a backfill candidate that duplicates something already logged manually without a link.
 
 **Drafting:** for each remaining result, draft a one-line `description` in the same plain-language style as manual entries (e.g., a PR titled "Bump sdk version to 4.7.0" becomes "Shipped SDK version 4.7.0", not a restatement of the raw title), the resolved/merged date as `date`, auto-detected... — **exception:** `project` for a backfilled entry comes from the GitHub repo name or the Jira project key/name in the result itself, not from the current working directory, since backfill isn't necessarily run from the repo the work happened in.
 
-**Confirmation:** present the full drafted batch at once — every candidate entry with its date, description, and link — and ask for one confirmation covering the batch (approve all, drop specific ones, or edit a description before it's written). Only write the approved entries. Never auto-write, matching the caution already established for Jira/GitHub-derived attribution.
+**Confirmation:** present the full drafted batch at once — every candidate entry with its date, description, and link — and ask for one confirmation covering the batch (approve all, drop specific ones, or edit a description before it's written). Note when presenting the batch that entries with no `links` aren't covered by automatic dedup, so the batch may include something already logged manually without a link — ask the user to watch for that while reviewing. Only write the approved entries. Never auto-write, matching the caution already established for Jira/GitHub-derived attribution.
 
 ## Review
 
@@ -98,9 +100,9 @@ On-demand only ("backfill my work log", "catch up my work log for the last two w
 Example synthesized output for a monthly review:
 
 ```
-**reports-service:** Shipped a client library upgrade to unblock a downstream data migration, and fixed a bug where the settings page's save button didn't respond to clicks (PROJ-1234).
+**reports-service:** Shipped SDK version 4.7.0 to unblock a downstream data migration (https://github.com/your-org/reports-service/pull/198). Fixed a bug where the settings page's save button didn't respond to clicks (PROJ-1234).
 
-**infra-tooling:** Migrated the CI pipeline off the deprecated runner image (PROJ-1301, #212).
+**infra-tooling:** Migrated the CI pipeline off the deprecated runner image (PROJ-1301, https://github.com/your-org/infra-tooling/pull/212).
 ```
 
 ## Non-goals

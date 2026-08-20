@@ -8,6 +8,9 @@ Apply this rule when the user asks to:
 - show my work log
 - work log summary
 - what did i work on this
+- what did i work on last month
+- catch up my work log
+- log:
 - backfill my work log
 - /work-log
 
