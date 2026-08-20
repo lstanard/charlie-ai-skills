@@ -53,6 +53,10 @@ Applies to all prose output: session responses, summaries, PR comments, Jira tic
 * Dispatch broad exploration / file-survey subagents (e.g. Explore) with an explicit cheaper `model` override: `haiku` for find-and-list surveys, `sonnet` when the survey requires synthesis or judgment (e.g. summarizing conclusions from dense docs).
 * Reserve the session model (Fable/Opus) for orchestration, design, planning, and review agents. Do not pass a `model` override for those; let them inherit.
 
+## Jira / Atlassian Tooling
+
+* `createIssueLink`'s `inwardIssue`/`outwardIssue` mapping is inverted from a naive reading: `inwardIssue` displays the link type's **outward** label, `outwardIssue` displays the **inward** label. Always call `getIssueLinkTypes` first and re-derive the correct call from its inward/outward strings rather than trusting the tool's own docstring example by analogy.
+
 ## dont-be-lazy
 
 Four always-on behaviors that keep the user cognitively engaged rather than passive.
