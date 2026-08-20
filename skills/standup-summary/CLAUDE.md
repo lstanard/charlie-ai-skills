@@ -4,6 +4,8 @@
 
 Explicit request only: "generate my standup," "daily standup," "standup message," "standup update," "what did I work on yesterday," or `/standup-summary`. Never proactive.
 
+**Prerequisites:** requires an authenticated `gh` CLI (`gh auth status` succeeds) and a connected Atlassian MCP server (the `mcp__atlassian__*` tools resolve). Without both, config resolution and every query below fail.
+
 ## Config Resolution
 
 Read `~/.claude/standup.json` if present:
@@ -23,18 +25,21 @@ Example file:
 }
 ```
 
-**First-run setup** (file missing, or `jira.cloudId` absent from it):
-1. `jira.cloudId` — no automatic discovery is possible: ask the user directly (e.g. "What's the Jira cloud ID? e.g. your-team.atlassian.net").
-2. `github.org` — ask once whether to scope the GitHub search to a specific org. Leaving it blank means the search runs unscoped across every repo the user's `gh` token can see; store that choice as an explicit empty value so it isn't asked again.
-3. Write both answers to `~/.claude/standup.json`, creating the file (and `~/.claude/` if somehow absent) if it doesn't exist yet.
+An unset `github.org` is stored as an explicit empty string, not omitted from the file:
 
-**Live identity lookups** (never cached — run every invocation):
-
-```bash
-gh api user --jq .login
+```json
+{
+  "jira": { "cloudId": "your-team.atlassian.net" },
+  "github": { "org": "" }
+}
 ```
 
-For the Jira account ID, call `atlassianUserInfo` (load it via `ToolSearch` first: `select:mcp__atlassian__atlassianUserInfo`).
+An empty or absent `github.org` means the org qualifier is left out of every GitHub query entirely. Never emit `org:` with nothing after it — `gh api --method GET search/issues -f q="...org:"` fails with a 422 Validation Failed.
+
+**First-run setup.** `jira.cloudId` and `github.org` are each checked and asked for independently — a file that already has one field set still gets asked about the other field if that one is missing, rather than skipping setup entirely just because the file exists:
+1. If `jira.cloudId` is absent: no automatic discovery is possible — ask the user directly (e.g. "What's the Jira cloud ID? e.g. your-team.atlassian.net").
+2. If `github.org` is absent: ask once whether to scope the GitHub search to a specific org. Leaving it blank means the search runs unscoped across every repo the user's `gh` token can see; store that choice as the explicit empty string shown above so it isn't asked again.
+3. Write whichever answer(s) were just collected back to `~/.claude/standup.json`, merging into the file's existing contents rather than overwriting it — a field the user already configured must survive a run that only needed to ask about the other field. Create the file (and `~/.claude/` if somehow absent) if it doesn't exist yet.
 
 Before calling `searchJiraIssuesUsingJql`, load it via `ToolSearch` first (`select:mcp__atlassian__searchJiraIssuesUsingJql`) — without this, calls fail with cryptic type errors.
 
@@ -46,25 +51,41 @@ Before calling `searchJiraIssuesUsingJql`, load it via `ToolSearch` first (`sele
 dow=$(date +%u)  # 1=Mon .. 7=Sun
 if [ "$dow" -eq 1 ]; then
   window_start=$(date -v-3d +%Y-%m-%d)  # Monday -> Friday
+elif [ "$dow" -eq 7 ]; then
+  window_start=$(date -v-2d +%Y-%m-%d)  # Sunday -> Friday
 else
   window_start=$(date -v-1d +%Y-%m-%d)
 fi
-window_end=$(date +%Y-%m-%d)  # exclusive upper bound
+window_end=$(date +%Y-%m-%d)  # exclusive upper bound, Jira only
 ```
 
-Compute this once per invocation; reuse `window_start`/`window_end` in both the GitHub and Jira queries below.
+`date -v` is macOS/BSD `date` syntax. On Linux, use the GNU equivalents instead, e.g. `date -d '1 day ago' +%Y-%m-%d`.
+
+Compute this once conceptually per invocation. For the Jira JQL below, substitute the literal computed `window_start`/`window_end` values directly into the JQL text passed to the MCP tool — that substitution happens as part of the same tool call, so there's no shell-state problem. For the GitHub `gh api` commands below, Bash tool invocations do not share shell state across separate calls (only the working directory persists), so the GitHub "Yesterday" code block below recomputes `window_start` inline, in the same call as the `gh api` command.
 
 ## Data sources
 
 ### Yesterday
 
-GitHub (`gh api search/issues -f q="..."`, letting `gh` handle query-string encoding):
+GitHub (`gh api --method GET search/issues -f q="..."`): `--method GET` is what forces the `-f` parameters into the query string. Without it, `gh api` defaults to a POST body once any `-f` parameter is present, and the search endpoint 404s.
 
 ```bash
-gh api search/issues -f q="is:pr involves:@me updated:>=$window_start updated:<$window_end" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
+dow=$(date +%u)
+if [ "$dow" -eq 1 ]; then
+  window_start=$(date -v-3d +%Y-%m-%d)
+elif [ "$dow" -eq 7 ]; then
+  window_start=$(date -v-2d +%Y-%m-%d)
+else
+  window_start=$(date -v-1d +%Y-%m-%d)
+fi
+gh api --method GET search/issues -f q="is:pr involves:@me updated:$window_start..$window_start" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
-Append ` org:<github.org>` to the `q` value if `github.org` is configured.
+Run the date computation and the `gh api` call in the same tool invocation — Bash tool calls don't share shell state, so a `window_start` set in an earlier call is empty here.
+
+Use a single `updated:$window_start..$window_start` range qualifier, not two separate `updated:>=`/`updated:<` qualifiers. GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them, so two `updated:` clauses match the union of both instead of the intersection and the date filter silently matches everything. A same-day `..` range already covers the whole day, so no second variable is needed on the GitHub side.
+
+Append ` org:<github.org>` to the `q` value if `github.org` is configured and non-empty; omit it entirely otherwise.
 
 Jira JQL (via `searchJiraIssuesUsingJql`, substituting the actual computed dates for `<window_start>`/`<window_end>`):
 
@@ -77,7 +98,7 @@ assignee = currentUser() AND updated >= "<window_start>" AND updated < "<window_
 GitHub:
 
 ```bash
-gh api search/issues -f q="is:pr author:@me is:open" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
+gh api --method GET search/issues -f q="is:pr author:@me is:open" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
 Same org-suffix rule as above.
@@ -95,7 +116,7 @@ Uses the status *category*, not a literal status name, since literal names vary 
 GitHub:
 
 ```bash
-gh api search/issues -f q="is:pr author:@me is:open status:failure" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
+gh api --method GET search/issues -f q="is:pr author:@me is:open status:failure" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
 Same org-suffix rule as above.
@@ -108,7 +129,19 @@ assignee = currentUser() AND statusCategory != Done AND (flagged is not EMPTY OR
 
 Checks both the built-in Impediment flag and a literal `"Blocked"` workflow status, since Jira has no standardized "blocked" status category the way it does for To Do/In Progress/Done.
 
-**Per-clause graceful degradation:** if `flagged` isn't a valid field on this instance, or no status literally named `"Blocked"` exists, JQL errors on that specific clause. Drop only the failing clause and retry with the other; only fall back to relying on the GitHub CI-failure signal alone if both clauses turn out invalid.
+**Per-clause graceful degradation:** if `flagged` isn't a valid field on this instance, or no status literally named `"Blocked"` exists, JQL errors on that specific clause. Drop only the failing clause and retry with the other:
+
+Only the `flagged` clause:
+```
+assignee = currentUser() AND statusCategory != Done AND flagged is not EMPTY ORDER BY updated DESC
+```
+
+Only the `status = "Blocked"` clause:
+```
+assignee = currentUser() AND statusCategory != Done AND status = "Blocked" ORDER BY updated DESC
+```
+
+Only fall back to relying on the GitHub CI-failure signal alone if both clauses turn out invalid.
 
 ## Output format
 
