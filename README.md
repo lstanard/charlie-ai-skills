@@ -66,6 +66,13 @@ Available tags: `frontend`, `react`, `typescript`, `javascript`, `testing`, `gra
 
 Skills with no tags are installed whenever `--scope=project` is used. Skills with tags are only installed when at least one of their tags is requested.
 
+### Dependencies
+
+A skill can declare two kinds of dependency in `skill.json`:
+
+- **`dependencies`** — slugs of other skills in this repo (e.g. `sdlc` depends on `grill-me`, `pr-size-guard`, `quiz-me`). `installSkills.js` installs these alongside the depending skill automatically, regardless of `--scope`/`--tags`, so a skill's own runtime requirements are never left uninstalled by accident.
+- **`plugin_dependencies`** — skills that come from an external plugin (e.g. `superpowers:brainstorming`). This repo can't install another plugin's skills, so the installer just prints them as a reminder to install separately.
+
 ### In Claude Code
 
 **Install global skills** (once, applies to all projects):
@@ -180,6 +187,7 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
    - `id` (e.g. `charlie.my-skill-name`)
    - `title`, `version` (semver `x.y.z`), `description`
    - Optionally: `triggers`, `inputs`, `guarantees`, `non_goals`, `notes`
+   - Optionally: `dependencies` (slugs of other skills in this repo this one requires — see [Dependencies](#dependencies)), `plugin_dependencies` (required skills from an external plugin, printed as a reminder at install time)
 
    Example:
 
@@ -194,6 +202,8 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
      "triggers": ["do X", "help with Y"],
      "guarantees": ["Output does Z"],
      "non_goals": ["Does not do W"],
+     "dependencies": ["some-other-skill"],
+     "plugin_dependencies": ["superpowers:brainstorming"],
      "notes": "Prefer foo over bar."
    }
    ```
@@ -216,7 +226,7 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 ### Scripts
 
 - `npm run gen` — Regenerate `SKILL.md` and `cursor.rule.md` for every skill (discovers `skill.json` recursively under `skills/`). Or pass a single file: `node scripts/generateSkillFiles.js skills/my-skill/skill.json`.
-- `npm run validate -- <path>` — Validate a `skill.json` (required fields and semver). Example: `npm run validate -- skills/docs-writing/skill.json`.
+- `npm run validate -- <path>` — Validate a `skill.json` (required fields, semver, and that any `dependencies` slugs resolve to a real skill in the repo). Example: `npm run validate -- skills/docs-writing/skill.json`.
 - `npm run install:cursor -- <destination> [source-path] [options]` — Install skills for Cursor.
   - `--scope=global|project` — Only install skills with matching scope
   - `--tags=tag1,tag2` — Only install skills with at least one matching tag (untagged skills always pass)

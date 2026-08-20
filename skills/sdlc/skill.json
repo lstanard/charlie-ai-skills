@@ -38,5 +38,13 @@
     "Does not run check-review.",
     "Does not implement the grill-me interrogation itself — delegates to the standalone grill-me skill."
   ],
+  "dependencies": ["grill-me", "pr-size-guard", "quiz-me"],
+  "plugin_dependencies": [
+    "superpowers:brainstorming",
+    "superpowers:writing-plans",
+    "superpowers:test-driven-development",
+    "superpowers:subagent-driven-development",
+    "superpowers:executing-plans"
+  ],
   "notes": "See CLAUDE.md for the exact Atlassian MCP/gh CLI mechanics, config file resolution and fallback, PR body template, and the CI failure-classification procedure."
 }

@@ -36,6 +36,11 @@ function findSkillJsonPaths(singlePath) {
   return paths.sort();
 }
 
+/**
+ * Renders a skill.json object into the SKILL.md content Claude Code/Cursor read.
+ * @param {object} skill - parsed skill.json contents
+ * @returns {string} the full SKILL.md file content
+ */
 function generateSkillMd(skill) {
   const lines = [];
 
@@ -63,11 +68,25 @@ function generateSkillMd(skill) {
   for (const g of skill.guarantees || []) lines.push(`- ${g}`);
   lines.push('\n## Non-goals');
   for (const n of skill.non_goals || []) lines.push(`- ${n}`);
+  if ((skill.dependencies || []).length > 0 || (skill.plugin_dependencies || []).length > 0) {
+    lines.push('\n## Dependencies');
+    if ((skill.dependencies || []).length > 0) {
+      lines.push(`- Local skills (installed automatically alongside this one): ${skill.dependencies.join(', ')}`);
+    }
+    if ((skill.plugin_dependencies || []).length > 0) {
+      lines.push(`- Plugin skills (install separately, not managed by this repo): ${skill.plugin_dependencies.join(', ')}`);
+    }
+  }
   lines.push('\n## Notes');
   if (skill.notes) lines.push(skill.notes);
   return lines.join('\n');
 }
 
+/**
+ * Renders a skill.json object into the cursor.rule.md content Cursor reads.
+ * @param {object} skill - parsed skill.json contents
+ * @returns {string} the full cursor.rule.md file content
+ */
 function generateCursorRuleMd(skill) {
   const lines = [];
   lines.push(`# ${skill.title} (Cursor rule)`);
@@ -87,6 +106,16 @@ function generateCursorRuleMd(skill) {
     lines.push('');
     lines.push('Avoid:');
     for (const n of skill.non_goals) lines.push(`- ${n}`);
+  }
+  if ((skill.dependencies || []).length > 0 || (skill.plugin_dependencies || []).length > 0) {
+    lines.push('');
+    lines.push('Dependencies:');
+    if ((skill.dependencies || []).length > 0) {
+      lines.push(`- Local skills (installed automatically alongside this one): ${skill.dependencies.join(', ')}`);
+    }
+    if ((skill.plugin_dependencies || []).length > 0) {
+      lines.push(`- Plugin skills (install separately, not managed by this repo): ${skill.plugin_dependencies.join(', ')}`);
+    }
   }
   lines.push('');
   lines.push('# metadata');

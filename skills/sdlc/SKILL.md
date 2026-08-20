@@ -43,5 +43,9 @@ Owns the full lifecycle from a Jira ticket to a green CI run on an open PR. Invo
 - Does not run check-review.
 - Does not implement the grill-me interrogation itself — delegates to the standalone grill-me skill.
 
+## Dependencies
+- Local skills (installed automatically alongside this one): grill-me, pr-size-guard, quiz-me
+- Plugin skills (install separately, not managed by this repo): superpowers:brainstorming, superpowers:writing-plans, superpowers:test-driven-development, superpowers:subagent-driven-development, superpowers:executing-plans
+
 ## Notes
 See CLAUDE.md for the exact Atlassian MCP/gh CLI mechanics, config file resolution and fallback, PR body template, and the CI failure-classification procedure.

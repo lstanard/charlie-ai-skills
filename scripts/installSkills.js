@@ -20,6 +20,11 @@
  *   --scope=global|project    Only install skills with matching scope
  *   --tags=tag1,tag2          Only install skills with at least one matching tag
  *   --include-claude          Also install CLAUDE.md reference files
+ *
+ * A skill's `dependencies` (other skill.json slugs in this repo) are installed
+ * alongside it automatically, regardless of --scope/--tags. Its
+ * `plugin_dependencies` (skills from an external plugin, e.g. superpowers:*)
+ * are printed as a reminder — this script does not install plugins.
  */
 import fs from "fs";
 import path from "path";
@@ -55,6 +60,8 @@ function findSkills(sourcePath) {
         skillMdPath: fs.existsSync(skillMdPath) ? skillMdPath : null,
         scope: skillJson.scope ?? null,
         tags: skillJson.tags ?? [],
+        dependencies: skillJson.dependencies ?? [],
+        pluginDependencies: skillJson.plugin_dependencies ?? [],
       });
       return;
     }
@@ -87,6 +94,56 @@ function filterSkills(skills, scopeFilter, tagsFilter) {
 
     return true;
   });
+}
+
+/**
+ * Expands a set of requested skills to include their local `dependencies`,
+ * looked up against every skill in the repo (not just sourcePath) since a
+ * dependency often lives in a sibling directory. Dependencies bypass the
+ * scope/tags filters already applied to the requested skills, because a
+ * required skill has to be present regardless of the filter. Also collects
+ * every `plugin_dependencies` entry across the expanded set for the caller
+ * to report separately, since those can't be installed by this script.
+ * @param {Array<object>} skills - requested skills, already scope/tag-filtered
+ * @param {Map<string, object>} bySlug - every skill in the repo, keyed by slug
+ * @returns {{resolved: Array<object>, pluginDeps: Set<string>}} the expanded
+ *   skill list (each entry gains a `pulledInBy` Set of slugs that required it)
+ *   and the union of plugin dependency names
+ */
+function resolveDependencies(skills, bySlug) {
+  const resolved = new Map(); // slug -> skill entry with pulledInBy: Set<parentSlug>
+  const pluginDeps = new Set();
+
+  /**
+   * Adds a skill (and its transitive dependencies) to the resolved map.
+   * @param {object} skill - the skill entry to add
+   * @param {string|null} pulledInByParent - slug of the skill that required this one, or null if directly requested
+   * @returns {void}
+   */
+  function visit(skill, pulledInByParent) {
+    const existing = resolved.get(skill.slug);
+    if (existing) {
+      if (pulledInByParent) existing.pulledInBy.add(pulledInByParent);
+      return;
+    }
+    const entry = { ...skill, pulledInBy: new Set(pulledInByParent ? [pulledInByParent] : []) };
+    resolved.set(skill.slug, entry);
+
+    for (const dep of skill.pluginDependencies) pluginDeps.add(dep);
+
+    for (const depSlug of skill.dependencies) {
+      const dep = bySlug.get(depSlug);
+      if (!dep) {
+        console.warn(`  ⚠️  ${skill.slug}: unknown dependency "${depSlug}", skipping`);
+        continue;
+      }
+      visit(dep, skill.slug);
+    }
+  }
+
+  for (const skill of skills) visit(skill, null);
+
+  return { resolved: [...resolved.values()], pluginDeps };
 }
 
 function findClaudeMd(sourcePath) {
@@ -133,13 +190,14 @@ function installForCursor(skills, destination, includeClaude, sourcePath) {
 
   console.log(`Copying ${skills.length} skill(s) to ${skillsDir} (Cursor)`);
 
-  for (const { dir, slug, skillMdPath } of skills) {
+  for (const { dir, slug, skillMdPath, pulledInBy } of skills) {
     if (!skillMdPath) {
       console.warn(`  ⚠️  ${slug}: missing SKILL.md, skipping`);
       continue;
     }
     copyRecursive(dir, path.join(skillsDir, slug));
-    console.log(`  ✓ ${slug}/`);
+    const via = pulledInBy && pulledInBy.size > 0 ? ` (dependency of ${[...pulledInBy].join(", ")})` : "";
+    console.log(`  ✓ ${slug}/${via}`);
   }
 
   if (includeClaude) {
@@ -172,13 +230,14 @@ function installForClaude(skills, destination, includeClaude, sourcePath) {
 
   console.log(`Copying ${skills.length} skill(s) to ${skillsDir} (Claude Code)`);
 
-  for (const { dir, slug, skillMdPath } of skills) {
+  for (const { dir, slug, skillMdPath, pulledInBy } of skills) {
     if (!skillMdPath) {
       console.warn(`  ⚠️  ${slug}: missing SKILL.md, skipping`);
       continue;
     }
     copyRecursive(dir, path.join(skillsDir, slug));
-    console.log(`  ✓ ${slug}/`);
+    const via = pulledInBy && pulledInBy.size > 0 ? ` (dependency of ${[...pulledInBy].join(", ")})` : "";
+    console.log(`  ✓ ${slug}/${via}`);
   }
 
   if (includeClaude) {
@@ -264,10 +323,28 @@ function main() {
     process.exit(1);
   }
 
+  // Dependency lookups always resolve against the whole repo, not just sourcePath,
+  // since a dependency (e.g. sdlc -> grill-me) is usually a sibling directory.
+  const bySlug = new Map(findSkills("skills").map((s) => [s.slug, s]));
+  const { resolved, pluginDeps } = resolveDependencies(skills, bySlug);
+  const pulledIn = resolved.filter((s) => s.pulledInBy.size > 0 && !skills.some((orig) => orig.slug === s.slug));
+  if (pulledIn.length > 0) {
+    console.log(
+      `Pulling in ${pulledIn.length} dependency skill(s): ${pulledIn
+        .map((s) => `${s.slug} (required by ${[...s.pulledInBy].join(", ")})`)
+        .join(", ")}`,
+    );
+  }
+
   if (target === "cursor") {
-    installForCursor(skills, destination, includeClaude, sourcePath);
+    installForCursor(resolved, destination, includeClaude, sourcePath);
   } else {
-    installForClaude(skills, destination, includeClaude, sourcePath);
+    installForClaude(resolved, destination, includeClaude, sourcePath);
+  }
+
+  if (pluginDeps.size > 0) {
+    console.log("\nPlugin dependencies (install separately via your plugin marketplace — not managed by this script):");
+    for (const dep of [...pluginDeps].sort()) console.log(`  - ${dep}`);
   }
 
   console.log("Done.");

@@ -35,5 +35,9 @@ Avoid:
 - Does not run check-review.
 - Does not implement the grill-me interrogation itself — delegates to the standalone grill-me skill.
 
+Dependencies:
+- Local skills (installed automatically alongside this one): grill-me, pr-size-guard, quiz-me
+- Plugin skills (install separately, not managed by this repo): superpowers:brainstorming, superpowers:writing-plans, superpowers:test-driven-development, superpowers:subagent-driven-development, superpowers:executing-plans
+
 # metadata
 id: charlie.sdlc
