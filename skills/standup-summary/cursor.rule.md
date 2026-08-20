@@ -1,0 +1,34 @@
+# Standup Summary (Cursor rule)
+scope: project
+version: 0.1.0
+
+Apply this rule when the user asks to:
+- generate my standup
+- daily standup
+- standup message
+- standup update
+- what did i work on yesterday
+- /standup-summary
+
+When generating or editing output:
+- Reads ~/.claude/standup.json for jira.cloudId (required) and github.org (optional); if the file or a required field is missing, asks the user directly (no auto-discovery is possible for either field) and writes the answer back so it's asked only once.
+- Fetches the GitHub username (gh api user --jq .login) and Jira account ID (atlassianUserInfo) live on every run — never caches identity in the config file.
+- Computes the time window as the last working day: Monday looks back to the prior Friday; any other day looks back one calendar day.
+- Yesterday section: GitHub search 'is:pr involves:@me updated:>=<window_start> updated:<<window_end>' (+ org filter if configured) and Jira JQL 'assignee = currentUser() AND updated >= "<window_start>" AND updated < "<window_end>"'.
+- Today section: GitHub search 'is:pr author:@me is:open' (+ org filter if configured) and Jira JQL 'assignee = currentUser() AND statusCategory = "In Progress"' — using the status category rather than a literal status name, since literal names vary by project.
+- Blockers section: GitHub search 'is:pr author:@me is:open status:failure' (+ org filter if configured) and Jira JQL checking both the flagged field and a literal 'Blocked' status; if either JQL clause errors because the field/status doesn't exist on this instance, drops only that clause and keeps the other, falling back to the GitHub signal alone only if both are invalid.
+- Produces three labeled sections (Yesterday/Today/Blockers), one or two sentences each, synthesized rather than listing every item found — picks the highest-value points when a section surfaces more than a couple of items.
+- Chat-only output: never posts to Slack or anywhere else, never writes a file beyond the config file above.
+- Entirely read-only: never transitions a Jira ticket, never comments on a PR or ticket.
+
+See CLAUDE.md for the exact gh/JQL query strings, the time-window computation, the config file schema and first-run setup flow, and the output format template.
+
+Avoid:
+- Does not ask the user to manually state what they're working on — the today section is derived entirely from current in-progress Jira tickets and open authored PRs.
+- Does not post the generated message anywhere — chat output only.
+- Does not transition Jira ticket status or comment on tickets/PRs.
+- Does not depend on the sdlc-jira-github plugin or any other plugin.
+- Does not attempt cross-timezone "yesterday" reasoning beyond the last-working-day rule — uses the local machine's date.
+
+# metadata
+id: charlie.standup-summary
