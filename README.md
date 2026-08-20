@@ -20,6 +20,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [grill-me](skills/grill-me/)                                                 | Interrogate a plan as a decision tree, one question at a time, with no recommended answer — hardens a plan-mode plan before implementation starts. |
 | [sdlc](skills/sdlc/)                                                         | Run the full lifecycle from a Jira ticket to a green CI run — plan, TDD, AC gate, scope-informed code review depth confirmed with the user, size guard, teach-back quiz, then commit/push/PR on request. No Jira status changes, no PR comments, no merge. |
 | [standup-summary](skills/standup-summary/)                                  | Generate a concise yesterday/today/blockers standup message from your actual Jira and GitHub activity, scoped account-wide. Chat output only, entirely read-only. |
+| [work-log](skills/work-log/)                                                | Keep a personal, high-level log of completed work — explicit or proactive entries, on-demand Jira/GitHub backfill, synthesized weekly/monthly/yearly review. |
 
 ### Testing skills
 
