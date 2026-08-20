@@ -31,8 +31,8 @@ The first skill in this repo needing state that isn't project-scoped. Stored at 
 
 ```json
 {
-  "jira": { "cloudId": "guild-education.atlassian.net" },
-  "github": { "org": "GuildEducationInc" }
+  "jira": { "cloudId": "your-team.atlassian.net" },
+  "github": { "org": "your-github-org" }
 }
 ```
 
@@ -65,7 +65,7 @@ window_end=$(date +%Y-%m-%d)  # exclusive upper bound
 
 **Jira** (`searchJiraIssuesUsingJql` with the configured `cloudId`):
 - Yesterday: `assignee = currentUser() AND updated >= "$window_start" AND updated < "$window_end" ORDER BY updated DESC`
-- Today: `assignee = currentUser() AND statusCategory = "In Progress" ORDER BY updated DESC` — the status *category*, not a literal status name, since literal names vary by project (this workspace uses `In_Progress`, `In_Review`, etc. with underscores; another project might use different words entirely). The category is standardized across every project in a Jira instance.
+- Today: `assignee = currentUser() AND statusCategory = "In Progress" ORDER BY updated DESC` — the status *category*, not a literal status name, since literal names vary by project (one project might use `In_Progress` with underscores, another "In Dev," another something else entirely). The category is standardized across every project in a Jira instance.
 - Blockers: `assignee = currentUser() AND statusCategory != Done AND (flagged is not EMPTY OR status = "Blocked") ORDER BY updated DESC` — checks both the built-in Impediment flag and a literal `"Blocked"` workflow status, since Jira has no standardized "blocked" status category the way it does for To Do/In Progress/Done.
   - **Per-clause graceful degradation:** if `flagged` isn't a valid field on this instance, or no status literally named `"Blocked"` exists, JQL errors on that specific clause. Drop only the failing clause and retry with the other; only fall back to relying on the GitHub CI-failure signal alone if both clauses turn out invalid.
 
@@ -74,9 +74,9 @@ window_end=$(date +%Y-%m-%d)  # exclusive upper bound
 Three labeled sections, one or two sentences each, synthesized rather than listed item-by-item. If a section surfaces more than a couple of items, pick the highest-value ones instead of enumerating everything — this mirrors the user's own framing: not exhaustive, just the high points.
 
 ```
-**Yesterday:** Merged the pagination fix for the reports API (PR #482) and moved POU-4521 (bulk export bug) to Done after review feedback.
+**Yesterday:** Merged the pagination fix for the reports API (PR #482) and moved PROJ-521 (bulk export bug) to Done after review feedback.
 
-**Today:** Continuing POU-4530 (rate limiter refactor) and following up on the open PR for the webhook retry logic (#491).
+**Today:** Continuing PROJ-530 (rate limiter refactor) and following up on the open PR for the webhook retry logic (#491).
 
 **Blockers:** None noted.
 ```
