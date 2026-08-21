@@ -6,6 +6,21 @@ The user has checked out someone else's branch locally and wants a fast, local-o
 
 ---
 
+## Step 0: Choose review depth
+
+Before touching git, ask the user to pick a depth:
+
+- **Shallow** — the single-pass review in Steps 1-5 below: reads full files once, no subagent fan-out, results in seconds.
+- **In-depth** — delegates entirely to the built-in `code-review` skill at `max` effort against the current diff, which fans out multiple agents per category and adversarially verifies each finding before reporting.
+
+Skip the question only when the invocation already states the depth: phrases like "do a quick review of this branch" mean shallow, phrases like "do an in-depth review of this branch" or "do an adversarial review of this branch" mean in-depth. Otherwise ask and wait for the answer before proceeding.
+
+Note the naming: this is the built-in `code-review` skill (effort levels `low` through `max`, `--comment`/`--fix` flags, works against the current diff by default) — unrelated to the `code-review:code-review` plugin skill, which only reviews a GitHub pull request and always posts a comment.
+
+If the user picks **shallow**, continue to Step 1.
+
+If the user picks **in-depth**, run `code-review` against the current diff at `max` effort. Pass neither `--comment` (never post to GitHub) nor `--fix` (never edit code) — both non-goals hold regardless of depth. Once `code-review` finishes, stop: do not also run Steps 1-5, and do not re-render its findings in this skill's own index-first format — `code-review` already reports index-first.
+
 ## Step 1: Resolve the diff
 
 Resolve the default branch:
@@ -75,7 +90,7 @@ For every file from Step 2, check each category. Do not skip a category because 
 | Maintainability | Duplicated logic that already exists elsewhere in the file or repo, unnecessary complexity for what the change needs, unclear or misleading naming, dead code left behind |
 | Test coverage | New logic or edge cases with no corresponding test, tests that execute code but don't assert the behavior that actually matters (e.g. only checking "it doesn't throw") |
 
-Single pass: form a judgment on each file once. Do not re-review a file a second time looking for what you missed, and do not spawn subagents for this — that is what keeps this skill lightweight rather than duplicating `code-review:code-review`.
+Single pass: form a judgment on each file once. Do not re-review a file a second time looking for what you missed, and do not spawn subagents for this — that is what keeps the shallow path lightweight rather than duplicating the in-depth path's delegation to `code-review`.
 
 ## Step 4: Assign severity
 
@@ -113,8 +128,8 @@ Branch review — 0 findings across 6 files reviewed against main.
 
 ## Non-goals
 
-- Never posts a PR comment, submits a GitHub review, or calls any `gh pr` / GitHub API mutation — output goes to the chat only.
-- Never edits, fixes, or refactors any code.
+- Never posts a PR comment, submits a GitHub review, or calls any `gh pr` / GitHub API mutation — output goes to the chat only, on either path.
+- Never edits, fixes, or refactors any code, on either path.
 - Never runs linters, type checkers, or the test suite itself.
-- Never accepts a PR number, URL, or file path as a target — the currently checked-out branch is the only target.
-- Never fans out to subagents or runs multiple verification passes.
+- Never accepts a PR number, URL, or file path as a target — the currently checked-out branch is the only target, on either path.
+- Never implements its own subagent fan-out or multi-pass verification; the in-depth path delegates that entirely to `code-review`.
