@@ -31,6 +31,14 @@ DEFAULT_BRANCH=${DEFAULT_BRANCH:-main}
 git show-ref --verify --quiet "refs/remotes/origin/$DEFAULT_BRANCH" || DEFAULT_BRANCH=master
 ```
 
+Update the local view of the default branch before diffing against it — otherwise a stale `origin/$DEFAULT_BRANCH` ref makes the diff include commits already merged upstream, producing findings on code the branch didn't actually introduce:
+
+```bash
+git fetch origin "$DEFAULT_BRANCH" --quiet
+```
+
+This only updates the remote-tracking ref; it doesn't touch the working tree, the current branch, or any local branch named `$DEFAULT_BRANCH`. If the fetch fails (e.g. no network), continue with whatever `origin/$DEFAULT_BRANCH` is already present locally and note in the final report that the default branch may be stale.
+
 Find the merge-base:
 
 ```bash

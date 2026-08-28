@@ -4,7 +4,7 @@ description: Reviews the currently checked-out branch's diff against the repo's 
 ---
 
 # Branch Review
-version: 0.2.0
+version: 0.2.1
 
 ## Purpose
 Reviews the currently checked-out branch's diff against the repo's default branch and reports findings locally — never posts a comment or review to GitHub or anywhere else, and never edits or fixes code. Built for reviewing someone else's work after checking out their branch. Before starting, asks the user to choose a shallow, single-pass review (reads the full content of each changed file across four categories: correctness, security, maintainability, test coverage) or an in-depth review that delegates to the code-review skill at max effort for multi-agent adversarial verification. Either way, findings are reported ranked by severity (Critical, Important, Minor) so the user can decide case by case whether to post any of them as a PR comment. Neither path accepts a PR-number/URL target, and neither posts anywhere automatically.
@@ -22,7 +22,7 @@ Reviews the currently checked-out branch's diff against the repo's default branc
 
 ## Guarantees
 - Before starting, asks the user to choose shallow (the single-pass review below) or in-depth (delegates to the code-review skill at max effort for multi-agent adversarial verification), skipping the question only when the invocation already states the depth (e.g. "do a quick review" means shallow, "do an in-depth/adversarial review" means in-depth).
-- Resolves the default branch via `git symbolic-ref refs/remotes/origin/HEAD`, falling back to `main` then `master`, and diffs `merge-base(default, HEAD)` against the current working tree with `git diff --no-renames`, covering committed, staged, unstaged, and untracked changes on the current branch — same resolution approach as `pr-size-guard`.
+- Resolves the default branch via `git symbolic-ref refs/remotes/origin/HEAD`, falling back to `main` then `master`, runs `git fetch origin <default branch>` to refresh the local view of it before diffing (so a stale local ref doesn't pull in commits already merged upstream as false findings), and diffs `merge-base(default, HEAD)` against the current working tree with `git diff --no-renames`, covering committed, staged, unstaged, and untracked changes on the current branch — same resolution approach as `pr-size-guard`.
 - Excludes lockfiles (package-lock.json, yarn.lock, pnpm-lock.yaml, Gemfile.lock, poetry.lock, Cargo.lock, go.sum), snapshot files (*.snap, __snapshots__/), generated/build output (dist/, build/, .next/, generated/), and minified files (*.min.js, *.min.css) from review.
 - If the resulting diff is empty, says so and stops — no findings are fabricated.
 - On the shallow path, reads the complete current file content of each non-excluded changed file, not just the diff hunks, before evaluating it, and reviews across four fixed categories: correctness (logic errors, edge cases, missing/incorrect error handling), security (injection, auth/authz gaps, secrets, unsafe input handling), maintainability (duplication, unnecessary complexity, naming, dead code), and test coverage (missing tests for new logic/edge cases, tests that don't assert the behavior that matters).
