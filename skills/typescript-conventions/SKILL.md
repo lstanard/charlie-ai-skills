@@ -1,6 +1,6 @@
 ---
-name: typescript-conventions
-description: TypeScript-specific style and structure rules: barrel exports, strict typing, type safety patterns. Apply when writing or reviewing TypeScript code.
+name: "typescript-conventions"
+description: "TypeScript-specific style and structure rules: barrel exports, strict typing, type safety patterns. Apply when writing or reviewing TypeScript code."
 ---
 
 # TypeScript conventions

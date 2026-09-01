@@ -1,13 +1,13 @@
 ---
-name: pr-size-guard
-description: Flags changes likely to become an oversized, hard-to-review PR, and proposes concrete ways to split them before they grow further. Applies in three situations — proactively while writing or reviewing an implementation plan for a multi-file feature, to flag any phase likely to exceed the size thresholds once written; proactively after finishing a task or phase within an active multi-step implementation, before starting the next one, to check the diff accumulated so far; and on explicit request — 'check PR size', 'is this too big', 'should I split this', 'check this PR' — for in-flight work or an already-open PR. Measures added lines and changed files (excluding lockfiles, snapshots, generated/build output, and minified files) against fixed thresholds, and is advisory only, reporting findings and proposing a split — it never blocks.
+name: "pr-size-guard"
+description: "Assess an implementation plan, working diff, or open PR for review size and propose concrete splits. Use on PR-size questions and proactively between phases of multi-step work. Advisory only; never block progress."
 ---
 
 # PR Size Guard
 version: 0.1.0
 
 ## Purpose
-Flags changes likely to become an oversized, hard-to-review PR, and proposes concrete ways to split them before they grow further. Applies in three situations — proactively while writing or reviewing an implementation plan for a multi-file feature, to flag any phase likely to exceed the size thresholds once written; proactively after finishing a task or phase within an active multi-step implementation, before starting the next one, to check the diff accumulated so far; and on explicit request — 'check PR size', 'is this too big', 'should I split this', 'check this PR' — for in-flight work or an already-open PR. Measures added lines and changed files (excluding lockfiles, snapshots, generated/build output, and minified files) against fixed thresholds, and is advisory only, reporting findings and proposing a split — it never blocks.
+Assess an implementation plan, working diff, or open PR for review size and propose concrete splits. Use on PR-size questions and proactively between phases of multi-step work. Advisory only; never block progress.
 
 ## Triggers
 - check pr size

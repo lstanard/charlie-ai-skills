@@ -1,6 +1,6 @@
 ---
-name: routing-and-navigation
-description: URLs are UX. Use when creating routes, links, nav components, or anything that changes the URL. Covers Link vs button semantics, URL-based filter/pagination state, external link safety, and when programmatic navigation is appropriate.
+name: "routing-and-navigation"
+description: "URLs are UX. Use when creating routes, links, nav components, or anything that changes the URL. Covers Link vs button semantics, URL-based filter/pagination state, external link safety, and when programmatic navigation is appropriate."
 ---
 
 # Routing and Navigation

@@ -1,13 +1,13 @@
 ---
-name: explain-simply
-description: Reframe the most recent explanation in plain, concrete language when the user signals it didn't land. Trigger phrases include self-deprecating confusion cues ('I'm a stupid baby', 'I'm an idiot', 'I'm dumb', 'I'm stupid') and direct requests ('dumb it down', 'ELI5', 'explain like I'm five', 'explain simpler', 'I don't get it'). Strips jargon and invented or dense phrasing from the prior explanation and restates the same content in everyday words.
+name: "explain-simply"
+description: "Restate the most recent explanation in plain, concrete language when the user says it was confusing or asks for simpler, ELI5-style wording. Preserve the substance while removing unnecessary jargon."
 ---
 
 # Explain Simply
 version: 0.1.0
 
 ## Purpose
-Reframe the most recent explanation in plain, concrete language when the user signals it didn't land. Trigger phrases include self-deprecating confusion cues ('I'm a stupid baby', 'I'm an idiot', 'I'm dumb', 'I'm stupid') and direct requests ('dumb it down', 'ELI5', 'explain like I'm five', 'explain simpler', 'I don't get it'). Strips jargon and invented or dense phrasing from the prior explanation and restates the same content in everyday words.
+Restate the most recent explanation in plain, concrete language when the user says it was confusing or asks for simpler, ELI5-style wording. Preserve the substance while removing unnecessary jargon.
 
 ## Triggers
 - I'm a stupid baby

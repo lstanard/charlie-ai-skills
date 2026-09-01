@@ -1,6 +1,6 @@
 ---
-name: docs-writing
-description: Produce clear, discoverable documentation (README, HOWTO, API docs)
+name: "docs-writing"
+description: "Produce clear, discoverable documentation (README, HOWTO, API docs)"
 ---
 
 # Docs Writing

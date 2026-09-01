@@ -1,6 +1,6 @@
 ---
-name: test-reliability
-description: Prevent flaky tests and keep test suites fast. Focus on proper async handling, test isolation, deterministic data, and performance optimization. Applies to all test types (unit, integration, E2E).
+name: "test-reliability"
+description: "Prevent flaky tests and keep test suites fast. Focus on proper async handling, test isolation, deterministic data, and performance optimization. Applies to all test types (unit, integration, E2E)."
 ---
 
 # Test reliability

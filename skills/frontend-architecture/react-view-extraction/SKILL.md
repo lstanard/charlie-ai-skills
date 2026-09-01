@@ -1,6 +1,6 @@
 ---
-name: react-view-extraction
-description: Split view from non-view code: extract custom hooks for state and side effects; extract sub-components so each does one thing; prefer pure presentational components (props in, JSX out).
+name: "react-view-extraction"
+description: "Split view from non-view code: extract custom hooks for state and side effects; extract sub-components so each does one thing; prefer pure presentational components (props in, JSX out)."
 ---
 
 # React view extraction (hooks and pure components)

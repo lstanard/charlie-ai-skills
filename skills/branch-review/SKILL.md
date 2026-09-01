@@ -1,13 +1,13 @@
 ---
-name: branch-review
-description: Reviews the currently checked-out branch's diff against the repo's default branch and reports findings locally — never posts a comment or review to GitHub or anywhere else, and never edits or fixes code. Built for reviewing someone else's work after checking out their branch. Before starting, asks the user to choose a shallow, single-pass review (reads the full content of each changed file across four categories: correctness, security, maintainability, test coverage) or an in-depth review that delegates to the code-review skill at max effort for multi-agent adversarial verification. Either way, findings are reported ranked by severity (Critical, Important, Minor) so the user can decide case by case whether to post any of them as a PR comment. Neither path accepts a PR-number/URL target, and neither posts anywhere automatically.
+name: "branch-review"
+description: "Review the checked-out branch against the default branch and report findings without editing code or posting externally. Use for branch-review requests, not PR-number or URL reviews. Offer shallow or in-depth review."
 ---
 
 # Branch Review
 version: 0.2.1
 
 ## Purpose
-Reviews the currently checked-out branch's diff against the repo's default branch and reports findings locally — never posts a comment or review to GitHub or anywhere else, and never edits or fixes code. Built for reviewing someone else's work after checking out their branch. Before starting, asks the user to choose a shallow, single-pass review (reads the full content of each changed file across four categories: correctness, security, maintainability, test coverage) or an in-depth review that delegates to the code-review skill at max effort for multi-agent adversarial verification. Either way, findings are reported ranked by severity (Critical, Important, Minor) so the user can decide case by case whether to post any of them as a PR comment. Neither path accepts a PR-number/URL target, and neither posts anywhere automatically.
+Review the checked-out branch against the default branch and report findings without editing code or posting externally. Use for branch-review requests, not PR-number or URL reviews. Offer shallow or in-depth review.
 
 ## Triggers
 - review this branch

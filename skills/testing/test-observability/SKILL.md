@@ -1,6 +1,6 @@
 ---
-name: test-observability
-description: Monitor test suite health: track flake rates, duration trends, and coverage metrics. Optimize CI pipelines and integrate with reporting tools (Codecov, test dashboards). SRE-focused skill for production-grade test infrastructure.
+name: "test-observability"
+description: "Monitor test suite health: track flake rates, duration trends, and coverage metrics. Optimize CI pipelines and integrate with reporting tools (Codecov, test dashboards). SRE-focused skill for production-grade test infrastructure."
 ---
 
 # Test observability

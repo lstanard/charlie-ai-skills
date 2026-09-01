@@ -2,9 +2,12 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateSkillMd } from './generateSkillFiles.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const repoRoot = path.resolve(__dirname, '..');
+const maxDescriptionLength = 350;
+const maxAggregateDescriptionLength = 6500;
 
 function findSkillJsonPaths(singlePath) {
   if (singlePath) {
@@ -49,6 +52,13 @@ function validateOne(skillJsonPath, validSlugs) {
     console.error(skillJsonPath, ': version must be semver x.y.z');
     return false;
   }
+  if (typeof s.description !== 'string' || s.description.length > maxDescriptionLength) {
+    console.error(
+      skillJsonPath,
+      `: description must be a string of at most ${maxDescriptionLength} characters (found ${s.description?.length ?? 'non-string'})`,
+    );
+    return false;
+  }
 
   if ('dependencies' in s) {
     if (!Array.isArray(s.dependencies) || !s.dependencies.every((d) => typeof d === 'string')) {
@@ -69,6 +79,26 @@ function validateOne(skillJsonPath, validSlugs) {
     }
   }
 
+  const generated = generateSkillMd(s);
+  const frontmatter = generated.match(/^---\nname: (.+)\ndescription: (.+)\n---(?:\n|$)/);
+  if (!frontmatter) {
+    console.error(skillJsonPath, ': generated SKILL.md has invalid frontmatter structure');
+    return false;
+  }
+
+  try {
+    const generatedName = JSON.parse(frontmatter[1]);
+    const generatedDescription = JSON.parse(frontmatter[2]);
+    const expectedName = s.id.includes('.') ? s.id.split('.').pop() : s.id;
+    if (generatedName !== expectedName || generatedDescription !== s.description) {
+      console.error(skillJsonPath, ': generated SKILL.md frontmatter changed a metadata value');
+      return false;
+    }
+  } catch {
+    console.error(skillJsonPath, ': generated SKILL.md frontmatter values are not safely quoted');
+    return false;
+  }
+
   console.log('OK', s.id);
   return true;
 }
@@ -85,5 +115,22 @@ if (paths.length === 0) {
 let failed = false;
 for (const p of paths) {
   if (!validateOne(p, validSlugs)) failed = true;
+}
+
+if (!single) {
+  const aggregateDescriptionLength = paths.reduce((total, p) => {
+    const skill = JSON.parse(fs.readFileSync(p, 'utf8'));
+    return total + (typeof skill.description === 'string' ? skill.description.length : 0);
+  }, 0);
+  if (aggregateDescriptionLength > maxAggregateDescriptionLength) {
+    console.error(
+      `Skill descriptions total ${aggregateDescriptionLength} characters; maximum is ${maxAggregateDescriptionLength}`,
+    );
+    failed = true;
+  } else {
+    console.log(
+      `OK description budget (${aggregateDescriptionLength}/${maxAggregateDescriptionLength} characters)`,
+    );
+  }
 }
 process.exit(failed ? 2 : 0);

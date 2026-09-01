@@ -1,6 +1,6 @@
 ---
-name: frontend-performance
-description: Measure before optimizing. Improve Core Web Vitals in Vite-based SPAs through bundle analysis, code splitting, asset optimization, and targeted React rendering fixes.
+name: "frontend-performance"
+description: "Measure before optimizing. Improve Core Web Vitals in Vite-based SPAs through bundle analysis, code splitting, asset optimization, and targeted React rendering fixes."
 ---
 
 # Frontend performance (SPA / Vite)

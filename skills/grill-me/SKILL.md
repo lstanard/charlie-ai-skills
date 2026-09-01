@@ -1,13 +1,13 @@
 ---
-name: grill-me
-description: Interrogates a plan as a decision tree, one question at a time, until every implicit call in it has been made explicit. Adapted from mattpocock/skills' grill-me, with one deliberate change: it never leads with a recommended answer — it holds back and asks, per Socratic-mode's 'don't give the answer first' default. Where a question can be answered by reading the codebase, it reads rather than asks. Fires on explicit invocation ('/grill-me', 'grill me on this') and proactively whenever a plan drafted via native plan mode (bounded-scope work) is about to be finalized, right before implementation starts. Does not fire on the architectural path (brainstorming + writing-plans), whose spec already went through approach-exploration and spec-review. Stateless — writes no files, leaves no workspace; the sharpened understanding lives only in the conversation.
+name: "grill-me"
+description: "Interrogate a bounded implementation plan one question at a time before coding, resolving codebase facts directly. Use when asked to grill or stress-test a plan, or before finalizing a bounded plan. Do not use for architectural plans already reviewed through brainstorming."
 ---
 
 # Grill Me
 version: 0.1.0
 
 ## Purpose
-Interrogates a plan as a decision tree, one question at a time, until every implicit call in it has been made explicit. Adapted from mattpocock/skills' grill-me, with one deliberate change: it never leads with a recommended answer — it holds back and asks, per Socratic-mode's 'don't give the answer first' default. Where a question can be answered by reading the codebase, it reads rather than asks. Fires on explicit invocation ('/grill-me', 'grill me on this') and proactively whenever a plan drafted via native plan mode (bounded-scope work) is about to be finalized, right before implementation starts. Does not fire on the architectural path (brainstorming + writing-plans), whose spec already went through approach-exploration and spec-review. Stateless — writes no files, leaves no workspace; the sharpened understanding lives only in the conversation.
+Interrogate a bounded implementation plan one question at a time before coding, resolving codebase facts directly. Use when asked to grill or stress-test a plan, or before finalizing a bounded plan. Do not use for architectural plans already reviewed through brainstorming.
 
 ## Triggers
 - grill me

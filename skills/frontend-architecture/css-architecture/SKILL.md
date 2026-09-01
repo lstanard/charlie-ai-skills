@@ -1,6 +1,6 @@
 ---
-name: css-architecture
-description: Style components with CSS Modules and a two-layer CSS variable token system (primitive + semantic). Prefer modules over Tailwind; avoid CSS-in-JS except for runtime-computed styles.
+name: "css-architecture"
+description: "Style components with CSS Modules and a two-layer CSS variable token system (primitive + semantic). Prefer modules over Tailwind; avoid CSS-in-JS except for runtime-computed styles."
 ---
 
 # CSS architecture (Modules + Design Tokens)

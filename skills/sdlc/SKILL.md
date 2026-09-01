@@ -1,13 +1,13 @@
 ---
-name: sdlc
-description: Owns the full lifecycle from a Jira ticket to a green CI run on an open PR. Invoked as '/sdlc [JIRA-KEY]' — derives the key from the branch name if omitted. Talks to the Atlassian MCP and gh CLI directly, with no dependency on the sdlc-jira-github plugin. Fetches the ticket read-only, has the user explain the work and propose direction first, creates a JIRA-KEY-slug branch, plans (brainstorming+writing-plans for architectural work, plan mode plus grill-me for bounded work), implements with TDD, hard-gates on an acceptance-criteria check, proposes in-depth vs quick review from diff scope, confirms with the user, then runs it and auto-fixes findings without posting PR comments, checks pr-size-guard as an advisory gate, runs quiz-me before commit, asks separately whether to commit/push/open a PR, then autonomously watches CI until green, fixing what it can and flagging what it can't. Stops there: no merge, no human review wait, no Jira status transition, no unsolicited Jira comment.
+name: "sdlc"
+description: "Run an end-to-end Jira-ticket development workflow through planning, TDD, acceptance checks, review, optional commit/push/PR, and CI repair. Use when asked to take a Jira issue through delivery. Never merge or change Jira."
 ---
 
 # SDLC
 version: 0.1.0
 
 ## Purpose
-Owns the full lifecycle from a Jira ticket to a green CI run on an open PR. Invoked as '/sdlc [JIRA-KEY]' — derives the key from the branch name if omitted. Talks to the Atlassian MCP and gh CLI directly, with no dependency on the sdlc-jira-github plugin. Fetches the ticket read-only, has the user explain the work and propose direction first, creates a JIRA-KEY-slug branch, plans (brainstorming+writing-plans for architectural work, plan mode plus grill-me for bounded work), implements with TDD, hard-gates on an acceptance-criteria check, proposes in-depth vs quick review from diff scope, confirms with the user, then runs it and auto-fixes findings without posting PR comments, checks pr-size-guard as an advisory gate, runs quiz-me before commit, asks separately whether to commit/push/open a PR, then autonomously watches CI until green, fixing what it can and flagging what it can't. Stops there: no merge, no human review wait, no Jira status transition, no unsolicited Jira comment.
+Run an end-to-end Jira-ticket development workflow through planning, TDD, acceptance checks, review, optional commit/push/PR, and CI repair. Use when asked to take a Jira issue through delivery. Never merge or change Jira.
 
 ## Triggers
 - /sdlc

@@ -3,7 +3,7 @@
   "id": "charlie.standup-summary",
   "title": "Standup Summary",
   "version": "0.1.0",
-  "description": "Generates a concise daily standup message — yesterday / today / blockers, one or two sentences each — from the user's actual Jira and GitHub activity, on explicit request. Talks to the Atlassian MCP and gh CLI directly; requires both to be authenticated and connected. Scoped account-wide (not to the current repo): reads a small global config (~/.claude/standup.json) for the Jira cloud ID and an optional GitHub org to scope the search, asking once on first run and persisting the answer. \"Yesterday\" means the last working day, so Monday shows Friday's activity instead of an empty Sunday. \"Today\" is derived entirely from current in-progress Jira tickets and open authored PRs — never asks the user to state their plan. Blockers combine a Jira flagged/Blocked-status check with a GitHub CI-failure check on the user's own open PRs. Entirely read-only and chat-only: never transitions a ticket, never comments, never posts anywhere.",
+  "description": "Generate a read-only daily standup from the user's Jira and authored GitHub activity. Use when asked for a standup or yesterday/today/blockers summary. Return chat output without posting or changing external data.",
   "triggers": [
     "generate my standup",
     "daily standup",

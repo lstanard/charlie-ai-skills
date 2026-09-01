@@ -1,13 +1,13 @@
 ---
-name: jsdoc
-description: Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. Use this skill whenever writing, updating, or refactoring any JavaScript or TypeScript, even for quick fixes or small additions. If you're touching a function, it must have a JSDoc comment.
+name: "jsdoc"
+description: "Add or update JSDoc for every function, method, class, and named arrow function touched while writing or refactoring JavaScript or TypeScript. Use for all JS/TS code changes, including small fixes."
 ---
 
 # JSDoc
 version: 0.1.0
 
 ## Purpose
-Enforce JSDoc comments on all JS/TS functions, methods, classes, and named arrow functions — both when writing new code and when modifying existing code. Use this skill whenever writing, updating, or refactoring any JavaScript or TypeScript, even for quick fixes or small additions. If you're touching a function, it must have a JSDoc comment.
+Add or update JSDoc for every function, method, class, and named arrow function touched while writing or refactoring JavaScript or TypeScript. Use for all JS/TS code changes, including small fixes.
 
 ## Triggers
 - write JS/TS function

@@ -1,6 +1,6 @@
 ---
-name: react-data-layer
-description: Extract network and data access into a dedicated client or service layer so components and hooks do not call fetch/API directly; keeps data source swappable and testable.
+name: "react-data-layer"
+description: "Extract network and data access into a dedicated client or service layer so components and hooks do not call fetch/API directly; keeps data source swappable and testable."
 ---
 
 # React data layer (network client)

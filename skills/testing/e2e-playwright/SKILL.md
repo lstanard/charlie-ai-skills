@@ -1,6 +1,6 @@
 ---
-name: e2e-playwright
-description: Use Playwright for end-to-end tests covering critical multi-page workflows. Keep E2E suite focused on critical paths; test at a higher level than unit tests. Includes patterns for Page Object Model, CI parallelization, and debugging.
+name: "e2e-playwright"
+description: "Use Playwright for end-to-end tests covering critical multi-page workflows. Keep E2E suite focused on critical paths; test at a higher level than unit tests. Includes patterns for Page Object Model, CI parallelization, and debugging."
 ---
 
 # E2E testing with Playwright

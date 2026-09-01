@@ -3,7 +3,7 @@
   "id": "charlie.work-log",
   "title": "Work Log",
   "version": "0.1.0",
-  "description": "Keeps a personal, high-level log of completed work — one or two sentences per entry, optionally with a ticket/PR link — so a week/month/year retrospective doesn't require digging through Jira and GitHub. Entries are added explicitly (\"log that...\") or proactively, when the agent notices a clearly-completed unit of work (a PR merged, an SDLC phase finished, a Jira ticket moved to Done) and asks before writing. Stored append-only at ~/.claude/worklog.jsonl, scoped account-wide across all projects, with the project name auto-detected from the current repo. An on-demand backfill command finds merged PRs and Done-status Jira issues not yet logged, drafts one-line entries, and only writes the ones you approve. Reviewing a period returns a synthesized summary by default, or the raw entry list on request.",
+  "description": "Add, backfill, or summarize a personal work log using completed work and Jira/GitHub history. Use on work-log requests and, with confirmation, after clearly completed work. Never post externally.",
   "triggers": [
     "log that",
     "add to my work log",

@@ -1,6 +1,6 @@
 ---
-name: skill-maintenance
-description: Keep the skills repo consistent: update README.md and run codegen whenever a skill is added or changed.
+name: "skill-maintenance"
+description: "Keep the skills repo consistent: update README.md and run codegen whenever a skill is added or changed."
 ---
 
 # Skills repo maintenance

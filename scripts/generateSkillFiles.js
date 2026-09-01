@@ -41,16 +41,17 @@ function findSkillJsonPaths(singlePath) {
  * @param {object} skill - parsed skill.json contents
  * @returns {string} the full SKILL.md file content
  */
-function generateSkillMd(skill) {
+export function generateSkillMd(skill) {
   const lines = [];
 
   // Extract skill name from id (e.g., "charlie.react-component-testing" → "react-component-testing")
   const skillName = skill.id.includes('.') ? skill.id.split('.').pop() : skill.id;
 
-  // Add YAML frontmatter for Cursor compatibility
+  // JSON string literals are valid YAML scalars and safely preserve punctuation,
+  // quotes, and other characters that would break an unquoted YAML value.
   lines.push('---');
-  lines.push(`name: ${skillName}`);
-  lines.push(`description: ${skill.description}`);
+  lines.push(`name: ${JSON.stringify(skillName)}`);
+  lines.push(`description: ${JSON.stringify(skill.description)}`);
   lines.push('---');
   lines.push('');
 
@@ -134,13 +135,15 @@ function processOne(skillJsonPath) {
   console.log(`  ${rel}: SKILL.md, cursor.rule.md`);
 }
 
-const single = process.argv[2];
-const paths = findSkillJsonPaths(single);
-if (paths.length === 0) {
-  console.error('No skill.json found. Use: script [path/to/skill.json] or add skills/*/skill.json');
-  process.exit(1);
-}
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const single = process.argv[2];
+  const paths = findSkillJsonPaths(single);
+  if (paths.length === 0) {
+    console.error('No skill.json found. Use: script [path/to/skill.json] or add skills/*/skill.json');
+    process.exit(1);
+  }
 
-console.log(`Generating files for ${paths.length} skill(s):`);
-for (const p of paths) processOne(p);
-console.log('Done.');
+  console.log(`Generating files for ${paths.length} skill(s):`);
+  for (const p of paths) processOne(p);
+  console.log('Done.');
+}

@@ -1,6 +1,6 @@
 ---
-name: react-domain-models
-description: Encapsulate data mapping, null handling, derived flags, and display logic in domain objects (classes or plain objects with behavior) so the view stays free of business rules and conditionals.
+name: "react-domain-models"
+description: "Encapsulate data mapping, null handling, derived flags, and display logic in domain objects (classes or plain objects with behavior) so the view stays free of business rules and conditionals."
 ---
 
 # React domain models (encapsulate logic)

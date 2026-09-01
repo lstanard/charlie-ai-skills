@@ -3,7 +3,7 @@
   "id": "charlie.quiz-me",
   "title": "Quiz Me",
   "version": "0.1.0",
-  "description": "Run an interactive comprehension quiz on code the agent just produced or discussed (a PR, a diff, a feature) so the user can verify they understand it, not just that it works. Trigger this whenever the user says something like 'quiz me', 'quiz me on this', or 'test my understanding' — never run it proactively after finishing work. An exception exists for the sdlc skill's Phase 9, which deliberately invokes it right before commit as part of a pipeline the user explicitly asked for. Asks a fixed number of questions one at a time across three difficulty tiers and four categories (mechanics, design rationale, operations, big picture), scores each answer, and ends with a per-category report.",
+  "description": "Quiz the user one question at a time on code just produced or discussed, then score comprehension by category. Use only when explicitly requested or when the SDLC workflow invokes it; never trigger merely because work finished.",
   "triggers": [
     "quiz me",
     "quiz me on this",
