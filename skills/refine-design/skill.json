@@ -1,0 +1,40 @@
+{
+  "scope": "global",
+  "id": "charlie.refine-design",
+  "title": "Refine Design",
+  "version": "0.4.0",
+  "description": "Critique and redesign an existing UI element, component, or component group — not a from-scratch build. Diagnoses IA, task friction, and clutter against named UX research principles, then presents 3 distinct redesign options. Distinct from frontend-design (new builds) and design-for-ai exam/hone (visual-craft audits).",
+  "triggers": [
+    "redesign this",
+    "refine this design",
+    "refine this component",
+    "improve the UX of this",
+    "this feels cluttered",
+    "clean up this UI",
+    "make this easier to use",
+    "improve the information architecture of this",
+    "this doesn't feel intentional"
+  ],
+  "guarantees": [
+    "Applies only to an existing design being refined (a screenshot, a rendered UI, or existing component code) at the component level or across a group of components making up a page section; if the request is actually for new UI built from nothing, defers to the frontend-design skill instead, and if the request is a pre-ship visual-craft QA pass (typography scale, color contrast, proportion, spacing rhythm) rather than a structural/IA critique, names design-for-ai's exam or hone as the better fit instead of doing that work itself.",
+    "Before critiquing, establishes the primary user goal(s) the element or component group exists to serve, inferred from surrounding code, copy, or context; asks the user directly only when genuinely undeterminable from what's available.",
+    "Also before critiquing, surveys how the rest of the page or application already solves similar problems — existing components, design tokens (spacing/color/type scale), and interaction patterns used elsewhere in the codebase or visible in other screens — so the diagnosis and every option are judged against what's already established, not in isolation.",
+    "Diagnoses the current design across five fixed lenses: information architecture and hierarchy (whether visual weight matches importance and content is grouped by relationship rather than by arrival order); primary-action friction (how easy each action tied to the stated goal is to find and complete versus how much competes for attention); scannability (whether a user can locate the specific piece of information they need without reading every line, and what is adding pure noise); decorative-element intent (every border, background, icon, or divider either signals a real grouping or separation, or gets removed, with IA and whitespace doing the structural work before ornament does); and consistency with existing patterns (whether the element reuses components, tokens, and interaction patterns already used elsewhere in the app, or introduces a one-off style nothing else in the app uses).",
+    "Grounds every diagnosed problem in a named, established UX or IA principle (e.g. Gestalt proximity/similarity/common region, Hick's Law, Fitts's Law, progressive disclosure, recognition over recall, Jakob's Law, Miller's Law, Tesler's Law, F-pattern/Z-pattern scanning, Von Restorff effect, Nielsen's consistency-and-standards heuristic, other relevant Nielsen heuristics) instead of inventing new theory, citing the principle by name next to each finding.",
+    "Reports the diagnosis index-first — one line per problem, most impactful first, principle cited inline — before proposing any solution, per the standing index-first reporting default.",
+    "Generates exactly 3 redesign options that differ in structural or IA approach, not just in skin: each gets a name, the core IA idea, the named principle(s) it leans on, and its main tradeoff, presented as a numbered index for the user to pick before any option is built out in full. Every option is built from the application's existing components, tokens, and patterns wherever one of them can express the fix; any newly introduced style or pattern is called out explicitly as a deliberate addition rather than a silent one-off, with a note on where it should be codified for reuse instead of left local to this element.",
+    "After presenting the option index, asks once whether the user wants a rendered visual comparison before picking, stating plainly that this is optional, experimental, and token-intensive; declining or having a non-visual target skips straight to implementation from the text descriptions. If accepted, builds a single self-contained HTML/CSS page showing all 3 options side by side, each labeled with its name and tradeoff — no build tooling, no other skill or plugin, reusing the real colors/fonts/spacing/copy identified earlier rather than placeholder content — saves it to a scratch/temp location outside the project's source tree, and opens it with the OS's default-browser command for the user to view and pick from directly; Claude does not view the render itself.",
+    "Implements only the option the user picks, using the codebase's existing shared components, utility classes, and design tokens rather than new local/inline styles: as an edit to the actual component or page code when working inside a codebase, or as a mockup/description when there is no code target, such as a screenshot with no accompanying source.",
+    "After implementing the chosen option, names any remaining visual-craft polish (contrast, spacing rhythm, type scale) that falls outside this skill's scope and is better suited to design-for-ai's hone or exam, without running that pass itself."
+  ],
+  "non_goals": [
+    "Does not design new UI with no existing design to react to — that is frontend-design's job.",
+    "Does not perform a typography/color/proportion/composition visual-craft audit — that is design-for-ai's exam/hone job.",
+    "Does not invent new UX theory or terminology; every principle cited must be an established, named pattern.",
+    "Does not implement all 3 options as real code/component changes before the user picks one — the optional side-by-side mockup, when the user asks for it, is disposable static HTML built purely for comparison, not an implementation of any option.",
+    "Does not skip the primary-goal identification step, even when asked to \"just redesign this.\"",
+    "Does not introduce a new component, token, or visual pattern when an existing one already covers the need, and never leaves a genuinely new pattern as an unflagged local one-off.",
+    "Does not render a visual mockup without asking first, does not render options one at a time when asked (all 3 go into a single side-by-side comparison page), and does not depend on any browser-automation tool, MCP server, or other skill/plugin to produce or open the preview."
+  ],
+  "notes": "See CLAUDE.md for the per-lens diagnostic checklist, the existing-pattern survey step, the UX/IA principle glossary, the diagnosis and option-index report templates, the optional browser-mockup step, and the implementation handoff step."
+}
