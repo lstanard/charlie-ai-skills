@@ -1,13 +1,13 @@
 ---
 name: "standup-summary"
-description: "Generate a read-only daily standup from the user's Jira and authored GitHub activity. Use when asked for a standup or yesterday/today/blockers summary. Return chat output without posting or changing external data."
+description: "Generates a concise daily standup message (yesterday, today, blockers) from the user's actual Jira and GitHub activity, on explicit request. Reads a small global Jira/GitHub config, asked once. Entirely read-only and chat-only: never transitions tickets, comments, or posts anywhere."
 ---
 
 # Standup Summary
 version: 0.1.0
 
 ## Purpose
-Generate a read-only daily standup from the user's Jira and authored GitHub activity. Use when asked for a standup or yesterday/today/blockers summary. Return chat output without posting or changing external data.
+Generates a concise daily standup message (yesterday, today, blockers) from the user's actual Jira and GitHub activity, on explicit request. Reads a small global Jira/GitHub config, asked once. Entirely read-only and chat-only: never transitions tickets, comments, or posts anywhere.
 
 ## Triggers
 - generate my standup
@@ -20,18 +20,23 @@ Generate a read-only daily standup from the user's Jira and authored GitHub acti
 ## Inputs
 
 ## Guarantees
-- Reads ~/.claude/standup.json for jira.cloudId (required) and github.org (optional); jira.cloudId and github.org are each checked and asked for independently (no auto-discovery is possible for either field), and any newly-collected answer is merged into the existing file rather than overwriting it, so each field is asked at most once.
+- Reads ~/.claude/standup.json for jira.cloudId (required), github.org (optional), and github.ignorePrs (optional); jira.cloudId and github.org are each checked and asked for independently (no auto-discovery is possible for either field), and any newly-collected answer is merged into the existing file rather than overwriting it, so each field is asked at most once.
+- github.ignorePrs is a list of "owner/repo#number" strings for PRs the user has said to drop permanently (e.g. an old PR that stays "open" indefinitely but isn't ongoing work); every GitHub search result across all three sections is filtered against this list before use, and a new entry is appended (never overwriting existing entries) whenever the user says to ignore a PR going forward.
 - Computes the time window as the last working day: Monday looks back to the prior Friday, Sunday looks back to the prior Friday, and any other day looks back one calendar day.
-- Yesterday section: GitHub search 'is:pr author:@me updated:<window_start>..<window_start>' — author:@me rather than involves:@me, since involves also matches PRs merely commented on or approved, misrepresenting review activity as authored work; a single same-day range qualifier, since GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them — (+ org filter if configured, omitted entirely when unset) and Jira JQL 'assignee = currentUser() AND updated >= "<window_start>" AND updated < "<window_end>"'.
-- Today section: GitHub search 'is:pr author:@me is:open' (+ org filter if configured, omitted entirely when unset) and Jira JQL 'assignee = currentUser() AND statusCategory = "In Progress"' — using the status category rather than a literal status name, since literal names vary by project.
+- Yesterday section: GitHub search 'is:pr author:@me updated:<window_start>..<window_start>' — author:@me rather than involves:@me, since involves also matches PRs merely commented on or approved, misrepresenting review activity as authored work; a single same-day range qualifier, since GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them — (+ org filter if configured, omitted entirely when unset) and Jira JQL '(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND updated >= "<window_start>" AND updated < "<window_end>"'.
+- Before including a GitHub PR surfaced by the Yesterday search, verifies the PR's actual commits/comments (not just its `updatedAt` field) fall inside the window — `updatedAt` can be bumped by activity unrelated to real work (e.g. a stale, already-merged PR), and including one misrepresents old work as yesterday's.
+- Today section: Jira JQL only — '(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory = "In Progress"' — using the status category rather than a literal status name, since literal names vary by project. No GitHub search runs for Today; a still-open PR isn't narrated as ongoing work unless its ticket is itself In Progress in Jira.
 - Blockers section: GitHub search 'is:pr author:@me is:open status:failure' (+ org filter if configured, omitted entirely when unset) and Jira JQL checking both the flagged field and a literal 'Blocked' status; if either JQL clause errors because the field/status doesn't exist on this instance, drops only that clause and keeps the other, falling back to the GitHub signal alone only if both are invalid.
+- All three Jira JQL queries match `cf[10120]` (the "Secondary Assignee" custom field on this Jira instance) alongside `assignee`, since a ticket owned by a teammate with the user as secondary assignee still represents real work.
+- All three Jira JQL queries exclude epics ('issuetype != Epic') — an epic assigned to the user is a container, not work the user did, and should never appear in the standup.
+- Before printing the final summary, recaps what the automated queries found and asks one open question — anything missing, anything to drop — since assignee/secondary-assignee and authored-PR signals still miss forms of work (pairing, review-only involvement, a ticket owned entirely by someone else). Folds the answer in before finalizing; does not print a summary first and revise after.
 - Produces three labeled sections (Yesterday/Today/Blockers), one or two sentences each, synthesized rather than listing every item found — picks the highest-value points when a section surfaces more than a couple of items.
 - Leads each bullet with a plain-language description of the work, readable by someone without Jira access; ticket/PR identifiers are a trailing reference, never the subject a bullet opens with.
 - Chat-only output: never posts to Slack or anywhere else, never writes a file beyond the config file above.
 - Entirely read-only: never transitions a Jira ticket, never comments on a PR or ticket.
 
 ## Non-goals
-- Does not ask the user to manually state what they're working on — the today section is derived entirely from current in-progress Jira tickets and open authored PRs.
+- Does not ask the user to state a plan from a blank slate — the today section is still derived automatically from current in-progress Jira tickets; the pre-finalize check only confirms/fills gaps in what was already found.
 - Does not post the generated message anywhere — chat output only.
 - Does not transition Jira ticket status or comment on tickets/PRs.
 - Does not depend on the sdlc-jira-github plugin or any other plugin.

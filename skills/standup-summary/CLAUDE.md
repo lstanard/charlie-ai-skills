@@ -14,14 +14,18 @@ Read `~/.claude/standup.json` if present:
 cat ~/.claude/standup.json 2>/dev/null
 ```
 
-Fields: `jira.cloudId` (required), `github.org` (optional).
+Fields: `jira.cloudId` (required), `github.org` (optional), `github.ignorePrs` (optional).
+
+**Ignored PRs.** `github.ignorePrs` is an array of `"owner/repo#number"` strings — PRs the user has said to drop permanently (e.g. a long-open PR that shows up as `is:open` indefinitely but isn't real ongoing work). Filter every GitHub search result (Yesterday, Blockers — Today runs no GitHub search) against this list before using it, by matching `repo` (from the API's `repository_url`) plus `number`. This list only grows when the user explicitly says to ignore a PR going forward — append the new entry to the existing array in `~/.claude/standup.json` (merge, don't overwrite) and confirm to the user it's saved. Don't ask the user to re-confirm an ignore that's already in the list on future runs.
+
+**Secondary assignee.** Every Jira JQL query below matches `cf[10120]` alongside `assignee`. `cf[10120]` is the "Secondary Assignee" custom field on the `guild-education.atlassian.net` instance (a user-picker field, confirmed via `getJiraIssueTypeMetaWithFields` on project `LM`, issue type `Story`) — tickets assigned to a teammate with the user as secondary assignee carry real work that `assignee = currentUser()` alone misses. If this skill is ever pointed at a different Jira instance, re-derive the field ID the same way rather than assuming `10120` carries over.
 
 Example file:
 
 ```json
 {
   "jira": { "cloudId": "your-team.atlassian.net" },
-  "github": { "org": "your-github-org" }
+  "github": { "org": "your-github-org", "ignorePrs": ["your-github-org/some-repo#123"] }
 }
 ```
 
@@ -83,33 +87,39 @@ gh api --method GET search/issues -f q="is:pr author:@me updated:$window_start..
 
 Run the date computation and the `gh api` call in the same tool invocation — Bash tool calls don't share shell state, so a `window_start` set in an earlier call is empty here.
 
+Drop any result matching an entry in `github.ignorePrs` before using the list.
+
 Use `author:@me`, not `involves:@me`. GitHub's `involves` qualifier is a shorthand for author, assignee, mentions, *and* commenter — approving or commenting on someone else's PR counts as "commenter," so `involves:@me` surfaces PRs you reviewed as if they were PRs you worked on. `author:@me` restricts this to PRs you actually opened.
 
 Use a single `updated:$window_start..$window_start` range qualifier, not two separate `updated:>=`/`updated:<` qualifiers. GitHub search ORs repeated occurrences of the same qualifier rather than ANDing them, so two `updated:` clauses match the union of both instead of the intersection and the date filter silently matches everything. A same-day `..` range already covers the whole day, so no second variable is needed on the GitHub side.
 
 Append ` org:<github.org>` to the `q` value if `github.org` is configured and non-empty; omit it entirely otherwise.
 
+**Verify before including.** GitHub's `updated:` qualifier reflects the PR's `updatedAt` timestamp, which can move for reasons unrelated to real work — a stale, already-merged PR can resurface with an `updatedAt` inside the window even though its last commit and comment are months or years old. Before writing a PR into the Yesterday section, fetch its actual activity and confirm at least one commit or comment timestamp falls inside `window_start`..`window_end`:
+
+```bash
+gh pr view <number> --repo <owner>/<repo> --json title,commits,comments --jq '{title, lastCommit: .commits[-1].committedDate, lastComment: .comments[-1].createdAt}'
+```
+
+If neither timestamp falls in the window, drop the PR from Yesterday — its `updatedAt` match was noise, not activity.
+
 Jira JQL (via `searchJiraIssuesUsingJql`, substituting the actual computed dates for `<window_start>`/`<window_end>`):
 
 ```
-assignee = currentUser() AND updated >= "<window_start>" AND updated < "<window_end>" ORDER BY updated DESC
+(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND updated >= "<window_start>" AND updated < "<window_end>" ORDER BY updated DESC
 ```
+
+Excludes epics: epics assigned to the user don't represent work done, only a container the user happens to be assignee on. Only stories, tasks, and bugs count.
 
 ### Today
 
-GitHub:
-
-```bash
-gh api --method GET search/issues -f q="is:pr author:@me is:open" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
-```
-
-Same org-suffix rule as above.
-
-Jira JQL:
+Jira JQL only — no GitHub search runs for Today. A PR sitting open isn't ongoing work by itself; if its ticket is In Progress in Jira, the ticket already surfaces it. Narrating open PRs separately restates the same work twice and drags in PRs that are just idling in review with nothing happening today.
 
 ```
-assignee = currentUser() AND statusCategory = "In Progress" ORDER BY updated DESC
+(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory = "In Progress" ORDER BY updated DESC
 ```
+
+Excludes epics for the same reason as the Yesterday query above.
 
 Uses the status *category*, not a literal status name, since literal names vary by project (one project might use `In_Progress` with underscores, another "In Dev," another something else entirely). The category is standardized across every project in a Jira instance.
 
@@ -121,51 +131,65 @@ GitHub:
 gh api --method GET search/issues -f q="is:pr author:@me is:open status:failure" --jq '[.items[] | {number, title, url: .html_url, repo: .repository_url}]'
 ```
 
-Same org-suffix rule as above.
+Same org-suffix rule as above. Drop any result matching an entry in `github.ignorePrs` before using the list.
 
 Jira JQL:
 
 ```
-assignee = currentUser() AND statusCategory != Done AND (flagged is not EMPTY OR status = "Blocked") ORDER BY updated DESC
+(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND (flagged is not EMPTY OR status = "Blocked") ORDER BY updated DESC
 ```
 
-Checks both the built-in Impediment flag and a literal `"Blocked"` workflow status, since Jira has no standardized "blocked" status category the way it does for To Do/In Progress/Done.
+Checks both the built-in Impediment flag and a literal `"Blocked"` workflow status, since Jira has no standardized "blocked" status category the way it does for To Do/In Progress/Done. Excludes epics for the same reason as the Yesterday query above.
 
 **Per-clause graceful degradation:** if `flagged` isn't a valid field on this instance, or no status literally named `"Blocked"` exists, JQL errors on that specific clause. Drop only the failing clause and retry with the other:
 
 Only the `flagged` clause:
 ```
-assignee = currentUser() AND statusCategory != Done AND flagged is not EMPTY ORDER BY updated DESC
+(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND flagged is not EMPTY ORDER BY updated DESC
 ```
 
 Only the `status = "Blocked"` clause:
 ```
-assignee = currentUser() AND statusCategory != Done AND status = "Blocked" ORDER BY updated DESC
+(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND status = "Blocked" ORDER BY updated DESC
 ```
 
 Only fall back to relying on the GitHub CI-failure signal alone if both clauses turn out invalid.
 
+## Pre-finalize check
+
+Assignee and secondary-assignee JQL plus authored-PR search still miss real work: pairing on a teammate's ticket, review-only involvement, or a ticket owned by someone else entirely. Before writing the final summary, run all the queries above, then show the user a brief recap of what was found in each section and ask one open question: whether anything is missing, or anything found should be dropped. Fold the answer into the three sections before printing the final summary — don't print a summary and then separately ask; the check happens first.
+
+This is a single scoped confirmation against the automated findings, not a blank "what did you do" prompt — it's asked once per run, after digging, not instead of digging.
+
+**Recap format.** The recap itself is prose, not bullets: a few concise sentences (roughly one per section), not bolded section headers with bullet lists underneath. Bullets read as a report; the user wants something as terse as the final Y:/T:/B: output, just with enough detail to sanity-check before finalizing. Keep it short — this is a confirmation step, not the deliverable.
+
 ## Output format
 
-Three labeled sections, one or two sentences each, synthesized rather than listed item-by-item. If a section surfaces more than a couple of items, pick the highest-value ones instead of enumerating everything.
+Three lines, one per section, labeled `Y:`, `T:`, `B:` — not full words, not bold headers, not bullets. Each line is one or two sentences, synthesized rather than listed item-by-item. If a section surfaces more than a couple of items, pick the highest-value ones instead of enumerating everything.
 
-Write for a reader who doesn't have Jira open — a manager or teammate skimming the update should understand what was done without looking anything up. Lead with the plain-language description of the work (what it is, in a sentence a non-technical reader could follow); a ticket or PR number is a trailing reference, not the subject of the sentence. Never open a bullet with a bare ticket ID.
+Write for a reader who doesn't have Jira open — a manager or teammate skimming the update should understand what was done without looking anything up. Describe the work in plain language only. Omit ticket keys and PR numbers entirely by default — the identifiers are still used internally to find and cross-check the work, they just don't appear in the printed output. Only include a ticket/PR identifier if the user explicitly asks for identifiers in a given run (e.g. "include ticket numbers this time"); that request applies to that run only, not future ones, unless the user says to make it the default.
+
+Both examples below were confirmed by the user as the target format, framing, and length — match their terseness and plain-language framing over any other instinct about how much detail to include.
 
 ```
-**Yesterday:** Merged the pagination fix for the reports API (PR #482) and fixed a bug where bulk exports could get stuck in progress (PROJ-521).
-
-**Today:** Continuing the rate limiter refactor (PROJ-530) and following up on the open PR for the webhook retry logic (#491).
-
-**Blockers:** None noted.
+Y: Made progress on the program code management UX for the Homeroom prototype and finished the concentration concept tables and repository layer.
+T: Continuing the SDK method to fetch Field-of-Study classified items.
+B: Homeroom dashboard is blocked pending a DevOps ticket.
 ```
 
-When blockers are found, describe the concrete reason (failing CI, flagged, or `Blocked` status) in plain language first, with the specific ticket/PR referenced alongside it — not a generic "there are blockers" statement.
+```
+Y: Merged the catalog drift audit fix for programs losing track dates when a new track wasn't ingested, made progress on the field-of-study SDK work, and worked on the Program Lifecycle ADR.
+T: Finalizing the Program Lifecycle ADR and removing the temporary rollout flag now that the catalog drift fix is proven.
+B: None noted.
+```
+
+When blockers are found, describe the concrete reason (failing CI, flagged, or `Blocked` status) in plain language, without an identifier unless requested.
 
 Printed in chat only — no posting to Slack or anywhere else, no file written beyond the config file above.
 
 ## Non-goals
 
 - Entirely read-only: never transitions a Jira ticket, never comments on a PR or ticket, never posts anywhere.
-- Does not ask the user to manually state what they're working on — the today section is derived entirely from current in-progress Jira tickets and open authored PRs.
+- Does not ask the user to state a plan from a blank slate — the today section is still derived automatically from current in-progress Jira tickets; the pre-finalize check only confirms/fills gaps in what was already found.
 - Does not attempt cross-timezone "yesterday" reasoning beyond the last-working-day rule — uses the local machine's date.
 - Does not depend on the sdlc-jira-github plugin or any other plugin.
