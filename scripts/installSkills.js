@@ -154,6 +154,27 @@ function findClaudeMd(sourcePath) {
   return fs.existsSync(claudePath) ? claudePath : null;
 }
 
+/**
+ * Copies a single file, unless dest is already a symlink resolving to src —
+ * in that case copying would write the file through the symlink onto itself,
+ * so skip it. This lets a skill file be manually symlinked back to its repo
+ * source (e.g. for a file a skill edits live, like an avoid-list) without a
+ * later bulk install corrupting or no-op-clobbering that symlink.
+ * @param {string} src - absolute path to the source file
+ * @param {string} dest - absolute path to the destination file
+ * @returns {void}
+ */
+function copyFileUnlessSymlinkedToSource(src, dest) {
+  if (fs.existsSync(dest) && fs.lstatSync(dest).isSymbolicLink()) {
+    try {
+      if (fs.realpathSync(dest) === fs.realpathSync(src)) return;
+    } catch {
+      // Broken symlink — fall through and overwrite it with a real copy.
+    }
+  }
+  fs.copyFileSync(src, dest);
+}
+
 function copyRecursive(src, dest) {
   const skipFiles = ['skill.json', 'cursor.rule.md'];
 
@@ -167,11 +188,11 @@ function copyRecursive(src, dest) {
       if (entry.isDirectory()) {
         copyRecursive(srcPath, destPath);
       } else {
-        fs.copyFileSync(srcPath, destPath);
+        copyFileUnlessSymlinkedToSource(srcPath, destPath);
       }
     }
   } else {
-    fs.copyFileSync(src, dest);
+    copyFileUnlessSymlinkedToSource(src, dest);
   }
 }
 

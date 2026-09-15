@@ -32,6 +32,8 @@ Never ask permission to log the entry — logging it is part of applying the fee
 
 This file is a real, git-tracked file in this skill's directory, not session memory — it persists across conversations and projects wherever this skill is installed. Edits to it are local like any other file edit; commit them only if the user asks to commit, per normal git-safety rules.
 
+The globally installed copy at `~/.claude/skills/natural-writing/avoid-list.md` is a symlink back to this file in the `charlie-ai-skills` repo, not a separate copy. A feedback edit made while working in any project writes straight to the git-tracked source — no reinstall step needed to pick it up. This only holds on the machine where that symlink was created; a fresh machine setup needs it re-linked (or re-run the plain install, then manually replace the copied file with a symlink) — see `scripts/installSkills.js`'s `copyFileUnlessSymlinkedToSource` guard, which keeps a bulk reinstall from clobbering the symlink.
+
 ## Step 3: Periodic consolidation (optional, only if asked)
 
 If the user asks to "clean up" or "consolidate" the avoid-list, look for near-duplicate rows (same term flagged more than once, or two rows that amount to the same underlying word-choice pattern) and merge them into a single row with the clearest alternative and context. Never do this unprompted — the log's raw history has value even when repetitive.
