@@ -11,7 +11,12 @@ Does not apply to internal reasoning, code identifiers, file paths, or exact com
 
 ## Step 1: Check outward-facing prose before presenting it
 
-Read `avoid-list.md` in this skill directory. For each flagged term or phrase present in the draft, swap in its listed alternative. Preserve technical meaning exactly — this is a vocabulary and register swap, not a content edit.
+Read `avoid-list.md` in this skill directory. This is an overuse guardrail, not a banned-word list: a term on it is flagged because AI defaults to it far more than a person would, not because it's always wrong. For each flagged term or phrase present in the draft, judge it before swapping:
+
+- Is it the reflexive, default-sounding choice here — the word that shows up because it's the AI-typical one, not because it's the sharpest fit? Swap it for the listed alternative.
+- Is it genuinely the most accurate or natural word for this specific sentence, and would the listed alternative be a worse fit or lose precision? Leave it. One well-placed use of a flagged word is not the problem; falling back on it as a tic is.
+
+Preserve technical meaning exactly either way — this is a vocabulary and register judgment call, not a content edit.
 
 Beyond the list, apply judgment: the list is a seed and a growing memory, not the full boundary of what counts. If a word is the kind of thing a real colleague would never say out loud in a ticket or a Slack message — even if it's not yet in the list — rewrite it anyway. The test: would a specific coworker actually say this sentence to another coworker? If the answer is no because the words are stiff, inflated, or vague-but-official-sounding, rewrite it. If the answer is no only because the sentence is too casual for the context, leave it.
 
@@ -43,3 +48,4 @@ If the user asks to "clean up" or "consolidate" the avoid-list, look for near-du
 - Sentence-level structure, em dashes, and prepositional compression are already handled by the global Writing Style rules in CLAUDE.md — this skill only covers word and phrase choice.
 - Not a content editor: it never removes information, changes a technical claim, or shortens a draft for brevity. Compression is a separate concern from register.
 - Not a documentation-structure tool — that's `docs-writing`.
+- Not a banned-word list: never refuses or flags a single, well-placed, genuinely-apt use of a listed term just because it's on the list.

@@ -2,6 +2,8 @@
 
 Living list of words and phrases that read as AI-generated or corporate jargon rather than something a colleague would actually say. Checked before presenting any prose written for other people (tickets, docs, PR/commit descriptions, code comments, chat messages). Grows via direct feedback — see `CLAUDE.md` in this directory for the logging procedure.
 
+**This is an overuse guardrail, not a banned-word list.** Every term here is flagged because AI reaches for it far more than a person would, not because the word is always wrong. A single, well-placed use where it's genuinely the most accurate or natural fit is fine — the problem is falling back on it as a reflexive default. See the judgment call in `CLAUDE.md` Step 1.
+
 The "Context" column on seed rows just says why the term is a tell. On feedback rows it records the date and where it came up, per the logging procedure.
 
 ## Word-level
@@ -64,4 +66,6 @@ The "Context" column on seed rows just says why the term is a tell. On feedback 
 
 ## Logged from feedback
 
-(none yet — new rows get appended here by the procedure in CLAUDE.md, one per distinct flagged term or phrase, in the same two-column-plus-context shape as above.)
+| Flagged term | Plain alternative | Context |
+|---|---|---|
+| invariant | rule, condition that always holds — or just describe what's actually always true | 2026-09-15 — flagged directly by the user as overused by AI; reserve the technical sense (a loop/database invariant) for cases where that precision is actually load-bearing |

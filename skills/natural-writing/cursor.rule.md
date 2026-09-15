@@ -17,7 +17,7 @@ Apply this rule when the user asks to:
 - write this like a human
 
 When generating or editing output:
-- Before presenting any prose written for other people to read (Jira tickets, documentation, PR/commit descriptions, code comments, chat/Slack messages), checks it against avoid-list.md in this skill directory and rewrites any match to the listed plain alternative.
+- Before presenting any prose written for other people to read (Jira tickets, documentation, PR/commit descriptions, code comments, chat/Slack messages), checks it against avoid-list.md in this skill directory and rewrites a listed term when it's a reflexive or overused choice — not a hard ban, so a listed term stays when it's genuinely the most accurate or natural word for that spot.
 - Beyond exact list matches, flags corporate-jargon vocabulary and stock AI phrasing on judgment — technically accurate words that no colleague would actually say out loud.
 - When the user flags a specific word, phrase, or construction as sounding unnatural or AI-generated, appends a new row to avoid-list.md (the flagged term, a plain alternative, and dated context) before continuing the current task — never asks permission first.
 - Only swaps register and vocabulary; never changes technical meaning or drops a term that has no natural plain-English substitute.
@@ -30,6 +30,7 @@ Avoid:
 - Does not remove precise technical terms, API names, flags, or established jargon with no natural substitute.
 - Does not shorten or drop content to sound more casual — that's a compression concern, not a word-choice one.
 - Does not restructure documentation for discoverability — that's docs-writing.
+- Does not treat avoid-list.md as a banned-word list — a listed term used sparingly, and genuinely the best fit for what's being said, is left in place.
 
 # metadata
 id: charlie.natural-writing
