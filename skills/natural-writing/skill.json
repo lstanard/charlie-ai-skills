@@ -1,0 +1,38 @@
+{
+  "scope": "global",
+  "id": "charlie.natural-writing",
+  "title": "Natural Writing",
+  "version": "0.1.0",
+  "description": "Rewrite tickets, docs, PR text, and code comments so wording sounds human, not AI jargon. A durable avoid-list grows from feedback.",
+  "triggers": [
+    "writing a jira ticket",
+    "writing documentation",
+    "writing a pr description",
+    "writing a commit message",
+    "writing a code comment",
+    "drafting a message for someone else",
+    "this sounds like AI",
+    "sounds like ChatGPT",
+    "too much jargon",
+    "no one talks like that",
+    "humanize this",
+    "write this like a human"
+  ],
+  "inputs": {
+    "text": "string (optional) — an existing draft to rewrite; if omitted, applies while drafting new prose"
+  },
+  "guarantees": [
+    "Before presenting any prose written for other people to read (Jira tickets, documentation, PR/commit descriptions, code comments, chat/Slack messages), checks it against avoid-list.md in this skill directory and rewrites any match to the listed plain alternative.",
+    "Beyond exact list matches, flags corporate-jargon vocabulary and stock AI phrasing on judgment — technically accurate words that no colleague would actually say out loud.",
+    "When the user flags a specific word, phrase, or construction as sounding unnatural or AI-generated, appends a new row to avoid-list.md (the flagged term, a plain alternative, and dated context) before continuing the current task — never asks permission first.",
+    "Only swaps register and vocabulary; never changes technical meaning or drops a term that has no natural plain-English substitute.",
+    "Applies only to output meant for other humans — not to internal reasoning, code identifiers, or established domain terms."
+  ],
+  "non_goals": [
+    "Does not handle sentence-level structure, em dashes, or prepositional compression — already covered by the global Writing Style rules in CLAUDE.md.",
+    "Does not remove precise technical terms, API names, flags, or established jargon with no natural substitute.",
+    "Does not shorten or drop content to sound more casual — that's a compression concern, not a word-choice one.",
+    "Does not restructure documentation for discoverability — that's docs-writing."
+  ],
+  "notes": "See CLAUDE.md in this skill directory for the full checking and feedback-logging procedure, and avoid-list.md for the living, feedback-built list of flagged terms — the actual artifact this skill's self-improvement writes to."
+}

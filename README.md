@@ -22,6 +22,7 @@ Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **C
 | [standup-summary](skills/standup-summary/)                                  | Generate a concise yesterday/today/blockers standup message from your actual Jira and GitHub activity, scoped account-wide. Chat output only, entirely read-only. |
 | [work-log](skills/work-log/)                                                 | Keep a personal, high-level log of completed work — explicit or proactive entries, on-demand Jira/GitHub backfill, synthesized weekly/monthly/yearly review. |
 | [refine-design](skills/refine-design/)                                       | Critique and redesign an existing UI element, component, or component group — not a from-scratch build. Diagnoses IA, task friction, and clutter against named UX research principles, then presents 3 distinct redesign options. Distinct from frontend-design (new builds) and design-for-ai exam/hone (visual-craft audits). |
+| [natural-writing](skills/natural-writing/)                                   | Rewrite tickets, docs, PR/commit text, and code comments so wording sounds human, not AI jargon, checking against a feedback-built avoid-list that grows every time a word or phrase gets flagged. |
 
 ### Testing skills
 
