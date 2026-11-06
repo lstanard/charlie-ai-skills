@@ -3,7 +3,7 @@
   "id": "charlie.refine-design",
   "title": "Refine Design",
   "version": "0.4.0",
-  "description": "Critique and redesign an existing UI element, component, or component group — not a from-scratch build. Diagnoses IA, task friction, and clutter against named UX research principles, then presents 3 distinct redesign options. Distinct from frontend-design (new builds) and design-for-ai exam/hone (visual-craft audits).",
+  "description": "Critique and redesign an existing UI element or component group, not a new build. Diagnoses information architecture, task friction, and clutter against named UX principles, then presents 3 distinct redesign options.",
   "triggers": [
     "redesign this",
     "refine this design",
