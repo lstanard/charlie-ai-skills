@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Install skills for Cursor or Claude Code.
+ * Install skills for Cursor, Claude Code, or Codex.
  *
  * Usage:
  *   node scripts/installSkills.js <destination> [source-path] [options]
@@ -16,7 +16,7 @@
  *   node scripts/installSkills.js ~/.claude skills/general-coding-rules --target=claude
  *
  * Options:
- *   --target=cursor|claude    Install for Cursor (default) or Claude Code
+ *   --target=cursor|claude|codex  Install for Cursor (default), Claude Code, or Codex
  *   --scope=global|project    Only install skills with matching scope
  *   --tags=tag1,tag2          Only install skills with at least one matching tag
  *   --include-claude          Also install CLAUDE.md reference files
@@ -276,11 +276,69 @@ function installForClaude(skills, destination, includeClaude, sourcePath) {
   }
 }
 
+/**
+ * Installs self-contained Codex skill folders, including group reference knowledge.
+ * @param {Array<object>} skills - selected skills and their dependencies
+ * @param {string} destination - project root, .agents directory, or .agents/skills
+ * @returns {void}
+ */
+function installForCodex(skills, destination) {
+  const destResolved = path.resolve(destination);
+  const skillsDir = path.basename(destResolved) === ".agents"
+    ? path.join(destResolved, "skills")
+    : path.basename(destResolved) === "skills" && path.basename(path.dirname(destResolved)) === ".agents"
+      ? destResolved
+      : path.join(destResolved, ".agents", "skills");
+
+  for (const { slug, skillMdPath } of skills) {
+    if (!skillMdPath) {
+      throw new Error(`${slug}: missing SKILL.md; run npm run gen before installing`);
+    }
+    const installedManifest = path.join(skillsDir, slug, "SKILL.md");
+    if (fs.existsSync(installedManifest) && fs.realpathSync(installedManifest) === fs.realpathSync(skillMdPath)) {
+      throw new Error(`${slug}: destination SKILL.md resolves to the repository source. Use a separate copy for Codex installation so compatibility guidance can be added safely.`);
+    }
+  }
+
+  console.log(`Copying ${skills.length} skill(s) to ${skillsDir} (Codex)`);
+  for (const { dir, slug } of skills) {
+    const dest = path.join(skillsDir, slug);
+    copyRecursive(dir, dest);
+    const references = [];
+    if (findClaudeMd(dir)) {
+      references.push("Read [CLAUDE.md](CLAUDE.md) for this skill's detailed procedure and reference knowledge.");
+    }
+
+    // Flattened skill folders carry their group's knowledge and examples locally.
+    const groupDir = path.dirname(dir);
+    const groupReference = findClaudeMd(groupDir);
+    if (groupReference && groupDir !== path.join(repoRoot, "skills")) {
+      const groupDest = path.join(dest, "references", "group");
+      fs.mkdirSync(groupDest, { recursive: true });
+      fs.copyFileSync(groupReference, path.join(groupDest, "CLAUDE.md"));
+      const examples = path.join(groupDir, "examples");
+      if (fs.existsSync(examples)) copyRecursive(examples, path.join(groupDest, "examples"));
+      references.push("Read [the shared group reference](references/group/CLAUDE.md) when applying this skill. Mentions of the testing/ or frontend-architecture/ group's CLAUDE.md refer to this installed copy; example paths are relative to that reference.");
+    }
+
+    const guidance = [
+      "## Codex compatibility",
+      ...references,
+      "CLAUDE.md files bundled with this skill are reference documents. Read them explicitly when directed above.",
+      "Use the tools and capabilities available in the current harness. References to Claude Code plan mode mean the current harness's planning capability; if unavailable, draft the plan in conversation. Ask questions in conversation when a dedicated question tool is unavailable.",
+      "External plugin skills and Jira/GitHub integrations require separate setup in this harness. If a required capability is missing, report it before the dependent step and ask how to proceed; do not claim to have invoked an unavailable skill or tool.",
+      "Existing ~/.claude data/config paths are shared storage conventions used by these skills, including work logs and standup settings. Preserve those paths to reuse existing data. Global tone/style references mean the user's active instructions (such as AGENTS.md).",
+    ];
+    fs.appendFileSync(path.join(dest, "SKILL.md"), `\n\n${guidance.join("\n\n")}\n`);
+    console.log(`  ✓ ${slug}/`);
+  }
+}
+
 function main() {
   const args = process.argv.slice(2);
   const includeClaude = args.includes("--include-claude");
 
-  // Parse --target=cursor|claude
+  // Parse --target=cursor|claude|codex
   const targetArg = args.find((a) => a.startsWith("--target="));
   const target = targetArg ? targetArg.split("=")[1] : "cursor";
 
@@ -292,8 +350,8 @@ function main() {
   const tagsArg = args.find((a) => a.startsWith("--tags="));
   const tagsFilter = tagsArg ? tagsArg.split("=")[1].split(",").map(t => t.trim()) : [];
 
-  if (!["cursor", "claude"].includes(target)) {
-    console.error("Error: --target must be 'cursor' or 'claude'");
+  if (!["cursor", "claude", "codex"].includes(target)) {
+    console.error("Error: --target must be 'cursor', 'claude', or 'codex'");
     process.exit(1);
   }
 
@@ -314,11 +372,11 @@ function main() {
     console.error("  source-path:  e.g. skills/general-coding-rules (default: skills)");
     console.error("");
     console.error("Options:");
-    console.error("  --target=cursor|claude    Install for Cursor (default) or Claude Code");
+    console.error("  --target=cursor|claude|codex  Install for Cursor (default), Claude Code, or Codex");
     console.error("  --scope=global|project    Only install skills with matching scope");
     console.error("  --tags=tag1,tag2          Only install skills with at least one matching tag");
     console.error("                            (skills with no tags are always included)");
-    console.error("  --include-claude          Also install CLAUDE.md reference files");
+    console.error("  --include-claude          Also install CLAUDE.md reference files (automatic for Codex)");
     console.error("");
     console.error("Examples:");
     console.error("  # Install global skills for Claude Code");
@@ -359,8 +417,10 @@ function main() {
 
   if (target === "cursor") {
     installForCursor(resolved, destination, includeClaude, sourcePath);
-  } else {
+  } else if (target === "claude") {
     installForClaude(resolved, destination, includeClaude, sourcePath);
+  } else {
+    installForCodex(resolved, destination);
   }
 
   if (pluginDeps.size > 0) {

@@ -37,7 +37,7 @@ function findSkillJsonPaths(singlePath) {
 }
 
 /**
- * Renders a skill.json object into the SKILL.md content Claude Code/Cursor read.
+ * Renders a skill.json object into the SKILL.md content Claude Code, Cursor, and Codex read.
  * @param {object} skill - parsed skill.json contents
  * @returns {string} the full SKILL.md file content
  */

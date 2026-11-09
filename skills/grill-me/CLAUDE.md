@@ -3,7 +3,7 @@
 ## When to invoke
 
 - **Explicit:** the user says "grill me," "grill me on this plan," "stress test this plan," or similar.
-- **Proactive:** a plan has just been drafted for bounded-scope work (see the `brainstorming` skill's three-way classification) and feels roughly right, but hasn't been implemented yet. Plan mode is typically how bounded-path work gets planned in practice, so this is usually a native Claude Code plan-mode plan. Invoke before the first implementation step, not after.
+- **Proactive:** a plan has just been drafted for bounded-scope work (see the `brainstorming` skill's three-way classification) and feels roughly right, but hasn't been implemented yet. Plan mode is typically how bounded-path work gets planned in practice, so this is usually a native harness plan-mode plan. Invoke before the first implementation step, not after.
 - **Do not invoke** on the architectural path (a plan produced by `brainstorming` → spec → `writing-plans`). That path's spec already went through `brainstorming`'s approach-exploration and spec-review stages, which surface the kind of decisions this skill would ask about; the bounded path's short in-chat design does not get that same scrutiny.
 
 ## Core procedure

@@ -74,7 +74,7 @@ Classify the work using the `brainstorming` skill's spike/bounded/architectural 
 3. Before the first implementation step, ask the user explicitly: "Use subagent-driven-development (fresh subagent per task, review between tasks, in the current session) or executing-plans (a separate/parallel session with review checkpoints) to implement this plan?" Proceed using whichever the user picks.
 
 **Bounded:**
-1. Use native Claude Code plan mode to draft a plan. No plan document is produced — the subagent-driven-development/executing-plans choice above does not apply here.
+1. Use the current harness's planning capability to draft a plan, or draft it in conversation when plan mode is unavailable. No plan document is produced — the subagent-driven-development/executing-plans choice above does not apply here.
 2. Once the plan feels roughly right, invoke the `grill-me` skill before writing any code. Proceed to Phase 5 only once `grill-me`'s interrogation concludes.
 
 ## Phase 5: Implement

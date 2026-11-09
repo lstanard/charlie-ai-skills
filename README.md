@@ -1,6 +1,6 @@
 # AI Skills
 
-Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **Claude**, and optionally other tools. Each skill is defined by a `skill.json`; the repo generates `SKILL.md` and Cursor rule files from it.
+Reusable, and highly-opinionated, AI agent skills you can use in **Cursor**, **Claude Code**, and **Codex**. Each skill is defined by a `skill.json`; the repo generates `SKILL.md` and Cursor rule files from it.
 
 ## Available skills
 
@@ -64,7 +64,7 @@ The **frontend architecture** skills are based on [Modularizing React Applicatio
 
 Each skill has a `scope` and optional `tags` in its `skill.json`:
 
-- **`scope: "global"`** — install once to `~/.claude` or `~/.cursor`; these apply across all projects (e.g. agent tone, coding rules)
+- **`scope: "global"`** — install once to `~/.claude`, `~/.cursor`, or `~/.agents`; these apply across all projects (e.g. agent tone, coding rules)
 - **`scope: "project"`** — install per project; use `--tags` to narrow to what's relevant
 
 Available tags: `frontend`, `react`, `typescript`, `javascript`, `testing`, `graphql`
@@ -150,6 +150,44 @@ Cursor automatically discovers skills. Reference by name:
 @accessibility-testing check UserProfile for a11y issues
 ```
 
+### In Codex
+
+Install global skills for your user:
+
+```bash
+npm run install:codex -- ~/.agents --scope=global
+```
+
+Install project skills in a project's `.agents/skills/` directory:
+
+```bash
+# Frontend React project
+npm run install:codex -- ~/Code/my-app --scope=project --tags=frontend,react
+
+# All project skills
+npm run install:codex -- ~/Code/my-app --scope=project
+
+# Re-sync one skill
+npm run install:codex -- ~/.agents skills/general-coding-rules
+```
+
+The destination can be a project root, `.agents`, or `.agents/skills`. Scope and tag filters and automatic local dependency installation work the same as for the other targets. Global scope filters which skills are selected; use `~/.agents` as the destination to make them available across projects.
+
+Invoke a skill with `$skill-name`, for example:
+
+```text
+$branch-review review this branch
+$react-component-testing write tests for LoginForm
+```
+
+Codex also selects skills automatically from their descriptions. If newly installed skills do not appear, restart Codex. See the [official OpenAI skills documentation](https://learn.chatgpt.com/docs/build-skills) for discovery locations and invocation.
+
+The installer copies each skill's supporting files and automatically bundles shared group reference docs and examples. It adds Codex guidance and links to those references in the installed `SKILL.md`; source files stay generated from `skill.json`. `--include-claude` is unnecessary for Codex. Bundled `CLAUDE.md` files supply reference knowledge and are read explicitly by the skill.
+
+Some workflows need external plugin skills (such as Superpowers), Atlassian tools, or `gh`. Set up those capabilities for Codex separately; installation prints plugin dependencies but does not install them. References to plan mode use the current harness's planning capability, with a conversational plan when unavailable.
+
+Work logs and standup settings continue to use their documented `~/.claude` paths so existing data is shared between harnesses. This command installs skills only. For always-on preferences, add your chosen instructions to `~/.codex/AGENTS.md` or a project's `AGENTS.md`; the Claude settings, hooks, and global `config/claude/CLAUDE.md` are not installed by this command. Review that global file for preferences you want to carry over, adapting any Claude-specific model names or tooling.
+
 ### In other AI tools
 
 - Use **SKILL.md** as the contract: it lists purpose, triggers, inputs, guarantees, and non-goals. Point your agent at that file when you want specific skill behavior.
@@ -171,7 +209,7 @@ charlie-ai-skills/
 │           └── cursor.rule.md
 ├── scripts/
 │   ├── generateSkillFiles.js  # skill.json → SKILL.md + cursor.rule.md
-│   ├── installSkills.js       # Copy rules to project .cursor/rules/ with clear names
+│   ├── installSkills.js       # Install skill folders for Cursor, Claude Code, or Codex
 │   └── validateSkill.js       # Validate skill.json
 ├── docs/
 │   └── FILE-ROLES.md       # What each file is for (SKILL.md vs CLAUDE.md, etc.)
@@ -238,4 +276,6 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
   - `--include-claude` — Also install CLAUDE.md reference files
   - Second positional arg to target a specific skill or group (e.g., `skills/general-coding-rules`)
 - `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code. Same options as above.
-- `npm run ci` — Validate and generate (for CI or pre-commit).
+- `npm run install:codex -- <destination> [source-path] [options]` — Install skills for Codex in `.agents/skills`. Supports the same scope, tag, and source filters; shared references are included automatically.
+- `npm test` — Exercise installer destinations, filtering, dependencies, resources, and repeat installs in temporary directories.
+- `npm run ci` — Validate, generate, and test (for CI or pre-commit).

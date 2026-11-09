@@ -18,7 +18,7 @@ Validation: `npm run validate -- path/to/skill.json`.
 
 ## SKILL.md (generated)
 
-Step-by-step and contract for the AI when this skill is invoked. Generated from `skill.json`: purpose, triggers, inputs, guarantees, non-goals, notes. Used by Cursor (and other tools) as the skill definition. Regenerate with `npm run gen`.
+Step-by-step and contract for the AI when this skill is invoked. Generated from `skill.json`: purpose, triggers, inputs, guarantees, non-goals, notes. Used by Cursor, Claude Code, and Codex as the skill definition. Regenerate with `npm run gen`.
 
 ## cursor.rule.md (generated)
 
@@ -50,3 +50,11 @@ Summary:
 | `SKILL.md`     | Generated skill definition (purpose, triggers, guarantees, etc.). |
 | `cursor.rule.md` | Generated Cursor rule for this skill. |
 | `CLAUDE.md`    | Optional; extra reference knowledge when one skill needs a dedicated knowledge file. |
+
+## Codex installation
+
+`npm run install:codex` copies skills to `.agents/skills/`. The installed `SKILL.md` keeps the generated metadata and instructions and gains a Codex compatibility section with links to its reference documents. No extra Codex manifest or `agents/openai.yaml` is required.
+
+Skill-local `CLAUDE.md` and other resources stay beside `SKILL.md`. Shared group knowledge is copied to `references/group/CLAUDE.md` within each installed skill, with the group's `examples/` directory beside it when present. These are reference files, read explicitly when directed by the installed skill. They are not global instructions.
+
+Always-on Codex instructions belong in `AGENTS.md`. Installation does not create or modify that file or convert Claude settings and hooks.
