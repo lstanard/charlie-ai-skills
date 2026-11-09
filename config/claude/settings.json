@@ -104,7 +104,6 @@
     "skill-creator@claude-plugins-official": true,
     "claude-mem@thedotmack": true,
     "frontend-design@claude-plugins-official": true,
-    "sdlc-jira-github@guild-ai-skills": true,
     "context7@claude-plugins-official": true,
     "typescript-lsp@claude-plugins-official": true,
     "code-review@claude-plugins-official": true,

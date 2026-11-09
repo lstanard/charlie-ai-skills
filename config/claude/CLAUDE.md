@@ -39,6 +39,7 @@ Applies to all prose output: session responses, summaries, PR comments, Jira tic
 
 ## Ways of Working
 
+* Keep Superpowers-generated specs, implementation plans, and planning workspaces out of version control. Store them in ignored directories or temporary storage. Never force-add them to a commit.
 * Don't make assumptions or try and guess at the meaning of something if it's not explicitly provided--e.g. an unknown acronym or some internal terminology. If unsure consult with the user and confirm.
 * Don't be lazy. Do things the right way, not the easy way.
 * When defining a plan of action, don't provide timeline estimates.

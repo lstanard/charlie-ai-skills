@@ -18,7 +18,7 @@ Fields: `jira.cloudId` (required), `github.org` (optional), `github.ignorePrs` (
 
 **Ignored PRs.** `github.ignorePrs` is an array of `"owner/repo#number"` strings — PRs the user has said to drop permanently (e.g. a long-open PR that shows up as `is:open` indefinitely but isn't real ongoing work). Filter every GitHub search result (Yesterday, Blockers — Today runs no GitHub search) against this list before using it, by matching `repo` (from the API's `repository_url`) plus `number`. This list only grows when the user explicitly says to ignore a PR going forward — append the new entry to the existing array in `~/.claude/standup.json` (merge, don't overwrite) and confirm to the user it's saved. Don't ask the user to re-confirm an ignore that's already in the list on future runs.
 
-**Secondary assignee.** Every Jira JQL query below matches `cf[10120]` alongside `assignee`. `cf[10120]` is the "Secondary Assignee" custom field on the `guild-education.atlassian.net` instance (a user-picker field, confirmed via `getJiraIssueTypeMetaWithFields` on project `LM`, issue type `Story`) — tickets assigned to a teammate with the user as secondary assignee carry real work that `assignee = currentUser()` alone misses. If this skill is ever pointed at a different Jira instance, re-derive the field ID the same way rather than assuming `10120` carries over.
+**Assignee filter.** Use `assignee = currentUser()` by default. If this Jira instance has a secondary-assignee user-picker field, discover its ID from the instance's field metadata (for example, via `getJiraIssueTypeMetaWithFields` for a relevant project and issue type). Then use `(assignee = currentUser() OR cf[<verified-field-id>] = currentUser())`. Do not reuse a custom-field ID from another instance. In every JQL example below, replace `<assignee_filter>` with the chosen expression before calling the tool.
 
 Example file:
 
@@ -106,7 +106,7 @@ If neither timestamp falls in the window, drop the PR from Yesterday — its `up
 Jira JQL (via `searchJiraIssuesUsingJql`, substituting the actual computed dates for `<window_start>`/`<window_end>`):
 
 ```
-(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND updated >= "<window_start>" AND updated < "<window_end>" ORDER BY updated DESC
+<assignee_filter> AND issuetype != Epic AND updated >= "<window_start>" AND updated < "<window_end>" ORDER BY updated DESC
 ```
 
 Excludes epics: epics assigned to the user don't represent work done, only a container the user happens to be assignee on. Only stories, tasks, and bugs count.
@@ -116,7 +116,7 @@ Excludes epics: epics assigned to the user don't represent work done, only a con
 Jira JQL only — no GitHub search runs for Today. A PR sitting open isn't ongoing work by itself; if its ticket is In Progress in Jira, the ticket already surfaces it. Narrating open PRs separately restates the same work twice and drags in PRs that are just idling in review with nothing happening today.
 
 ```
-(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory = "In Progress" ORDER BY updated DESC
+<assignee_filter> AND issuetype != Epic AND statusCategory = "In Progress" ORDER BY updated DESC
 ```
 
 Excludes epics for the same reason as the Yesterday query above.
@@ -136,7 +136,7 @@ Same org-suffix rule as above. Drop any result matching an entry in `github.igno
 Jira JQL:
 
 ```
-(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND (flagged is not EMPTY OR status = "Blocked") ORDER BY updated DESC
+<assignee_filter> AND issuetype != Epic AND statusCategory != Done AND (flagged is not EMPTY OR status = "Blocked") ORDER BY updated DESC
 ```
 
 Checks both the built-in Impediment flag and a literal `"Blocked"` workflow status, since Jira has no standardized "blocked" status category the way it does for To Do/In Progress/Done. Excludes epics for the same reason as the Yesterday query above.
@@ -145,12 +145,12 @@ Checks both the built-in Impediment flag and a literal `"Blocked"` workflow stat
 
 Only the `flagged` clause:
 ```
-(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND flagged is not EMPTY ORDER BY updated DESC
+<assignee_filter> AND issuetype != Epic AND statusCategory != Done AND flagged is not EMPTY ORDER BY updated DESC
 ```
 
 Only the `status = "Blocked"` clause:
 ```
-(assignee = currentUser() OR cf[10120] = currentUser()) AND issuetype != Epic AND statusCategory != Done AND status = "Blocked" ORDER BY updated DESC
+<assignee_filter> AND issuetype != Epic AND statusCategory != Done AND status = "Blocked" ORDER BY updated DESC
 ```
 
 Only fall back to relying on the GitHub CI-failure signal alone if both clauses turn out invalid.
@@ -169,17 +169,17 @@ Three lines, one per section, labeled `Y:`, `T:`, `B:` — not full words, not b
 
 Write for a reader who doesn't have Jira open — a manager or teammate skimming the update should understand what was done without looking anything up. Describe the work in plain language only. Omit ticket keys and PR numbers entirely by default — the identifiers are still used internally to find and cross-check the work, they just don't appear in the printed output. Only include a ticket/PR identifier if the user explicitly asks for identifiers in a given run (e.g. "include ticket numbers this time"); that request applies to that run only, not future ones, unless the user says to make it the default.
 
-Both examples below were confirmed by the user as the target format, framing, and length — match their terseness and plain-language framing over any other instinct about how much detail to include.
+Use the following fictional examples as the target format, framing, and length.
 
 ```
-Y: Made progress on the program code management UX for the Homeroom prototype and finished the concentration concept tables and repository layer.
-T: Continuing the SDK method to fetch Field-of-Study classified items.
-B: Homeroom dashboard is blocked pending a DevOps ticket.
+Y: Fixed the settings page save bug and added tests for validation errors.
+T: Finishing the account preferences form.
+B: The preview deployment is blocked by a failed build.
 ```
 
 ```
-Y: Merged the catalog drift audit fix for programs losing track dates when a new track wasn't ingested, made progress on the field-of-study SDK work, and worked on the Program Lifecycle ADR.
-T: Finalizing the Program Lifecycle ADR and removing the temporary rollout flag now that the catalog drift fix is proven.
+Y: Merged the search pagination fix and started the notification preferences API.
+T: Finishing the API tests and checking the error responses.
 B: None noted.
 ```
 

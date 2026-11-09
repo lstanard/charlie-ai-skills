@@ -6,7 +6,8 @@
   "scripts": {
     "gen": "node scripts/generateSkillFiles.js",
     "validate": "node scripts/validateSkill.js",
-    "ci": "npm run validate && npm run gen && npm test",
+    "ci": "npm run check:artifacts && npm run validate && npm run gen && npm test",
+    "check:artifacts": "node scripts/checkArtifacts.js",
     "test": "node --test scripts/installSkills.test.js",
     "install:cursor": "node scripts/installSkills.js --target=cursor",
     "install:claude": "node scripts/installSkills.js --target=claude",

@@ -220,6 +220,8 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 
 ## Contributing a new skill
 
+Commit skill source files, generated skill definitions, and maintained reference knowledge. Keep Superpowers-generated specs and implementation plans in ignored workspaces or temporary directories. These artifacts must not be committed; `npm run ci` checks tracked file paths for planning artifacts.
+
 1. **Create a skill directory**
 
    ```bash
@@ -278,4 +280,5 @@ See [docs/FILE-ROLES.md](docs/FILE-ROLES.md) for what each file does and when yo
 - `npm run install:claude -- <destination> [source-path] [options]` — Install skills for Claude Code. Same options as above.
 - `npm run install:codex -- <destination> [source-path] [options]` — Install skills for Codex in `.agents/skills`. Supports the same scope, tag, and source filters; shared references are included automatically.
 - `npm test` — Exercise installer destinations, filtering, dependencies, resources, and repeat installs in temporary directories.
-- `npm run ci` — Validate, generate, and test (for CI or pre-commit).
+- `npm run check:artifacts` — Reject tracked Superpowers documents and implementation-plan artifacts.
+- `npm run ci` — Check repository artifacts, validate, generate, and test (for CI or pre-commit).
